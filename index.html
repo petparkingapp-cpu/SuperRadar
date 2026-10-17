@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperRadar - Stock exacto y novedades por supermercado y tienda</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        mercadona: '#007a33',
+                        carrefour: '#003876',
+                        lidl: '#0050aa',
+                        aldi: '#0d2c6c',
+                        dia: '#d81e05',
+                        maskompra: '#f26522',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-2">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0" onclick="resetAllFilters()">
+                    <div class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-200 overflow-hidden">
+                        <i class="fa-solid fa-radar text-lg sm:text-xl animate-pulse"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">Super<span class="text-emerald-600">Radar</span></span>
+                        <span class="text-[9px] sm:text-[10px] font-bold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-1.5 py-0.5 rounded">Stock por tienda exacta</span>
+                    </div>
+                </div>
+
+                <!-- Header Actions -->
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs sm:text-sm px-2.5 py-2 sm:px-3.5 sm:py-2 rounded-xl border border-rose-200 transition-all active:scale-95">
+                        <i class="fa-solid fa-heart text-rose-500"></i>
+                        <span class="hidden sm:inline">Guardados</span>
+                        <span id="favoritesBadge" class="bg-rose-500 text-white text-[11px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="openModal()" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold text-xs sm:text-sm px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl transition-all shadow-md shadow-emerald-600/20">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Añadir</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-900 text-white py-6 sm:py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-semibold mb-3">
+                <i class="fa-solid fa-location-crosshairs text-amber-400"></i>
+                <span>Selecciona cadena, ciudad o tienda exacta</span>
+            </div>
+
+            <h1 class="text-xl sm:text-4xl font-extrabold tracking-tight mb-2">
+                ¿Qué hay en tu tienda de hoy?
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-base mb-4 sm:mb-6 max-w-2xl mx-auto">
+                Consulta novedades por cadena de supermercados, revisa todas las tiendas de la ciudad o afina el stock en tu dirección exacta.
+            </p>
+
+            <div class="bg-white p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/20 max-w-3xl mx-auto">
+                <div class="relative flex-1 w-full flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-emerald-600 text-base sm:text-lg"></i>
+                    <input 
+                        type="text" 
+                        id="heroSearchInput" 
+                        oninput="handleHeroSearch()" 
+                        placeholder="Buscar producto: Colorete, Rosquetes, Açaí, Proteína..." 
+                        class="w-full pl-10 sm:pl-11 pr-8 py-2.5 sm:py-3 text-slate-900 placeholder-slate-400 font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm sm:text-base"
+                    >
+                    <button id="clearSearchBtn" onclick="clearHeroSearch()" class="hidden absolute right-3 text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                <button onclick="scrollToGrid()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm hidden sm:flex items-center gap-2 transition shrink-0">
+                    <span>Buscar</span>
+                    <i class="fa-solid fa-radar text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6" id="mainSection">
+        
+        <!-- Smart Supermarket & City Hub -->
+        <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 mb-6 space-y-5">
+            
+            <!-- Step 1 & 2: Supermarket Chain & City -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pb-4 border-b border-slate-100">
+                <!-- Supermarket Chain Pills -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-store text-emerald-600"></i>
+                        <span>1. Supermercado (Todos o Cadena)</span>
+                    </label>
+                    <div id="supermarketChainContainer" class="flex flex-wrap gap-1.5">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- City Selector -->
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-city text-emerald-600"></i>
+                        <span>2. Ciudad</span>
+                    </label>
+                    <div class="relative">
+                        <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm px-3.5 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
+                            <option value="Malaga" selected>📍 Málaga</option>
+                            <option value="Madrid">📍 Madrid</option>
+                            <option value="Barcelona">📍 Barcelona</option>
+                            <option value="Sevilla">📍 Sevilla</option>
+                            <option value="Valencia">📍 Valencia</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3.5 top-4 text-slate-400 text-xs pointer-events-none"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Exact Store Selector (Specific Branch or All in City) -->
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot text-emerald-600"></i>
+                        <span>3. Tienda Exacta (Opcional - Ver todos los <span id="currentChainLabel" class="text-emerald-700 underline">Supermercados</span> en <span id="currentCityLabel" class="text-emerald-700 underline">Málaga</span>)</span>
+                    </label>
+                    <span id="storeCountIndicator" class="text-[11px] font-bold text-slate-400"></span>
+                </div>
+                <div class="relative">
+                    <select id="storeSelect" onchange="applyFilters()" class="w-full bg-emerald-50/70 border border-emerald-300 text-emerald-950 font-bold text-xs sm:text-sm px-3.5 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
+                        <!-- Populated dynamically based on city and selected chain -->
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-3.5 top-4 text-emerald-600 text-xs pointer-events-none"></i>
+                </div>
+            </div>
+
+            <!-- Extra Filters Bar (Category & Stock status) -->
+            <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs border-t border-slate-100">
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <select id="categoryFilter" onchange="applyFilters()" class="w-1/2 sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2.5 rounded-xl focus:outline-none cursor-pointer transition">
+                        <option value="">Todas las categorías</option>
+                        <option value="Cosmética & Cuidado">Cosmética & Perfumería</option>
+                        <option value="Alimentación / Snacks">Alimentación / Snacks</option>
+                        <option value="Fit & Proteínas">Fit & Proteínas</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Bazar / Semanales">Bazar / Semanales</option>
+                    </select>
+
+                    <select id="stockFilter" onchange="applyFilters()" class="w-1/2 sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2.5 rounded-xl focus:outline-none cursor-pointer transition">
+                        <option value="">Todos los estados</option>
+                        <option value="Disponible">🟢 Disponible</option>
+                        <option value="Llegó hoy">✨ Llegó hoy</option>
+                        <option value="Agotado">🔴 Agotado</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+                    <span id="resultsCount" class="font-extrabold text-slate-700 bg-slate-100 px-3.5 py-2 rounded-xl">Cargando...</span>
+                    <button onclick="resetAllFilters()" class="text-slate-500 hover:text-emerald-600 font-semibold flex items-center gap-1 transition">
+                        <i class="fa-solid fa-rotate-left"></i> Restablecer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16 px-4 bg-white rounded-2xl border border-dashed border-slate-300">
+            <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                <i class="fa-solid fa-store-slash"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800 mb-1">Sin novedades para este filtro exacto</h3>
+            <p id="emptyStateSubtitle" class="text-slate-500 text-xs max-w-md mx-auto mb-5">Prueba a seleccionar "Todas las tiendas" en el selector de tienda exacta o cambia de cadena.</p>
+            <button onclick="resetStoreAndChainFilter()" class="bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow hover:bg-emerald-700 transition">
+                Ver todas las tiendas y supers
+            </button>
+        </div>
+    </main>
+
+    <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all my-auto">
+            <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-satellite-dish text-emerald-400 text-lg"></i>
+                    <h3 class="font-bold text-base sm:text-lg">Reportar Novedad en Tienda</h3>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="addProductForm" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-3.5 max-h-[80vh] overflow-y-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Producto *</label>
+                        <input type="text" id="formTitle" required placeholder="Ej. Colorete Deliplus 02" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Precio (€) *</label>
+                        <input type="number" step="0.01" id="formPrice" required placeholder="5.00" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Supermercado *</label>
+                        <select id="formSupermarket" required onchange="handleFormSupermarketChange()" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                            <option value="Mercadona">Mercadona</option>
+                            <option value="Carrefour">Carrefour</option>
+                            <option value="Lidl">Lidl</option>
+                            <option value="Aldi">Aldi</option>
+                            <option value="DIA">DIA</option>
+                            <option value="Maskompra">Maskompra</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Categoría *</label>
+                        <select id="formCategory" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                            <option value="Cosmética & Cuidado">Cosmética & Perfumería</option>
+                            <option value="Alimentación / Snacks">Alimentación / Snacks</option>
+                            <option value="Fit & Proteínas">Fit & Proteínas</option>
+                            <option value="Bebidas">Bebidas</option>
+                            <option value="Bazar / Semanales">Bazar / Semanales</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Ciudad *</label>
+                        <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                            <option value="Malaga">📍 Málaga</option>
+                            <option value="Madrid">📍 Madrid</option>
+                            <option value="Barcelona">📍 Barcelona</option>
+                            <option value="Sevilla">📍 Sevilla</option>
+                            <option value="Valencia">📍 Valencia</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tienda Exacta *</label>
+                        <select id="formStore" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white"></select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado Stock *</label>
+                    <select id="formStockStatus" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                        <option value="Llegó hoy">✨ Llegó hoy mismo</option>
+                        <option value="Disponible">🟢 Disponible en estantería</option>
+                        <option value="Agotado">🔴 Agotado / Pocas unidades</option>
+                    </select>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 transition">Cancelar</button>
+                    <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition">Publicar Novedad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage" class="text-xs sm:text-sm font-medium">Acción completada</span>
+    </div>
+
+    <script>
+        const SUPERMARKET_DATA = {
+            'Mercadona': { badge: 'bg-emerald-700 text-white' },
+            'Carrefour': { badge: 'bg-blue-700 text-white' },
+            'Lidl': { badge: 'bg-amber-500 text-slate-900' },
+            'Aldi': { badge: 'bg-indigo-900 text-white' },
+            'DIA': { badge: 'bg-red-600 text-white' },
+            'Maskompra': { badge: 'bg-orange-600 text-white' }
+        };
+
+        // Complete hierarchical list of supermarkets and exact stores per city
+        const CITIES_AND_STORES = {
+            'Malaga': {
+                name: 'Málaga',
+                stores: [
+                    { id: 'all_malaga', chain: 'ALL', name: '📍 Todas las tiendas de Málaga (General)' },
+                    // Mercadona Málaga
+                    { id: 'm_malaga_teatinos', chain: 'Mercadona', name: 'Mercadona - Teatinos (Av. Plutarco)' },
+                    { id: 'm_malaga_hilera', chain: 'Mercadona', name: 'Mercadona - Centro (Calle Hilera)' },
+                    { id: 'm_malaga_vialia', chain: 'Mercadona', name: 'Mercadona - Estación María Zambrano / Vialia' },
+                    { id: 'm_malaga_carretera', chain: 'Mercadona', name: 'Mercadona - Carretera de Cádiz (Av. Velázquez)' },
+                    { id: 'm_malaga_litoral', chain: 'Mercadona', name: 'Mercadona - Parque Litoral (Av. Imperio Argentina)' },
+                    { id: 'm_malaga_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Calle Ayala)' },
+                    { id: 'm_malaga_palo', chain: 'Mercadona', name: 'Mercadona - El Palo (Av. Juan Sebastián Elcano)' },
+                    // Carrefour Málaga
+                    { id: 'c_malaga_rosaleda', chain: 'Carrefour', name: 'Carrefour - C.C. La Rosaleda' },
+                    { id: 'c_malaga_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios (Ctra. Cádiz)' },
+                    // Lidl Málaga
+                    { id: 'l_malaga_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez' },
+                    { id: 'l_malaga_cruz', chain: 'Lidl', name: 'Lidl - Cruz de Humilladero' },
+                    // Aldi Málaga
+                    { id: 'a_malaga_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos (Av. Carlos Haya)' },
+                    // Maskompra Málaga
+                    { id: 'mask_malaga_centro', chain: 'Maskompra', name: 'Maskompra - Málaga Centro' }
+                ]
+            },
+            'Madrid': {
+                name: 'Madrid',
+                stores: [
+                    { id: 'all_madrid', chain: 'ALL', name: '📍 Todas las tiendas de Madrid (General)' },
+                    { id: 'm_mad_chamberi', chain: 'Mercadona', name: 'Mercadona - Chamberí (Calle Fuencarral)' },
+                    { id: 'm_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca (Calle Serrano)' },
+                    { id: 'm_mad_atocha', chain: 'Mercadona', name: 'Mercadona - Atocha / Delicias' },
+                    { id: 'c_mad_sol', chain: 'Carrefour', name: 'Carrefour Express - Puerta del Sol' },
+                    { id: 'c_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - C.C. Gran Vía de Hortaleza' },
+                    { id: 'l_mad_embajadores', chain: 'Lidl', name: 'Lidl - Embajadores / Arganzuela' },
+                    { id: 'a_mad_tetuan', chain: 'Aldi', name: 'Aldi - Tetuán / Bravo Murillo' },
+                    { id: 'd_mad_malasana', chain: 'DIA', name: 'DIA Market - Malasaña' }
+                ]
+            },
+            'Barcelona': {
+                name: 'Barcelona',
+                stores: [
+                    { id: 'all_bcn', chain: 'ALL', name: '📍 Todas las tiendas de Barcelona (General)' },
+                    { id: 'm_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Eixample / C. Valencia' },
+                    { id: 'm_bcn_sants', chain: 'Mercadona', name: 'Mercadona - Sants / C. de la Creu Coberta' },
+                    { id: 'c_bcn_glories', chain: 'Carrefour', name: 'Carrefour - C.C. Glòries' },
+                    { id: 'l_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família' },
+                    { id: 'a_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou' },
+                    { id: 'd_bcn_born', chain: 'DIA', name: 'DIA Go - El Born' }
+                ]
+            },
+            'Sevilla': {
+                name: 'Sevilla',
+                stores: [
+                    { id: 'all_sevilla', chain: 'ALL', name: '📍 Todas las tiendas de Sevilla (General)' },
+                    { id: 'm_sev_triana', chain: 'Mercadona', name: 'Mercadona - Triana (Ronda de Triana)' },
+                    { id: 'm_sev_nervion', chain: 'Mercadona', name: 'Mercadona - Nervión (Av. Eduardo Dato)' },
+                    { id: 'c_sev_macarena', chain: 'Carrefour', name: 'Carrefour - C.C. Macarena' },
+                    { id: 'l_sev_nervion', chain: 'Lidl', name: 'Lidl - Nervión' },
+                    { id: 'a_sev_centro', chain: 'Aldi', name: 'Aldi - Sevilla Centro' }
+                ]
+            },
+            'Valencia': {
+                name: 'Valencia',
+                stores: [
+                    { id: 'all_valencia', chain: 'ALL', name: '📍 Todas las tiendas de Valencia (General)' },
+                    { id: 'm_val_ruzafa', chain: 'Mercadona', name: 'Mercadona - Ruzafa' },
+                    { id: 'm_val_mestalla', chain: 'Mercadona', name: 'Mercadona - Mestalla' },
+                    { id: 'c_val_el_saler', chain: 'Carrefour', name: 'Carrefour - C.C. El Saler' },
+                    { id: 'l_val_blasco', chain: 'Lidl', name: 'Lidl - Av. Blasco Ibáñez' },
+                    { id: 'a_val_gran_via', chain: 'Aldi', name: 'Aldi - Gran Vía' }
+                ]
+            }
+        };
+
+        // Seed products tied to exact stores
+        const INITIAL_PRODUCTS = [
+            {
+                id: 'prod_colorete_teatinos',
+                title: 'Colorete Compacto Blush Luminoso Deliplus 02',
+                price: 5.00,
+                supermarket: 'Mercadona',
+                category: 'Cosmética & Cuidado',
+                city: 'Malaga',
+                storeId: 'm_malaga_teatinos',
+                storeName: 'Mercadona - Teatinos (Av. Plutarco)',
+                imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=80',
+                description: '¡El colorete viral en lata! Tono coral rosado con alta pigmentación.',
+                stockStatus: 'Llegó hoy',
+                likes: 184,
+                confirmations: 92,
+                isLiked: true
+            },
+            {
+                id: 'prod_adviento_hilera',
+                title: 'Calendario de Adviento Maquillaje 24 Días',
+                price: 22.00,
+                supermarket: 'Mercadona',
+                category: 'Cosmética & Cuidado',
+                city: 'Malaga',
+                storeId: 'm_malaga_hilera',
+                storeName: 'Mercadona - Centro (Calle Hilera)',
+                imageUrl: 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=500&auto=format&fit=crop&q=80',
+                description: 'Caja navideña con 24 sorpresas de belleza Deliplus.',
+                stockStatus: 'Llegó hoy',
+                likes: 142,
+                confirmations: 65,
+                isLiked: false
+            },
+            {
+                id: 'prod_acai_rosaleda',
+                title: 'Açaí Sorbet Orgánico 100% Fruta Bio',
+                price: 3.99,
+                supermarket: 'Carrefour',
+                category: 'Alimentación / Snacks',
+                city: 'Malaga',
+                storeId: 'c_malaga_rosaleda',
+                storeName: 'Carrefour - C.C. La Rosaleda',
+                imageUrl: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=80',
+                description: 'Tarrina de Açaí helado orgánico para preparar en casa.',
+                stockStatus: 'Disponible',
+                likes: 76,
+                confirmations: 31,
+                isLiked: false
+            },
+            {
+                id: 'prod_helado_litoral',
+                title: 'Helado Proteico de Pistacho Hacendado',
+                price: 2.85,
+                supermarket: 'Mercadona',
+                category: 'Fit & Proteínas',
+                city: 'Malaga',
+                storeId: 'm_malaga_litoral',
+                storeName: 'Mercadona - Parque Litoral (Av. Imperio Argentina)',
+                imageUrl: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=500&auto=format&fit=crop&q=80',
+                description: 'Cremoso, con trocitos de pistacho natural y 15g de proteína.',
+                stockStatus: 'Llegó hoy',
+                likes: 48,
+                confirmations: 24,
+                isLiked: false
+            },
+            {
+                id: 'prod_lidl_velazquez',
+                title: 'Pan de Masa Madre Rústico con Semillas',
+                price: 1.49,
+                supermarket: 'Lidl',
+                category: 'Alimentación / Snacks',
+                city: 'Malaga',
+                storeId: 'l_malaga_velazquez',
+                storeName: 'Lidl - Av. de Velázquez',
+                imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80',
+                description: 'Recién horneado en horno de piedra.',
+                stockStatus: 'Disponible',
+                likes: 35,
+                confirmations: 12,
+                isLiked: false
+            }
+        ];
+
+        let products = [];
+        let currentCity = 'Malaga';
+        let selectedChain = ''; // '' means all chains
+        let showOnlyFavorites = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            updateFavoritesCounter();
+            applyFilters();
+        });
+
+        function loadProducts() {
+            const stored = localStorage.getItem('super_radar_products_v3');
+            products = stored ? JSON.parse(stored) : [...INITIAL_PRODUCTS];
+        }
+
+        function saveProducts() {
+            localStorage.setItem('super_radar_products_v3', JSON.stringify(products));
+            updateFavoritesCounter();
+        }
+
+        function updateFavoritesCounter() {
+            const count = products.filter(p => p.isLiked).length;
+            document.getElementById('favoritesBadge').textContent = count;
+        }
+
+        function handleCityChange() {
+            currentCity = document.getElementById('citySelect').value;
+            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[currentCity].name;
+            updateStoreSelectDropdown();
+            applyFilters();
+        }
+
+        function renderSupermarketChainPills() {
+            const container = document.getElementById('supermarketChainContainer');
+            const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA', 'Maskompra'];
+            
+            container.innerHTML = chains.map(chain => {
+                const label = chain === '' ? '⚡ Todos los supers' : chain;
+                const isSelected = selectedChain === chain;
+                const activeClass = isSelected 
+                    ? 'bg-slate-900 text-white shadow-md' 
+                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200';
+                
+                return `
+                    <button onclick="selectChainFilter('${chain}')" class="text-xs font-bold px-3 py-2 rounded-xl transition ${activeClass}">
+                        ${label}
+                    </button>
+                `;
+            }).join('');
+
+            document.getElementById('currentChainLabel').textContent = selectedChain === '' ? 'Supermercados' : selectedChain;
+        }
+
+        function selectChainFilter(chain) {
+            showOnlyFavorites = false;
+            selectedChain = chain;
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            applyFilters();
+        }
+
+        function updateStoreSelectDropdown() {
+            const storeSelect = document.getElementById('storeSelect');
+            const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Malaga'];
+            
+            // Filter stores based on selected chain if any
+            const filteredStores = cityData.stores.filter(store => {
+                if (store.chain === 'ALL') return true;
+                if (selectedChain && store.chain !== selectedChain) return false;
+                return true;
+            });
+
+            document.getElementById('storeCountIndicator').textContent = `${filteredStores.length - 1} tiendas exactas`;
+
+            storeSelect.innerHTML = filteredStores.map(store => `
+                <option value="${store.id}">${store.name}</option>
+            `).join('');
+        }
+
+        function toggleOnlyFavoritesFilter() {
+            showOnlyFavorites = !showOnlyFavorites;
+            if (showOnlyFavorites) {
+                selectedChain = '';
+                renderSupermarketChainPills();
+            }
+            applyFilters();
+            scrollToGrid();
+        }
+
+        function resetStoreAndChainFilter() {
+            selectedChain = '';
+            showOnlyFavorites = false;
+            renderSupermarketChainPills();
+            document.getElementById('storeSelect').selectedIndex = 0;
+            applyFilters();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('heroSearchInput').value = '';
+            document.getElementById('citySelect').value = 'Malaga';
+            currentCity = 'Malaga';
+            document.getElementById('currentCityLabel').textContent = 'Málaga';
+            selectedChain = '';
+            showOnlyFavorites = false;
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('stockFilter').value = '';
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            applyFilters();
+            showToast('Filtros restablecidos');
+        }
+
+        function applyFilters() {
+            const searchQuery = document.getElementById('heroSearchInput').value.toLowerCase().trim();
+            const selectedStoreId = document.getElementById('storeSelect').value;
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const selectedStock = document.getElementById('stockFilter').value;
+
+            // Clear button toggle
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (clearBtn) {
+                if (searchQuery) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            const filtered = products.filter(product => {
+                // Favorites
+                if (showOnlyFavorites && !product.isLiked) return false;
+
+                // City
+                if (product.city !== currentCity) return false;
+
+                // Chain
+                if (selectedChain && product.supermarket !== selectedChain) return false;
+
+                // Specific Store (if not 'all_' general option)
+                if (selectedStoreId && !selectedStoreId.startsWith('all_') && product.storeId !== selectedStoreId) return false;
+
+                // Category
+                if (selectedCategory && product.category !== selectedCategory) return false;
+
+                // Stock
+                if (selectedStock && product.stockStatus !== selectedStock) return false;
+
+                // Search query
+                if (searchQuery) {
+                    const matchTitle = product.title.toLowerCase().includes(searchQuery);
+                    const matchDesc = product.description.toLowerCase().includes(searchQuery);
+                    const matchStore = product.storeName.toLowerCase().includes(searchQuery);
+                    const matchSuper = product.supermarket.toLowerCase().includes(searchQuery);
+                    if (!matchTitle && !matchDesc && !matchStore && !matchSuper) return false;
+                }
+
+                return true;
+            });
+
+            renderProducts(filtered);
+        }
+
+        function renderProducts(items) {
+            const grid = document.getElementById('productsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const countLabel = document.getElementById('resultsCount');
+
+            countLabel.textContent = `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'}`;
+
+            if (items.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = items.map(p => {
+                const superStyle = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
+                let stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                if (p.stockStatus === 'Llegó hoy') stockClass = 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse';
+                if (p.stockStatus === 'Agotado') stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
+
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+                        <div class="relative h-44 bg-slate-100 overflow-hidden">
+                            <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Novedad'">
+                            <span class="absolute top-3 left-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg ${superStyle.badge} shadow-md">
+                                ${p.supermarket}
+                            </span>
+                            <span class="absolute top-3 right-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg border ${stockClass} shadow-sm">
+                                ${p.stockStatus}
+                            </span>
+                        </div>
+
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">${p.category}</span>
+                                    <span class="text-base font-extrabold text-emerald-700">${p.price.toFixed(2)} €</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-sm leading-snug mb-1.5 line-clamp-2">${p.title}</h3>
+                                <p class="text-slate-500 text-xs line-clamp-2 mb-3">${p.description}</p>
+                            </div>
+
+                            <div class="space-y-3 pt-2 border-t border-slate-100">
+                                <div class="flex items-center gap-1.5 text-xs text-slate-700 font-semibold bg-emerald-50/50 p-2 rounded-xl border border-emerald-100">
+                                    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
+                                    <span class="truncate">${p.storeName}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between gap-2">
+                                    <button onclick="toggleLike('${p.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-semibold border transition ${p.isLiked ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">
+                                        <i class="fa-${p.isLiked ? 'solid' : 'regular'} fa-heart ${p.isLiked ? 'text-rose-500' : ''}"></i>
+                                        <span>${p.likes}</span>
+                                    </button>
+
+                                    <button onclick="confirmStock('${p.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition">
+                                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                        <span>Confirmar (${p.confirmations})</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleLike(id) {
+            const p = products.find(prod => prod.id === id);
+            if (p) {
+                p.isLiked = !p.isLiked;
+                p.likes += p.isLiked ? 1 : -1;
+                saveProducts();
+                applyFilters();
+            }
+        }
+
+        function confirmStock(id) {
+            const p = products.find(prod => prod.id === id);
+            if (p) {
+                p.confirmations += 1;
+                saveProducts();
+                applyFilters();
+                showToast('¡Confirmación registrada!');
+            }
+        }
+
+        function handleHeroSearch() { applyFilters(); }
+        function clearHeroSearch() { document.getElementById('heroSearchInput').value = ''; applyFilters(); }
+        function scrollToGrid() { document.getElementById('mainSection').scrollIntoView({ behavior: 'smooth' }); }
+        
+        function openModal() {
+            document.getElementById('productModal').classList.remove('hidden');
+            handleFormCityChange();
+        }
+        function closeModal() { document.getElementById('productModal').classList.add('hidden'); }
+
+        function handleFormCityChange() {
+            handleFormSupermarketChange();
+        }
+
+        function handleFormSupermarketChange() {
+            const city = document.getElementById('formCity').value;
+            const superVal = document.getElementById('formSupermarket').value;
+            const storeSelect = document.getElementById('formStore');
+            
+            const cityStores = CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].stores : [];
+            const matchingStores = cityStores.filter(s => s.chain === superVal);
+
+            if (matchingStores.length > 0) {
+                storeSelect.innerHTML = matchingStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            } else {
+                storeSelect.innerHTML = `<option value="gen_${city}_${superVal}">${superVal} - ${CITIES_AND_STORES[city].name} General</option>`;
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const city = document.getElementById('formCity').value;
+            const supermarket = document.getElementById('formSupermarket').value;
+            const storeId = document.getElementById('formStore').value;
+            const storeSelectEl = document.getElementById('formStore');
+            const storeName = storeSelectEl.options[storeSelectEl.selectedIndex].text;
+
+            const newP = {
+                id: 'prod_' + Date.now(),
+                title: document.getElementById('formTitle').value,
+                price: parseFloat(document.getElementById('formPrice').value),
+                supermarket: supermarket,
+                category: document.getElementById('formCategory').value,
+                city: city,
+                storeId: storeId,
+                storeName: storeName,
+                imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                description: 'Novedad reportada por la comunidad en tienda.',
+                stockStatus: document.getElementById('formStockStatus').value,
+                likes: 1,
+                confirmations: 1,
+                isLiked: false
+            };
+
+            products.unshift(newP);
+            saveProducts();
+            closeModal();
+            
+            // Switch view to that city and chain so user sees their new addition instantly
+            document.getElementById('citySelect').value = city;
+            currentCity = city;
+            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[city].name;
+            selectedChain = supermarket;
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            document.getElementById('storeSelect').value = storeId;
+            
+            applyFilters();
+            showToast('¡Novedad publicada con éxito!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+        }
+    </script>
+</body>
+</html>
