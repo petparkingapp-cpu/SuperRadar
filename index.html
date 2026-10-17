@@ -26,7 +26,6 @@
                         lidl: '#0050aa',
                         aldi: '#0d2c6c',
                         dia: '#d81e05',
-                        maskompra: '#f26522',
                     }
                 }
             }
@@ -239,7 +238,6 @@
                             <option value="Lidl">Lidl</option>
                             <option value="Aldi">Aldi</option>
                             <option value="DIA">DIA</option>
-                            <option value="Maskompra">Maskompra</option>
                         </select>
                     </div>
                     <div>
@@ -300,17 +298,14 @@
             'Carrefour': { badge: 'bg-blue-700 text-white' },
             'Lidl': { badge: 'bg-amber-500 text-slate-900' },
             'Aldi': { badge: 'bg-indigo-900 text-white' },
-            'DIA': { badge: 'bg-red-600 text-white' },
-            'Maskompra': { badge: 'bg-orange-600 text-white' }
+            'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        // Complete hierarchical list of supermarkets and exact stores per city
         const CITIES_AND_STORES = {
             'Malaga': {
                 name: 'Málaga',
                 stores: [
                     { id: 'all_malaga', chain: 'ALL', name: '📍 Todas las tiendas de Málaga (General)' },
-                    // Mercadona Málaga
                     { id: 'm_malaga_teatinos', chain: 'Mercadona', name: 'Mercadona - Teatinos (Av. Plutarco)' },
                     { id: 'm_malaga_hilera', chain: 'Mercadona', name: 'Mercadona - Centro (Calle Hilera)' },
                     { id: 'm_malaga_vialia', chain: 'Mercadona', name: 'Mercadona - Estación María Zambrano / Vialia' },
@@ -318,16 +313,11 @@
                     { id: 'm_malaga_litoral', chain: 'Mercadona', name: 'Mercadona - Parque Litoral (Av. Imperio Argentina)' },
                     { id: 'm_malaga_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Calle Ayala)' },
                     { id: 'm_malaga_palo', chain: 'Mercadona', name: 'Mercadona - El Palo (Av. Juan Sebastián Elcano)' },
-                    // Carrefour Málaga
                     { id: 'c_malaga_rosaleda', chain: 'Carrefour', name: 'Carrefour - C.C. La Rosaleda' },
                     { id: 'c_malaga_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios (Ctra. Cádiz)' },
-                    // Lidl Málaga
                     { id: 'l_malaga_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez' },
                     { id: 'l_malaga_cruz', chain: 'Lidl', name: 'Lidl - Cruz de Humilladero' },
-                    // Aldi Málaga
-                    { id: 'a_malaga_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos (Av. Carlos Haya)' },
-                    // Maskompra Málaga
-                    { id: 'mask_malaga_centro', chain: 'Maskompra', name: 'Maskompra - Málaga Centro' }
+                    { id: 'a_malaga_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos (Av. Carlos Haya)' }
                 ]
             },
             'Madrid': {
@@ -374,33 +364,16 @@
                     { id: 'm_val_ruzafa', chain: 'Mercadona', name: 'Mercadona - Ruzafa' },
                     { id: 'm_val_mestalla', chain: 'Mercadona', name: 'Mercadona - Mestalla' },
                     { id: 'c_val_el_saler', chain: 'Carrefour', name: 'Carrefour - C.C. El Saler' },
-                    { id: 'l_val_blasco', chain: 'Lidl', name: 'Lidl - Av. Blasco Ibáñez' },
+                    { id: 'l_val_blasco', chain: 'Lidl', name: 'Lidl - Blasco Ibáñez' },
                     { id: 'a_val_gran_via', chain: 'Aldi', name: 'Aldi - Gran Vía' }
                 ]
             }
         };
 
-        // Seed products tied to exact stores
         const INITIAL_PRODUCTS = [
             {
-                id: 'prod_colorete_teatinos',
-                title: 'Colorete Compacto Blush Luminoso Deliplus 02',
-                price: 5.00,
-                supermarket: 'Mercadona',
-                category: 'Cosmética & Cuidado',
-                city: 'Malaga',
-                storeId: 'm_malaga_teatinos',
-                storeName: 'Mercadona - Teatinos (Av. Plutarco)',
-                imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500&auto=format&fit=crop&q=80',
-                description: '¡El colorete viral en lata! Tono coral rosado con alta pigmentación.',
-                stockStatus: 'Llegó hoy',
-                likes: 184,
-                confirmations: 92,
-                isLiked: true
-            },
-            {
-                id: 'prod_adviento_hilera',
-                title: 'Calendario de Adviento Maquillaje 24 Días',
+                id: 'prod_adviento_2026',
+                title: 'Calendario de Adviento Maquillaje 24 Días (Mini Tocador)',
                 price: 22.00,
                 supermarket: 'Mercadona',
                 category: 'Cosmética & Cuidado',
@@ -408,65 +381,81 @@
                 storeId: 'm_malaga_hilera',
                 storeName: 'Mercadona - Centro (Calle Hilera)',
                 imageUrl: 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=500&auto=format&fit=crop&q=80',
-                description: 'Caja navideña con 24 sorpresas de belleza Deliplus.',
+                description: '¡Novedad viral de octubre! Caja con forma de tocador y 21 productos de belleza Deliplus.',
                 stockStatus: 'Llegó hoy',
-                likes: 142,
-                confirmations: 65,
+                likes: 0,
+                confirmations: 0,
                 isLiked: false
             },
             {
-                id: 'prod_acai_rosaleda',
-                title: 'Açaí Sorbet Orgánico 100% Fruta Bio',
-                price: 3.99,
+                id: 'prod_galletas_rebuenas',
+                title: 'Galletas Rebuenas Rellenas de Chocolate Blanco 500g',
+                price: 1.45,
+                supermarket: 'Mercadona',
+                category: 'Alimentación / Snacks',
+                city: 'Malaga',
+                storeId: 'm_malaga_teatinos',
+                storeName: 'Mercadona - Teatinos (Av. Plutarco)',
+                imageUrl: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=80',
+                description: 'Galletas tipo sándwich con delicioso relleno de chocolate blanco Hacendado.',
+                stockStatus: 'Llegó hoy',
+                likes: 0,
+                confirmations: 0,
+                isLiked: false
+            },
+            {
+                id: 'prod_atun_carrefour_3x2',
+                title: 'Atún Claro en Aceite de Oliva Pack 8 Latas (Oferta 3x2)',
+                price: 6.59,
                 supermarket: 'Carrefour',
                 category: 'Alimentación / Snacks',
                 city: 'Malaga',
                 storeId: 'c_malaga_rosaleda',
                 storeName: 'Carrefour - C.C. La Rosaleda',
-                imageUrl: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=80',
-                description: 'Tarrina de Açaí helado orgánico para preparar en casa.',
+                imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80',
+                description: 'Promoción especial activa en packs seleccionados de conservas de atún.',
                 stockStatus: 'Disponible',
-                likes: 76,
-                confirmations: 31,
+                likes: 0,
+                confirmations: 0,
                 isLiked: false
             },
             {
-                id: 'prod_helado_litoral',
-                title: 'Helado Proteico de Pistacho Hacendado',
-                price: 2.85,
-                supermarket: 'Mercadona',
-                category: 'Fit & Proteínas',
-                city: 'Malaga',
-                storeId: 'm_malaga_litoral',
-                storeName: 'Mercadona - Parque Litoral (Av. Imperio Argentina)',
-                imageUrl: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=500&auto=format&fit=crop&q=80',
-                description: 'Cremoso, con trocitos de pistacho natural y 15g de proteína.',
-                stockStatus: 'Llegó hoy',
-                likes: 48,
-                confirmations: 24,
-                isLiked: false
-            },
-            {
-                id: 'prod_lidl_velazquez',
-                title: 'Pan de Masa Madre Rústico con Semillas',
-                price: 1.49,
+                id: 'prod_picadora_lidl',
+                title: 'Picadora de Carne Eléctrica Silvercrest (Bazar Lidl)',
+                price: 24.99,
                 supermarket: 'Lidl',
-                category: 'Alimentación / Snacks',
+                category: 'Bazar / Semanales',
                 city: 'Malaga',
                 storeId: 'l_malaga_velazquez',
                 storeName: 'Lidl - Av. de Velázquez',
-                imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80',
-                description: 'Recién horneado en horno de piedra.',
+                imageUrl: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&auto=format&fit=crop&q=80',
+                description: 'Oferta estrella de la sección de bazar para preparar recetas en casa.',
+                stockStatus: 'Llegó hoy',
+                likes: 0,
+                confirmations: 0,
+                isLiked: false
+            },
+            {
+                id: 'prod_galletas_speculoos_aldi',
+                title: 'Galletas Rellenas de Crema de Speculoos Special (Aldi)',
+                price: 1.99,
+                supermarket: 'Aldi',
+                category: 'Alimentación / Snacks',
+                city: 'Malaga',
+                storeId: 'a_malaga_teatinos',
+                storeName: 'Aldi - Teatinos (Av. Carlos Haya)',
+                imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
+                description: 'Crujientes galletas con intenso sabor a galleta caramelizada de speculoos.',
                 stockStatus: 'Disponible',
-                likes: 35,
-                confirmations: 12,
+                likes: 0,
+                confirmations: 0,
                 isLiked: false
             }
         ];
 
         let products = [];
         let currentCity = 'Malaga';
-        let selectedChain = ''; // '' means all chains
+        let selectedChain = ''; 
         let showOnlyFavorites = false;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -478,12 +467,12 @@
         });
 
         function loadProducts() {
-            const stored = localStorage.getItem('super_radar_products_v3');
+            const stored = localStorage.getItem('super_radar_products_v5');
             products = stored ? JSON.parse(stored) : [...INITIAL_PRODUCTS];
         }
 
         function saveProducts() {
-            localStorage.setItem('super_radar_products_v3', JSON.stringify(products));
+            localStorage.setItem('super_radar_products_v5', JSON.stringify(products));
             updateFavoritesCounter();
         }
 
@@ -501,7 +490,7 @@
 
         function renderSupermarketChainPills() {
             const container = document.getElementById('supermarketChainContainer');
-            const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA', 'Maskompra'];
+            const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA'];
             
             container.innerHTML = chains.map(chain => {
                 const label = chain === '' ? '⚡ Todos los supers' : chain;
@@ -532,7 +521,6 @@
             const storeSelect = document.getElementById('storeSelect');
             const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Malaga'];
             
-            // Filter stores based on selected chain if any
             const filteredStores = cityData.stores.filter(store => {
                 if (store.chain === 'ALL') return true;
                 if (selectedChain && store.chain !== selectedChain) return false;
@@ -585,7 +573,6 @@
             const selectedCategory = document.getElementById('categoryFilter').value;
             const selectedStock = document.getElementById('stockFilter').value;
 
-            // Clear button toggle
             const clearBtn = document.getElementById('clearSearchBtn');
             if (clearBtn) {
                 if (searchQuery) clearBtn.classList.remove('hidden');
@@ -593,25 +580,13 @@
             }
 
             const filtered = products.filter(product => {
-                // Favorites
                 if (showOnlyFavorites && !product.isLiked) return false;
-
-                // City
                 if (product.city !== currentCity) return false;
-
-                // Chain
                 if (selectedChain && product.supermarket !== selectedChain) return false;
-
-                // Specific Store (if not 'all_' general option)
                 if (selectedStoreId && !selectedStoreId.startsWith('all_') && product.storeId !== selectedStoreId) return false;
-
-                // Category
                 if (selectedCategory && product.category !== selectedCategory) return false;
-
-                // Stock
                 if (selectedStock && product.stockStatus !== selectedStock) return false;
 
-                // Search query
                 if (searchQuery) {
                     const matchTitle = product.title.toLowerCase().includes(searchQuery);
                     const matchDesc = product.description.toLowerCase().includes(searchQuery);
@@ -682,7 +657,7 @@
 
                                     <button onclick="confirmStock('${p.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition">
                                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                                        <span>Confirmar (${p.confirmations})</span>
+                                        <span>Lo he visto aquí (${p.confirmations})</span>
                                     </button>
                                 </div>
                             </div>
@@ -708,7 +683,7 @@
                 p.confirmations += 1;
                 saveProducts();
                 applyFilters();
-                showToast('¡Confirmación registrada!');
+                showToast('¡Has confirmado que está aquí!');
             }
         }
 
@@ -761,8 +736,8 @@
                 imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                 description: 'Novedad reportada por la comunidad en tienda.',
                 stockStatus: document.getElementById('formStockStatus').value,
-                likes: 1,
-                confirmations: 1,
+                likes: 0,
+                confirmations: 0,
                 isLiked: false
             };
 
@@ -770,7 +745,6 @@
             saveProducts();
             closeModal();
             
-            // Switch view to that city and chain so user sees their new addition instantly
             document.getElementById('citySelect').value = city;
             currentCity = city;
             document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[city].name;
