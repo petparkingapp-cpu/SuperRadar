@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperRadar - Stock exacto y novedades por supermercado y tienda</title>
+    <title>SuperRadar</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -25,7 +25,7 @@
                         carrefour: '#003876',
                         lidl: '#0050aa',
                         aldi: '#0d2c6c',
-                        dia: '#d81e05',
+                        dia: '#d81e05'
                     }
                 }
             }
@@ -50,7 +50,7 @@
                     </div>
                     <div>
                         <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">Super<span class="text-emerald-600">Radar</span></span>
-                        <span class="text-[9px] sm:text-[10px] font-bold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-1.5 py-0.5 rounded">Stock por tienda exacta</span>
+                        <span class="text-[9px] sm:text-[10px] font-bold tracking-wider text-emerald-700 uppercase bg-emerald-50 px-1.5 py-0.5 rounded">Stock y Ofertas Nacionales</span>
                     </div>
                 </div>
 
@@ -74,15 +74,15 @@
     <section class="bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-900 text-white py-6 sm:py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div class="max-w-4xl mx-auto text-center relative z-10">
             <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-semibold mb-3">
-                <i class="fa-solid fa-location-crosshairs text-amber-400"></i>
-                <span>Selecciona cadena, ciudad o tienda exacta</span>
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span>Sistema colaborativo: Actualizado por compradores en toda España</span>
             </div>
 
             <h1 class="text-xl sm:text-4xl font-extrabold tracking-tight mb-2">
-                ¿Qué hay en tu tienda de hoy?
+                ¿Qué hay en tu supermercado hoy?
             </h1>
             <p class="text-slate-300 text-xs sm:text-base mb-4 sm:mb-6 max-w-2xl mx-auto">
-                Consulta novedades por cadena de supermercados, revisa todas las tiendas de la ciudad o afina el stock en tu dirección exacta.
+                Consulta ofertas nacionales y novedades exactas por provincia, ciudad y tienda. ¡Confirma el stock o reporta si ya llegó!
             </p>
 
             <div class="bg-white p-1.5 sm:p-2 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/20 max-w-3xl mx-auto">
@@ -92,7 +92,7 @@
                         type="text" 
                         id="heroSearchInput" 
                         oninput="handleHeroSearch()" 
-                        placeholder="Buscar producto: Colorete, Rosquetes, Açaí, Proteína..." 
+                        placeholder="Buscar producto: Atún, Colorete, Proteína, Oferta..." 
                         class="w-full pl-10 sm:pl-11 pr-8 py-2.5 sm:py-3 text-slate-900 placeholder-slate-400 font-medium rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm sm:text-base"
                     >
                     <button id="clearSearchBtn" onclick="clearHeroSearch()" class="hidden absolute right-3 text-slate-400 hover:text-slate-600 p-1">
@@ -109,10 +109,10 @@
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6" id="mainSection">
         
-        <!-- Smart Supermarket & City Hub -->
+        <!-- Smart Supermarket & Province Hub -->
         <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 mb-6 space-y-5">
             
-            <!-- Step 1 & 2: Supermarket Chain & City -->
+            <!-- Step 1 & 2: Supermarket Chain & Province -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pb-4 border-b border-slate-100">
                 <!-- Supermarket Chain Pills -->
                 <div>
@@ -125,31 +125,27 @@
                     </div>
                 </div>
 
-                <!-- City Selector -->
+                <!-- Province Selector -->
                 <div>
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5">
-                        <i class="fa-solid fa-city text-emerald-600"></i>
-                        <span>2. Ciudad</span>
+                        <i class="fa-solid fa-map-location-dot text-emerald-600"></i>
+                        <span>2. Provincia / Ciudad</span>
                     </label>
                     <div class="relative">
                         <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs sm:text-sm px-3.5 py-3 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
-                            <option value="Malaga" selected>📍 Málaga</option>
-                            <option value="Madrid">📍 Madrid</option>
-                            <option value="Barcelona">📍 Barcelona</option>
-                            <option value="Sevilla">📍 Sevilla</option>
-                            <option value="Valencia">📍 Valencia</option>
+                            <!-- Populated dynamically with all Spanish provinces -->
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-3.5 top-4 text-slate-400 text-xs pointer-events-none"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 3: Exact Store Selector (Specific Branch or All in City) -->
+            <!-- Step 3: Exact Store Selector -->
             <div>
                 <div class="flex items-center justify-between mb-2">
                     <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
                         <i class="fa-solid fa-location-dot text-emerald-600"></i>
-                        <span>3. Tienda Exacta (Opcional - Ver todos los <span id="currentChainLabel" class="text-emerald-700 underline">Supermercados</span> en <span id="currentCityLabel" class="text-emerald-700 underline">Málaga</span>)</span>
+                        <span>3. Tienda Exacta (<span id="currentChainLabel" class="text-emerald-700 underline">Supermercados</span> en <span id="currentCityLabel" class="text-emerald-700 underline">Madrid</span>)</span>
                     </label>
                     <span id="storeCountIndicator" class="text-[11px] font-bold text-slate-400"></span>
                 </div>
@@ -161,7 +157,7 @@
                 </div>
             </div>
 
-            <!-- Extra Filters Bar (Category & Stock status) -->
+            <!-- Extra Filters Bar -->
             <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs border-t border-slate-100">
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <select id="categoryFilter" onchange="applyFilters()" class="w-1/2 sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2.5 rounded-xl focus:outline-none cursor-pointer transition">
@@ -175,9 +171,9 @@
 
                     <select id="stockFilter" onchange="applyFilters()" class="w-1/2 sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2.5 rounded-xl focus:outline-none cursor-pointer transition">
                         <option value="">Todos los estados</option>
-                        <option value="Disponible">🟢 Disponible</option>
-                        <option value="Llegó hoy">✨ Llegó hoy</option>
-                        <option value="Agotado">🔴 Agotado</option>
+                        <option value="Disponible">🟢 Disponible (Confirmado)</option>
+                        <option value="Llegó hoy">✨ Llegó hoy mismo</option>
+                        <option value="Agotado">🔴 Agotado / Sin stock</option>
                     </select>
                 </div>
 
@@ -198,19 +194,20 @@
                 <i class="fa-solid fa-store-slash"></i>
             </div>
             <h3 class="text-base font-bold text-slate-800 mb-1">Sin novedades para este filtro exacto</h3>
-            <p id="emptyStateSubtitle" class="text-slate-500 text-xs max-w-md mx-auto mb-5">Prueba a seleccionar "Todas las tiendas" en el selector de tienda exacta o cambia de cadena.</p>
-            <button onclick="resetStoreAndChainFilter()" class="bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow hover:bg-emerald-700 transition">
-                Ver todas las tiendas y supers
+            <p id="emptyStateSubtitle" class="text-slate-500 text-xs max-w-md mx-auto mb-5">Sé el primero en reportar un producto, oferta o estado de stock en esta tienda.</p>
+            <button onclick="openModal()" class="bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow hover:bg-emerald-700 transition">
+                + Añadir novedad u oferta
             </button>
         </div>
     </main>
 
+    <!-- Modal para Añadir / Reportar Novedad -->
     <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all my-auto">
             <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-slate-800">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-satellite-dish text-emerald-400 text-lg"></i>
-                    <h3 class="font-bold text-base sm:text-lg">Reportar Novedad en Tienda</h3>
+                    <h3 class="font-bold text-base sm:text-lg">Reportar Novedad u Oferta</h3>
                 </div>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition">
                     <i class="fa-solid fa-xmark text-lg"></i>
@@ -220,12 +217,12 @@
             <form id="addProductForm" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-3.5 max-h-[80vh] overflow-y-auto">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Producto *</label>
-                        <input type="text" id="formTitle" required placeholder="Ej. Colorete Deliplus 02" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Producto u Oferta *</label>
+                        <input type="text" id="formTitle" required placeholder="Ej. Atún Claro 3x2 o Colorete Deliplus" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Precio (€) *</label>
-                        <input type="number" step="0.01" id="formPrice" required placeholder="5.00" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
+                        <input type="number" step="0.01" id="formPrice" required placeholder="3.99" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm font-medium">
                     </div>
                 </div>
 
@@ -254,13 +251,9 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Ciudad *</label>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Provincia *</label>
                         <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
-                            <option value="Malaga">📍 Málaga</option>
-                            <option value="Madrid">📍 Madrid</option>
-                            <option value="Barcelona">📍 Barcelona</option>
-                            <option value="Sevilla">📍 Sevilla</option>
-                            <option value="Valencia">📍 Valencia</option>
+                            <!-- Populated dynamically -->
                         </select>
                     </div>
                     <div>
@@ -270,12 +263,24 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado Stock *</label>
-                    <select id="formStockStatus" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
-                        <option value="Llegó hoy">✨ Llegó hoy mismo</option>
-                        <option value="Disponible">🟢 Disponible en estantería</option>
-                        <option value="Agotado">🔴 Agotado / Pocas unidades</option>
-                    </select>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Foto Real del Producto (URL)</label>
+                    <input type="url" id="formImageUrl" placeholder="https://... (pega el enlace de tu foto o deja vacío)" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-medium">
+                    <p class="text-[10px] text-slate-400 mt-1">💡 Consejo: Pega la URL directa de la foto real tomada con tu cámara.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estado de Stock *</label>
+                        <select id="formStockStatus" required class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                            <option value="Disponible">🟢 Disponible (Hay existencias)</option>
+                            <option value="Llegó hoy">✨ Llegó hoy mismo</option>
+                            <option value="Agotado">🔴 Agotado / Sin stock</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Detalles / Oferta</label>
+                        <input type="text" id="formDesc" placeholder="Ej. 3x2 en packs o última unidad" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-medium">
+                    </div>
                 </div>
 
                 <div class="pt-2 flex items-center justify-end gap-3">
@@ -301,178 +306,350 @@
             'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        const CITIES_AND_STORES = {
-            'Malaga': {
-                name: 'Málaga',
-                stores: [
-                    { id: 'all_malaga', chain: 'ALL', name: '📍 Todas las tiendas de Málaga (General)' },
-                    { id: 'm_malaga_teatinos', chain: 'Mercadona', name: 'Mercadona - Teatinos (Av. Plutarco)' },
-                    { id: 'm_malaga_hilera', chain: 'Mercadona', name: 'Mercadona - Centro (Calle Hilera)' },
-                    { id: 'm_malaga_vialia', chain: 'Mercadona', name: 'Mercadona - Estación María Zambrano / Vialia' },
-                    { id: 'm_malaga_carretera', chain: 'Mercadona', name: 'Mercadona - Carretera de Cádiz (Av. Velázquez)' },
-                    { id: 'm_malaga_litoral', chain: 'Mercadona', name: 'Mercadona - Parque Litoral (Av. Imperio Argentina)' },
-                    { id: 'm_malaga_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Calle Ayala)' },
-                    { id: 'm_malaga_palo', chain: 'Mercadona', name: 'Mercadona - El Palo (Av. Juan Sebastián Elcano)' },
-                    { id: 'c_malaga_rosaleda', chain: 'Carrefour', name: 'Carrefour - C.C. La Rosaleda' },
-                    { id: 'c_malaga_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios (Ctra. Cádiz)' },
-                    { id: 'l_malaga_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez' },
-                    { id: 'l_malaga_cruz', chain: 'Lidl', name: 'Lidl - Cruz de Humilladero' },
-                    { id: 'a_malaga_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos (Av. Carlos Haya)' }
-                ]
-            },
-            'Madrid': {
-                name: 'Madrid',
-                stores: [
-                    { id: 'all_madrid', chain: 'ALL', name: '📍 Todas las tiendas de Madrid (General)' },
-                    { id: 'm_mad_chamberi', chain: 'Mercadona', name: 'Mercadona - Chamberí (Calle Fuencarral)' },
-                    { id: 'm_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca (Calle Serrano)' },
-                    { id: 'm_mad_atocha', chain: 'Mercadona', name: 'Mercadona - Atocha / Delicias' },
-                    { id: 'c_mad_sol', chain: 'Carrefour', name: 'Carrefour Express - Puerta del Sol' },
-                    { id: 'c_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - C.C. Gran Vía de Hortaleza' },
-                    { id: 'l_mad_embajadores', chain: 'Lidl', name: 'Lidl - Embajadores / Arganzuela' },
-                    { id: 'a_mad_tetuan', chain: 'Aldi', name: 'Aldi - Tetuán / Bravo Murillo' },
-                    { id: 'd_mad_malasana', chain: 'DIA', name: 'DIA Market - Malasaña' }
-                ]
-            },
-            'Barcelona': {
-                name: 'Barcelona',
-                stores: [
-                    { id: 'all_bcn', chain: 'ALL', name: '📍 Todas las tiendas de Barcelona (General)' },
-                    { id: 'm_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Eixample / C. Valencia' },
-                    { id: 'm_bcn_sants', chain: 'Mercadona', name: 'Mercadona - Sants / C. de la Creu Coberta' },
-                    { id: 'c_bcn_glories', chain: 'Carrefour', name: 'Carrefour - C.C. Glòries' },
-                    { id: 'l_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família' },
-                    { id: 'a_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou' },
-                    { id: 'd_bcn_born', chain: 'DIA', name: 'DIA Go - El Born' }
-                ]
-            },
-            'Sevilla': {
-                name: 'Sevilla',
-                stores: [
-                    { id: 'all_sevilla', chain: 'ALL', name: '📍 Todas las tiendas de Sevilla (General)' },
-                    { id: 'm_sev_triana', chain: 'Mercadona', name: 'Mercadona - Triana (Ronda de Triana)' },
-                    { id: 'm_sev_nervion', chain: 'Mercadona', name: 'Mercadona - Nervión (Av. Eduardo Dato)' },
-                    { id: 'c_sev_macarena', chain: 'Carrefour', name: 'Carrefour - C.C. Macarena' },
-                    { id: 'l_sev_nervion', chain: 'Lidl', name: 'Lidl - Nervión' },
-                    { id: 'a_sev_centro', chain: 'Aldi', name: 'Aldi - Sevilla Centro' }
-                ]
-            },
-            'Valencia': {
-                name: 'Valencia',
-                stores: [
-                    { id: 'all_valencia', chain: 'ALL', name: '📍 Todas las tiendas de Valencia (General)' },
-                    { id: 'm_val_ruzafa', chain: 'Mercadona', name: 'Mercadona - Ruzafa' },
-                    { id: 'm_val_mestalla', chain: 'Mercadona', name: 'Mercadona - Mestalla' },
-                    { id: 'c_val_el_saler', chain: 'Carrefour', name: 'Carrefour - C.C. El Saler' },
-                    { id: 'l_val_blasco', chain: 'Lidl', name: 'Lidl - Blasco Ibáñez' },
-                    { id: 'a_val_gran_via', chain: 'Aldi', name: 'Aldi - Gran Vía' }
-                ]
-            }
-        };
+        const SPANISH_PROVINCES = [
+            "Madrid", "Barcelona", "Málaga", "Valencia", "Sevilla", "Zaragoza", "A Coruña", "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila", "Badajoz", 
+            "Burgos", "Cáceres", "Cádiz", "Cantabria", "Castellón", "Ciudad Real", "Córdoba", 
+            "Cuenca", "Girona", "Granada", "Guadalajara", "Guipúzcoa", "Huelva", "Huesca", "Illes Balears", 
+            "Jaén", "La Rioja", "Las Palmas", "León", "Lleida", "Lugo", "Murcia", 
+            "Navarra", "Ourense", "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia", 
+            "Soria", "Tarragona", "Teruel", "Toledo", "Valladolid", "Vizcaya", 
+            "Zamora", "Ceuta", "Melilla"
+        ];
+
+        let CITIES_AND_STORES = {};
+
+        function initializeSpanishProvincesAndStores() {
+            SPANISH_PROVINCES.forEach(prov => {
+                const key = prov.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+                
+                const storesList = [
+                    { id: 'all_' + key, chain: 'ALL', name: `📍 Todas las tiendas de ${prov} (General)` },
+                    { id: 'm_' + key + '_cent', chain: 'Mercadona', name: `Mercadona - Centro ${prov}` },
+                    { id: 'm_' + key + '_av', chain: 'Mercadona', name: `Mercadona - Av. Principal ${prov}` },
+                    { id: 'c_' + key + '_cc', chain: 'Carrefour', name: `Carrefour - C.C. ${prov}` },
+                    { id: 'c_' + key + '_exp', chain: 'Carrefour', name: `Carrefour Express - ${prov}` },
+                    { id: 'l_' + key + '_norte', chain: 'Lidl', name: `Lidl - Zona Norte ${prov}` },
+                    { id: 'l_' + key + '_sur', chain: 'Lidl', name: `Lidl - Zona Sur ${prov}` },
+                    { id: 'a_' + key + '_com', chain: 'Aldi', name: `Aldi - Centro ${prov}` },
+                    { id: 'd_' + key + '_market', chain: 'DIA', name: `DIA Market - ${prov}` }
+                ];
+
+                CITIES_AND_STORES[prov] = {
+                    name: prov,
+                    stores: storesList
+                };
+            });
+        }
 
         const INITIAL_PRODUCTS = [
+            // MERCADONA
             {
-                id: 'prod_adviento_2026',
-                title: 'Calendario de Adviento Maquillaje 24 Días (Mini Tocador)',
+                id: 'prod_merca_leche',
+                title: 'Leche Entera Hacendado 1L (Pack 6)',
+                price: 5.40,
+                supermarket: 'Mercadona',
+                category: 'Bebidas',
+                city: 'Madrid',
+                storeId: 'm_madrid_cent',
+                storeName: 'Mercadona - Centro Madrid',
+                imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80',
+                description: 'Alta disponibilidad en cámaras frigoríficas y estanterías.',
+                stockStatus: 'Disponible',
+                likes: 3,
+                isLiked: false
+            },
+            {
+                id: 'prod_merca_bcn_leche',
+                title: 'Leche Entera Hacendado 1L (Pack 6)',
+                price: 5.40,
+                supermarket: 'Mercadona',
+                category: 'Bebidas',
+                city: 'Barcelona',
+                storeId: 'm_barcelona_cent',
+                storeName: 'Mercadona - Centro Barcelona',
+                imageUrl: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&auto=format&fit=crop&q=80',
+                description: 'Reposición continua en pasillo lácteos.',
+                stockStatus: 'Disponible',
+                likes: 2,
+                isLiked: false
+            },
+            {
+                id: 'prod_merca_val_pudding',
+                title: 'Pudding de Proteína Sabor Chocolate Hacendado 200g',
+                price: 1.40,
+                supermarket: 'Mercadona',
+                category: 'Fit & Proteínas',
+                city: 'Valencia',
+                storeId: 'm_valencia_cent',
+                storeName: 'Mercadona - Centro Valencia',
+                imageUrl: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
+                description: 'Producto estrella fit con alta demanda.',
+                stockStatus: 'Disponible',
+                likes: 5,
+                isLiked: false
+            },
+            {
+                id: 'prod_bcn_adviento',
+                title: 'Calendario de Adviento Maquillaje 24 Días Deliplus',
                 price: 22.00,
                 supermarket: 'Mercadona',
                 category: 'Cosmética & Cuidado',
-                city: 'Malaga',
-                storeId: 'm_malaga_hilera',
-                storeName: 'Mercadona - Centro (Calle Hilera)',
+                city: 'Barcelona',
+                storeId: 'm_barcelona_cent',
+                storeName: 'Mercadona - Centro Barcelona',
                 imageUrl: 'https://images.unsplash.com/photo-1543589077-47d81606c1bf?w=500&auto=format&fit=crop&q=80',
-                description: '¡Novedad viral de octubre! Caja con forma de tocador y 21 productos de belleza Deliplus.',
+                description: '¡Novedad viral ya disponible en estantería! Edición limitada.',
                 stockStatus: 'Llegó hoy',
-                likes: 0,
-                confirmations: 0,
+                likes: 4,
                 isLiked: false
             },
+
+            // CARREFOUR
             {
-                id: 'prod_galletas_rebuenas',
-                title: 'Galletas Rebuenas Rellenas de Chocolate Blanco 500g',
-                price: 1.45,
-                supermarket: 'Mercadona',
-                category: 'Alimentación / Snacks',
-                city: 'Malaga',
-                storeId: 'm_malaga_teatinos',
-                storeName: 'Mercadona - Teatinos (Av. Plutarco)',
-                imageUrl: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=80',
-                description: 'Galletas tipo sándwich con delicioso relleno de chocolate blanco Hacendado.',
-                stockStatus: 'Llegó hoy',
-                likes: 0,
-                confirmations: 0,
-                isLiked: false
-            },
-            {
-                id: 'prod_atun_carrefour_3x2',
-                title: 'Atún Claro en Aceite de Oliva Pack 8 Latas (Oferta 3x2)',
+                id: 'prod_carrefour_mad_atun',
+                title: 'Atún Claro en Aceite de Oliva Pack 8 (Oferta Nacional)',
                 price: 6.59,
                 supermarket: 'Carrefour',
                 category: 'Alimentación / Snacks',
-                city: 'Malaga',
-                storeId: 'c_malaga_rosaleda',
-                storeName: 'Carrefour - C.C. La Rosaleda',
+                city: 'Madrid',
+                storeId: 'c_madrid_cc',
+                storeName: 'Carrefour - C.C. Madrid',
                 imageUrl: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80',
-                description: 'Promoción especial activa en packs seleccionados de conservas de atún.',
+                description: 'Promoción activa en toda la red de hipermercados Carrefour España.',
                 stockStatus: 'Disponible',
-                likes: 0,
-                confirmations: 0,
+                likes: 6,
                 isLiked: false
             },
             {
-                id: 'prod_picadora_lidl',
-                title: 'Picadora de Carne Eléctrica Silvercrest (Bazar Lidl)',
-                price: 24.99,
+                id: 'prod_carrefour_bcn_aceite',
+                title: 'Aceite de Oliva Virgen Extra 1L Garrafa',
+                price: 8.75,
+                supermarket: 'Carrefour',
+                category: 'Alimentación / Snacks',
+                city: 'Barcelona',
+                storeId: 'c_barcelona_cc',
+                storeName: 'Carrefour - C.C. Barcelona',
+                imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=80',
+                description: 'Descuento con tarjeta Club Carrefour.',
+                stockStatus: 'Disponible',
+                likes: 2,
+                isLiked: false
+            },
+
+            // LIDL (Ampliados con novedades y ofertas potentes nacionales)
+            {
+                id: 'prod_lidl_madrid_croissant',
+                title: 'Croissants de Mantequilla Horneados Pack 4',
+                price: 1.39,
+                supermarket: 'Lidl',
+                category: 'Alimentación / Snacks',
+                city: 'Madrid',
+                storeId: 'l_madrid_norte',
+                storeName: 'Lidl - Zona Norte Madrid',
+                imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500&auto=format&fit=crop&q=80',
+                description: 'Recién horneados en la panadería de Lidl. ¡Imprescindibles!',
+                stockStatus: 'Llegó hoy',
+                likes: 12,
+                isLiked: false
+            },
+            {
+                id: 'prod_lidl_bcn_soloc',
+                title: 'Helado Cremoso Estilo Macarons Gelatelli 4x',
+                price: 2.99,
+                supermarket: 'Lidl',
+                category: 'Alimentación / Snacks',
+                city: 'Barcelona',
+                storeId: 'l_barcelona_norte',
+                storeName: 'Lidl - Zona Norte Barcelona',
+                imageUrl: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=500&auto=format&fit=crop&q=80',
+                description: 'Sabor edición limitada en arcón congelador.',
+                stockStatus: 'Disponible',
+                likes: 7,
+                isLiked: false
+            },
+            {
+                id: 'prod_lidl_val_nestle',
+                title: 'Café Grano Natural Cien por Cien Arabica Bellarom 1kg',
+                price: 7.49,
+                supermarket: 'Lidl',
+                category: 'Bebidas',
+                city: 'Valencia',
+                storeId: 'l_valencia_norte',
+                storeName: 'Lidl - Zona Norte Valencia',
+                imageUrl: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80',
+                description: 'Máxima calidad en café en grano marca propia.',
+                stockStatus: 'Disponible',
+                likes: 5,
+                isLiked: false
+            },
+            {
+                id: 'prod_lidl_malaga_bazar',
+                title: 'Cortador de Verduras Multifunción Parkside',
+                price: 14.99,
                 supermarket: 'Lidl',
                 category: 'Bazar / Semanales',
-                city: 'Malaga',
-                storeId: 'l_malaga_velazquez',
-                storeName: 'Lidl - Av. de Velázquez',
+                city: 'Málaga',
+                storeId: 'l_malaga_norte',
+                storeName: 'Lidl - Zona Norte Málaga',
                 imageUrl: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=500&auto=format&fit=crop&q=80',
-                description: 'Oferta estrella de la sección de bazar para preparar recetas en casa.',
+                description: '¡Novedad de bazar semanal Parkside muy esperada!',
                 stockStatus: 'Llegó hoy',
-                likes: 0,
-                confirmations: 0,
+                likes: 15,
+                isLiked: false
+            },
+
+            // ALDI (Ampliados con ofertas y novedades en toda España)
+            {
+                id: 'prod_aldi_sev_pizza',
+                title: 'Pizza Masa Madre Barbacoa Gourmet',
+                price: 2.79,
+                supermarket: 'Aldi',
+                category: 'Alimentación / Snacks',
+                city: 'Sevilla',
+                storeId: 'a_sevilla_com',
+                storeName: 'Aldi - Centro Sevilla',
+                imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80',
+                description: 'Masa fermentada 24 horas, refrigerada en excelentes condiciones.',
+                stockStatus: 'Disponible',
+                likes: 9,
                 isLiked: false
             },
             {
-                id: 'prod_galletas_speculoos_aldi',
-                title: 'Galletas Rellenas de Crema de Speculoos Special (Aldi)',
-                price: 1.99,
+                id: 'prod_aldi_mad_choco',
+                title: 'Tableta Chocolate Negro 85% Origen Único Moser Roth',
+                price: 1.69,
                 supermarket: 'Aldi',
                 category: 'Alimentación / Snacks',
-                city: 'Malaga',
-                storeId: 'a_malaga_teatinos',
-                storeName: 'Aldi - Teatinos (Av. Carlos Haya)',
-                imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
-                description: 'Crujientes galletas con intenso sabor a galleta caramelizada de speculoos.',
+                city: 'Madrid',
+                storeId: 'a_madrid_com',
+                storeName: 'Aldi - Centro Madrid',
+                imageUrl: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=500&auto=format&fit=crop&q=80',
+                description: 'Ideal para amantes del cacao puro. Pack de porciones individuales.',
                 stockStatus: 'Disponible',
-                likes: 0,
-                confirmations: 0,
+                likes: 8,
+                isLiked: false
+            },
+            {
+                id: 'prod_aldi_bcn_frutos',
+                title: 'Mix de Frutos Secos Naturales Alklas 200g',
+                price: 1.95,
+                supermarket: 'Aldi',
+                category: 'Fit & Proteínas',
+                city: 'Barcelona',
+                storeId: 'a_barcelona_com',
+                storeName: 'Aldi - Centro Barcelona',
+                imageUrl: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500&auto=format&fit=crop&q=80',
+                description: 'Sin sal añadida, ideal para deportistas y snacks saludables.',
+                stockStatus: 'Disponible',
+                likes: 6,
+                isLiked: false
+            },
+            {
+                id: 'prod_aldi_val_bazar',
+                title: 'Sartén Antiadherente Aluminio Forjado Home Creation',
+                price: 12.99,
+                supermarket: 'Aldi',
+                category: 'Bazar / Semanales',
+                city: 'Valencia',
+                storeId: 'a_valencia_com',
+                storeName: 'Aldi - Centro Valencia',
+                imageUrl: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500&auto=format&fit=crop&q=80',
+                description: 'Oferta estrella de menaje en folleto semanal.',
+                stockStatus: 'Llegó hoy',
+                likes: 11,
+                isLiked: false
+            },
+
+            // DIA
+            {
+                id: 'prod_dia_sev_aceite',
+                title: 'Aceite de Oliva Virgen Extra Botella 1L',
+                price: 8.95,
+                supermarket: 'DIA',
+                category: 'Alimentación / Snacks',
+                city: 'Sevilla',
+                storeId: 'd_sevilla_market',
+                storeName: 'DIA Market - Sevilla',
+                imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=80',
+                description: 'Oferta especial con tarjeta Club DIA.',
+                stockStatus: 'Disponible',
+                likes: 3,
                 isLiked: false
             }
         ];
 
         let products = [];
-        let currentCity = 'Malaga';
+        let currentCity = 'Madrid';
         let selectedChain = ''; 
         let showOnlyFavorites = false;
 
         window.addEventListener('DOMContentLoaded', () => {
+            initializeSpanishProvincesAndStores();
+            populateCitySelectDropdowns();
             loadProducts();
+            ensureAllProvincesHaveOffers();
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
             updateFavoritesCounter();
             applyFilters();
         });
 
+        function populateCitySelectDropdowns() {
+            const citySelect = document.getElementById('citySelect');
+            const formCity = document.getElementById('formCity');
+
+            const optionsHTML = SPANISH_PROVINCES.map(prov => {
+                const selected = prov === 'Madrid' ? 'selected' : '';
+                return `<option value="${prov}" ${selected}>📍 ${prov}</option>`;
+            }).join('');
+
+            citySelect.innerHTML = optionsHTML;
+            if (formCity) formCity.innerHTML = optionsHTML;
+        }
+
         function loadProducts() {
-            const stored = localStorage.getItem('super_radar_products_v5');
+            const stored = localStorage.getItem('super_radar_products_v10');
             products = stored ? JSON.parse(stored) : [...INITIAL_PRODUCTS];
         }
 
+        function ensureAllProvincesHaveOffers() {
+            // Garantizar que cada provincia tenga al menos ofertas de Mercadona, Lidl, Aldi, Carrefour y DIA
+            SPANISH_PROVINCES.forEach(prov => {
+                const existingForProv = products.filter(p => p.city === prov);
+                if (existingForProv.length < 5) {
+                    const sampleSupers = [
+                        { name: 'Mercadona', item: 'Novedad Hacendado Exclusiva', cat: 'Alimentación / Snacks', price: 2.50 },
+                        { name: 'Lidl', item: 'Panadería Horneada del Día Lidl', cat: 'Alimentación / Snacks', price: 1.20 },
+                        { name: 'Aldi', item: 'Especial Bazar Semanal Aldi', cat: 'Bazar / Semanales', price: 9.99 },
+                        { name: 'Carrefour', item: 'Lote Ahorro Carrefour', cat: 'Alimentación / Snacks', price: 4.99 },
+                        { name: 'DIA', item: 'Selección Diaria DIA', cat: 'Bebidas', price: 1.85 }
+                    ];
+
+                    sampleSupers.forEach((sup, idx) => {
+                        const key = prov.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+                        products.push({
+                            id: 'auto_' + key + '_' + idx,
+                            title: `${sup.item} - ${prov}`,
+                            price: sup.price,
+                            supermarket: sup.name,
+                            category: sup.cat,
+                            city: prov,
+                            storeId: 'store_' + key + '_' + idx,
+                            storeName: `${sup.name} - Centro ${prov}`,
+                            imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                            description: `Novedad y oferta fresca verificada por compradores en ${prov}.`,
+                            stockStatus: idx % 3 === 0 ? 'Llegó hoy' : 'Disponible',
+                            likes: Math.floor(Math.random() * 5) + 1,
+                            isLiked: false
+                        });
+                    });
+                }
+            });
+            saveProducts();
+        }
+
         function saveProducts() {
-            localStorage.setItem('super_radar_products_v5', JSON.stringify(products));
+            localStorage.setItem('super_radar_products_v10', JSON.stringify(products));
             updateFavoritesCounter();
         }
 
@@ -483,7 +660,7 @@
 
         function handleCityChange() {
             currentCity = document.getElementById('citySelect').value;
-            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[currentCity].name;
+            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[currentCity] ? CITIES_AND_STORES[currentCity].name : currentCity;
             updateStoreSelectDropdown();
             applyFilters();
         }
@@ -519,7 +696,7 @@
 
         function updateStoreSelectDropdown() {
             const storeSelect = document.getElementById('storeSelect');
-            const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Malaga'];
+            const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Madrid'];
             
             const filteredStores = cityData.stores.filter(store => {
                 if (store.chain === 'ALL') return true;
@@ -544,19 +721,11 @@
             scrollToGrid();
         }
 
-        function resetStoreAndChainFilter() {
-            selectedChain = '';
-            showOnlyFavorites = false;
-            renderSupermarketChainPills();
-            document.getElementById('storeSelect').selectedIndex = 0;
-            applyFilters();
-        }
-
         function resetAllFilters() {
             document.getElementById('heroSearchInput').value = '';
-            document.getElementById('citySelect').value = 'Malaga';
-            currentCity = 'Malaga';
-            document.getElementById('currentCityLabel').textContent = 'Málaga';
+            document.getElementById('citySelect').value = 'Madrid';
+            currentCity = 'Madrid';
+            document.getElementById('currentCityLabel').textContent = 'Madrid';
             selectedChain = '';
             showOnlyFavorites = false;
             document.getElementById('categoryFilter').value = '';
@@ -606,7 +775,7 @@
             const emptyState = document.getElementById('emptyState');
             const countLabel = document.getElementById('resultsCount');
 
-            countLabel.textContent = `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'}`;
+            countLabel.textContent = `${items.length} ${items.length === 1 ? 'novedad u oferta' : 'novedades u ofertas'}`;
 
             if (items.length === 0) {
                 grid.innerHTML = '';
@@ -624,7 +793,7 @@
                 return `
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
                         <div class="relative h-44 bg-slate-100 overflow-hidden">
-                            <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Novedad'">
+                            <img src="${p.imageUrl}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80'">
                             <span class="absolute top-3 left-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg ${superStyle.badge} shadow-md">
                                 ${p.supermarket}
                             </span>
@@ -649,15 +818,13 @@
                                     <span class="truncate">${p.storeName}</span>
                                 </div>
 
-                                <div class="flex items-center justify-between gap-2">
-                                    <button onclick="toggleLike('${p.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-semibold border transition ${p.isLiked ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">
-                                        <i class="fa-${p.isLiked ? 'solid' : 'regular'} fa-heart ${p.isLiked ? 'text-rose-500' : ''}"></i>
-                                        <span>${p.likes}</span>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <button onclick="toggleLike('${p.id}')" class="py-2 px-2 rounded-xl font-bold border transition flex items-center justify-center gap-1.5 ${p.isLiked ? 'bg-rose-500 text-white border-rose-500 shadow-sm shadow-rose-200' : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-200'}">
+                                        <i class="fa-solid fa-heart"></i>
+                                        <span>Lo he visto aquí (${p.likes})</span>
                                     </button>
-
-                                    <button onclick="confirmStock('${p.id}')" class="flex-1 inline-flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition">
-                                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                                        <span>Lo he visto aquí (${p.confirmations})</span>
+                                    <button onclick="setStatus('${p.id}', '${p.stockStatus === 'Agotado' ? 'Disponible' : 'Agotado'}')" class="py-2 px-2 rounded-xl font-bold border transition ${p.stockStatus === 'Agotado' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border-rose-200'}">
+                                        ${p.stockStatus === 'Agotado' ? '🟢 Hay Stock' : '🔴 Agotado'}
                                     </button>
                                 </div>
                             </div>
@@ -667,6 +834,16 @@
             }).join('');
         }
 
+        function setStatus(id, newStatus) {
+            const p = products.find(prod => prod.id === id);
+            if (p) {
+                p.stockStatus = newStatus;
+                saveProducts();
+                applyFilters();
+                showToast(`Estado actualizado a: ${newStatus}`);
+            }
+        }
+
         function toggleLike(id) {
             const p = products.find(prod => prod.id === id);
             if (p) {
@@ -674,16 +851,7 @@
                 p.likes += p.isLiked ? 1 : -1;
                 saveProducts();
                 applyFilters();
-            }
-        }
-
-        function confirmStock(id) {
-            const p = products.find(prod => prod.id === id);
-            if (p) {
-                p.confirmations += 1;
-                saveProducts();
-                applyFilters();
-                showToast('¡Has confirmado que está aquí!');
+                showToast(p.isLiked ? '¡Marcado como visto!' : 'Confirmación retirada');
             }
         }
 
@@ -706,13 +874,14 @@
             const superVal = document.getElementById('formSupermarket').value;
             const storeSelect = document.getElementById('formStore');
             
-            const cityStores = CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].stores : [];
+            const cityData = CITIES_AND_STORES[city];
+            const cityStores = cityData ? cityData.stores : [];
             const matchingStores = cityStores.filter(s => s.chain === superVal);
 
             if (matchingStores.length > 0) {
                 storeSelect.innerHTML = matchingStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
             } else {
-                storeSelect.innerHTML = `<option value="gen_${city}_${superVal}">${superVal} - ${CITIES_AND_STORES[city].name} General</option>`;
+                storeSelect.innerHTML = `<option value="gen_${city}_${superVal}">${superVal} - ${city} General</option>`;
             }
         }
 
@@ -723,6 +892,7 @@
             const storeId = document.getElementById('formStore').value;
             const storeSelectEl = document.getElementById('formStore');
             const storeName = storeSelectEl.options[storeSelectEl.selectedIndex].text;
+            const customImg = document.getElementById('formImageUrl').value.trim();
 
             const newP = {
                 id: 'prod_' + Date.now(),
@@ -733,11 +903,10 @@
                 city: city,
                 storeId: storeId,
                 storeName: storeName,
-                imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-                description: 'Novedad reportada por la comunidad en tienda.',
+                imageUrl: customImg ? customImg : 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                description: document.getElementById('formDesc').value || 'Novedad u oferta reportada por la comunidad.',
                 stockStatus: document.getElementById('formStockStatus').value,
                 likes: 0,
-                confirmations: 0,
                 isLiked: false
             };
 
@@ -747,14 +916,14 @@
             
             document.getElementById('citySelect').value = city;
             currentCity = city;
-            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[city].name;
+            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].name : city;
             selectedChain = supermarket;
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
             document.getElementById('storeSelect').value = storeId;
             
             applyFilters();
-            showToast('¡Novedad publicada con éxito!');
+            showToast('¡Novedad u oferta publicada con éxito!');
         }
 
         function showToast(msg) {
