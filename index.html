@@ -52,7 +52,7 @@
                     <div class="min-w-0">
                         <div class="flex items-center gap-1">
                             <span class="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 truncate">Super<span class="text-emerald-600">Radar</span></span>
-                            <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
+                            <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
                         </div>
                         <span class="text-[9px] sm:text-[10px] text-slate-500 truncate block">¿Ha llegado esa novedad viral?</span>
                     </div>
@@ -62,16 +62,22 @@
                 <div class="hidden md:flex flex-1 max-w-md mx-4">
                     <div class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-sm"></i>
-                        <input type="text" id="desktopSearchInput" oninput="syncSearch(this.value)" placeholder="Buscar novedad viral..." class="w-full pl-9 pr-8 py-2 bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none text-sm transition">
+                        <input type="text" id="desktopSearchInput" oninput="syncSearch(this.value)" placeholder="Buscar novedad viral o tienda..." class="w-full pl-9 pr-8 py-2 bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none text-sm transition">
                     </div>
                 </div>
 
                 <!-- Botones de acción cabecera adaptados -->
                 <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="latestNavBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm" title="Ver lo último subido">
+                        <i class="fa-solid fa-fire text-amber-500 text-xs"></i>
+                        <span>Últimas</span>
+                        <span id="latestBadge" class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                    </button>
+
                     <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition">
                         <i class="fa-solid fa-check-double text-emerald-600 text-xs"></i>
                         <span class="hidden sm:inline">Avisos</span>
-                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.1 rounded-full">0</span>
+                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
                     </button>
 
                     <button onclick="openModal()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-2.5 sm:px-3.5 py-2 rounded-xl transition shadow-sm shrink-0">
@@ -110,7 +116,7 @@
         <!-- Panel de Filtros -->
         <div class="bg-white rounded-2xl p-3.5 sm:p-5 shadow-sm border border-slate-200 mb-4 space-y-3">
             
-            <!-- Supermercados (Píldoras adaptadas a móvil sin desbordar) -->
+            <!-- Supermercados -->
             <div>
                 <div class="flex items-center justify-between mb-1.5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Supermercados</label>
@@ -168,10 +174,15 @@
             </div>
         </div>
 
-        <!-- Contador resultados -->
-        <div class="flex items-center justify-between mb-3 px-1 text-xs">
+        <!-- Contador resultados y botón de orden por Novedades -->
+        <div class="flex items-center justify-between mb-3 px-1 text-xs gap-2">
             <span id="resultsCount" class="font-bold text-slate-700">Cargando...</span>
-            <span class="text-[10px] text-slate-400 hidden sm:inline">Los avisos caducan a las 24h</span>
+            <div class="flex items-center gap-2">
+                <button id="filterLatestInlineBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition">
+                    <i class="fa-solid fa-fire text-amber-500"></i>
+                    <span>Ver solo recién subidos</span>
+                </button>
+            </div>
         </div>
 
         <!-- Grid productos -->
@@ -190,7 +201,7 @@
         </div>
     </main>
 
-    <!-- Pie de página con acceso Admin visible también en móvil -->
+    <!-- Pie de página con acceso Admin -->
     <footer class="bg-white border-t border-slate-200 mt-8 py-4 px-4">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 text-center sm:text-left">
             <div>
@@ -699,6 +710,7 @@
         let currentCity = 'Málaga';
         let selectedChain = '';
         let showOnlyFavorites = false;
+        let showOnlyLatest = false;
         let uploadedImageDataUrl = '';
 
         function loadLocalBackup() {
@@ -784,36 +796,47 @@
 
             const activeOfficial = getMergedOfficialOffers();
             const activeCustom = getMergedCustomProducts();
-            const generated = [];
+            const newOfficialGenerated = [];
+            const baseCatalogGenerated = [];
 
             ACTIVE_CITIES.forEach(city => {
                 const cityObj = CITIES_AND_STORES[city];
                 if (!cityObj) return;
-                cityObj.stores.filter(s => s.chain !== 'ALL').forEach(store => {
-                    activeOfficial.filter(o => o.chain === store.chain).forEach(offer => {
+                const realStores = cityObj.stores.filter(s => s.chain !== 'ALL');
+
+                // 1. Novedades oficiales subidas desde el Panel Admin
+                activeOfficial.forEach(offer => {
+                    realStores.filter(s => s.chain === offer.chain).forEach(store => {
                         const prodId = `admin_${offer.id}_${store.id}`;
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
-                        generated.push({
+                        newOfficialGenerated.push({
                             id: prodId, adminOfferId: offer.id, title: offer.title, price: offer.price,
                             supermarket: store.chain, category: offer.category, city: city, storeId: store.id,
                             storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                             viralContext: offer.viralContext || 'Novedad oficial', description: offer.description,
                             userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            createdAt: offer.createdAt || Date.now(),
+                            isRecentUpload: true,
                             seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
                             stockStatus: computeStockStatusFromVote(vote)
                         });
                     });
+                });
 
+                // 2. Catálogo base
+                realStores.forEach(store => {
                     (CHAIN_OFFERS_CATALOG[store.chain] || []).forEach((offer, offerIdx) => {
                         const prodId = `offer_${store.id}_${offerIdx}`;
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
-                        generated.push({
+                        baseCatalogGenerated.push({
                             id: prodId, title: offer.title, price: offer.price, supermarket: store.chain,
                             category: offer.category, city: city, storeId: store.id, storeName: store.name,
                             imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
                             description: offer.description, userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            createdAt: 0,
+                            isRecentUpload: false,
                             seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
                             stockStatus: computeStockStatusFromVote(vote)
                         });
@@ -821,24 +844,38 @@
                 });
             });
 
+            // 3. Novedades subidas por usuarios
             const customs = activeCustom.map(p => {
                 const vRec = getValidVoteRecord(mergedVotes[p.id]);
                 const vote = vRec ? vRec.status : null;
                 return {
-                    ...p, isCustomUserProduct: true, viralContext: p.viralContext || 'Reportado por usuario',
+                    ...p, isCustomUserProduct: true, isRecentUpload: true,
+                    createdAt: p.createdAt || Date.now(),
+                    viralContext: p.viralContext || 'Reportado por usuario',
                     userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
                     seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
                     stockStatus: computeStockStatusFromVote(vote)
                 };
             });
 
-            products = [...customs, ...generated];
+            const allRecentUploads = [...customs, ...newOfficialGenerated].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            products = [...allRecentUploads, ...baseCatalogGenerated];
             updateFavoritesCounter();
+            updateLatestCounter();
             applyFilters();
             if (isAdminAuthenticated) renderAdminLists();
         }
 
         window.rebuildCatalogFromCurrentState = rebuildCatalogFromCurrentState;
+
+        function updateLatestCounter() {
+            const activeOfficial = getMergedOfficialOffers();
+            const activeCustom = getMergedCustomProducts().filter(p => p.city === currentCity);
+            const totalNew = activeOfficial.length + activeCustom.length;
+            const badge = document.getElementById('latestBadge');
+            if (badge) badge.textContent = totalNew;
+        }
 
         function updateFavoritesCounter() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
@@ -947,7 +984,7 @@
             const offCount = document.getElementById('adminOfficialCount');
             const custList = document.getElementById('adminCustomList');
             const custCount = document.getElementById('adminCustomCount');
-            if (!offList) return;
+            if (!offList || !custList) return;
 
             const officials = getMergedOfficialOffers();
             offCount.textContent = officials.length;
@@ -959,7 +996,7 @@
 
             const customs = getMergedCustomProducts();
             custCount.textContent = customs.length;
-            classList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
+            custList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
                 customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
                     <span class="truncate pr-2"><b>[${c.city}]</b> ${c.title}</span>
                     <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
@@ -975,6 +1012,7 @@
             }
             currentCity = val;
             updateStoreSelectDropdown();
+            updateLatestCounter();
             applyFilters();
         }
 
@@ -1035,8 +1073,41 @@
 
         function toggleOnlyFavoritesFilter() {
             showOnlyFavorites = !showOnlyFavorites;
-            document.getElementById('favoritesNavBtn').classList.toggle('ring-2', showOnlyFavorites);
+            if (showOnlyFavorites) showOnlyLatest = false;
+            updateTopFilterButtonsUI();
             applyFilters();
+        }
+
+        function toggleOnlyLatestFilter() {
+            showOnlyLatest = !showOnlyLatest;
+            if (showOnlyLatest) showOnlyFavorites = false;
+            updateTopFilterButtonsUI();
+            applyFilters();
+            if (showOnlyLatest) {
+                showToast('🔥 Mostrando las últimas novedades subidas');
+            }
+        }
+
+        function updateTopFilterButtonsUI() {
+            const favBtn = document.getElementById('favoritesNavBtn');
+            const latestBtn = document.getElementById('latestNavBtn');
+            const inlineBtn = document.getElementById('filterLatestInlineBtn');
+
+            if (favBtn) favBtn.classList.toggle('ring-2', showOnlyFavorites);
+            if (latestBtn) {
+                latestBtn.classList.toggle('ring-2', showOnlyLatest);
+                latestBtn.classList.toggle('ring-amber-500', showOnlyLatest);
+                latestBtn.classList.toggle('bg-amber-200', showOnlyLatest);
+            }
+            if (inlineBtn) {
+                inlineBtn.classList.toggle('bg-amber-500', showOnlyLatest);
+                inlineBtn.classList.toggle('text-white', showOnlyLatest);
+                inlineBtn.classList.toggle('bg-amber-50', !showOnlyLatest);
+                inlineBtn.classList.toggle('text-amber-800', !showOnlyLatest);
+                inlineBtn.innerHTML = showOnlyLatest
+                    ? `<i class="fa-solid fa-xmark"></i><span>Quitar filtro de recién subidos</span>`
+                    : `<i class="fa-solid fa-fire text-amber-500"></i><span>Ver solo recién subidos</span>`;
+            }
         }
 
         function resetAllFilters() {
@@ -1046,10 +1117,13 @@
             currentCity = 'Málaga';
             selectedChain = '';
             showOnlyFavorites = false;
+            showOnlyLatest = false;
+            updateTopFilterButtonsUI();
             document.getElementById('categoryFilter').value = '';
             document.getElementById('stockFilter').value = '';
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
+            updateLatestCounter();
             applyFilters();
         }
 
@@ -1061,6 +1135,7 @@
 
             const filtered = products.filter(p => {
                 if (showOnlyFavorites && !p.userVote) return false;
+                if (showOnlyLatest && !p.isRecentUpload) return false;
                 if (p.city !== currentCity) return false;
                 if (selectedChain && p.supermarket !== selectedChain) return false;
                 if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
@@ -1078,7 +1153,10 @@
             const count = document.getElementById('resultsCount');
             if (!grid) return;
 
-            count.textContent = `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'} en ${currentCity}`;
+            count.textContent = showOnlyLatest
+                ? `🔥 ${items.length} ${items.length === 1 ? 'novedad recién subida' : 'novedades recién subidas'} en ${currentCity}`
+                : `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'} en ${currentCity}`;
+
             if (items.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
             empty.classList.add('hidden');
 
@@ -1102,6 +1180,10 @@
                     bannerColor = 'text-rose-600 font-semibold';
                 }
 
+                let newBadgeHtml = p.isRecentUpload
+                    ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-fire"></i> NUEVO</span>`
+                    : '';
+
                 let adminDel = '';
                 if (isAdminAuthenticated) {
                     if (p.adminOfferId) adminDel = `<button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar global</button>`;
@@ -1109,10 +1191,13 @@
                 }
 
                 return `
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-white rounded-2xl border ${p.isRecentUpload ? 'border-amber-300 ring-1 ring-amber-200/60' : 'border-slate-200'} overflow-hidden shadow-sm flex flex-col">
                         <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
                             <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
-                            <span class="absolute top-2 left-2 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                            <div class="absolute top-2 left-2 flex items-center gap-1">
+                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                                ${newBadgeHtml}
+                            </div>
                             <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
                             ${adminDel}
                         </div>
@@ -1218,12 +1303,12 @@
                 imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                 fallbackImg: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                 viralContext: 'Aviso de usuario', description: document.getElementById('formDesc').value || 'Reportado en tienda',
+                createdAt: now, isRecentUpload: true,
                 userVote: status, updatedAt: now, seenCount: status === 'seen' ? 1 : 0, missingCount: status === 'missing' ? 1 : 0,
                 stockStatus: computeStockStatusFromVote(status)
             };
 
             userInteractions.customProducts.unshift(newP);
-            products.unshift(newP);
             if (window.syncCustomProductToCloud) window.syncCustomProductToCloud(newP);
             if (window.syncVoteToCloud) window.syncVoteToCloud(newId, payload);
             saveUserInteractions();
@@ -1236,7 +1321,7 @@
             selectedChain = sup;
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
-            applyFilters();
+            rebuildCatalogFromCurrentState();
             showToast('¡Aviso publicado con éxito!');
         }
 
@@ -1257,15 +1342,24 @@
         });
     </script>
 
-    <!-- Sincronización en la nube -->
+    <!-- Sincronización en la nube directa con Firebase de SuperRadar -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const EXTERNAL_FIREBASE_CONFIG = null;
+        // Claves oficiales de Firebase de SuperRadar
+        const EXTERNAL_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyCniLR1E7SkHo2jlDkglX6_sjNGsgFKB3w",
+            authDomain: "superradar-99064.firebaseapp.com",
+            projectId: "superradar-99064",
+            storageBucket: "superradar-99064.firebasestorage.app",
+            messagingSenderId: "123150876347",
+            appId: "1:123150876347:web:60c79635b1e2fddd98f39e",
+            measurementId: "G-C9ZV48DCB3"
+        };
+
         let db = null, auth = null, currentUser = null, isCloudActive = false;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'superradar-es-prod';
 
         let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [];
 
@@ -1278,7 +1372,7 @@
             if (!dot) return;
             if (conn) {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute -top-0.5 -right-0.5";
-                dot.title = "En vivo";
+                dot.title = "En vivo (Base de datos conectada)";
             } else {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5";
                 dot.title = "Modo local";
@@ -1287,21 +1381,21 @@
 
         function setupRealtimeListeners() {
             if (!currentUser || !db) return;
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock_votes'), snap => {
+            onSnapshot(collection(db, 'stock_votes'), snap => {
                 cloudVotes = {}; snap.forEach(d => cloudVotes[d.id] = d.data());
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             });
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers'), snap => {
+            onSnapshot(collection(db, 'official_catalog_offers'), snap => {
                 const l = []; snap.forEach(d => l.push(d.data()));
                 cloudOfficialOffers = l;
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             });
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'custom_products'), snap => {
+            onSnapshot(collection(db, 'custom_products'), snap => {
                 const l = []; snap.forEach(d => l.push(d.data()));
                 cloudCustomProducts = l;
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             });
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'city_requests'), snap => {
+            onSnapshot(collection(db, 'city_requests'), snap => {
                 const l = []; snap.forEach(d => l.push(d.data()));
                 cloudCityRequests = l;
                 if (window.renderRequestedCitiesSummary) window.renderRequestedCitiesSummary();
@@ -1310,40 +1404,51 @@
 
         window.syncVoteToCloud = async function(id, data) {
             if (!isCloudActive || !currentUser || !db) return;
-            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'stock_votes', id);
+            const ref = doc(db, 'stock_votes', id);
             if (data === null) await deleteDoc(ref); else await setDoc(ref, { ...data, updatedBy: currentUser.uid });
         };
         window.syncOfficialOfferToCloud = async function(o) {
             if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers', o.id), { ...o, createdBy: currentUser.uid });
+            await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser.uid });
         };
         window.deleteOfficialOfferFromCloud = async function(id) {
             if (!isCloudActive || !currentUser || !db) return;
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers', id));
+            await deleteDoc(doc(db, 'official_catalog_offers', id));
         };
         window.syncCustomProductToCloud = async function(p) {
             if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', p.id), { ...p, createdBy: currentUser.uid });
+            await setDoc(doc(db, 'custom_products', p.id), { ...p, createdBy: currentUser.uid });
         };
         window.deleteCustomProductFromCloud = async function(id) {
             if (!isCloudActive || !currentUser || !db) return;
-            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', id));
+            await deleteDoc(doc(db, 'custom_products', id));
         };
         window.syncCityRequestToCloud = async function(req) {
             if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser.uid });
+            await setDoc(doc(db, 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser.uid });
         };
 
         async function initCloudSync() {
             try {
-                let cfg = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : EXTERNAL_FIREBASE_CONFIG;
-                if (!cfg) { updateCloudIndicator(false); return; }
+                let cfg = EXTERNAL_FIREBASE_CONFIG;
+                if (!cfg || !cfg.apiKey) { updateCloudIndicator(false); return; }
                 const app = initializeApp(cfg);
-                db = getFirestore(app); auth = getAuth(app);
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-                else await signInAnonymously(auth);
-                onAuthStateChanged(auth, u => { currentUser = u; if (u) { isCloudActive = true; updateCloudIndicator(true); setupRealtimeListeners(); } });
-            } catch (e) { updateCloudIndicator(false); }
+                db = getFirestore(app); 
+                auth = getAuth(app);
+                
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, u => { 
+                    currentUser = u; 
+                    if (u) { 
+                        isCloudActive = true; 
+                        updateCloudIndicator(true); 
+                        setupRealtimeListeners(); 
+                    } 
+                });
+            } catch (e) { 
+                console.warn("Firebase Auth / Sync:", e);
+                updateCloudIndicator(false); 
+            }
         }
         initCloudSync();
     </script>
