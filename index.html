@@ -93,6 +93,9 @@
                 <span class="bg-emerald-700 text-emerald-200 w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold">?</span>
                 <p><strong class="font-bold text-emerald-300">Ahorra el paseo en balde:</strong> Elige tu supermercado exacto para ver si las novedades virales ya están en la estantería o si siguen agotadas.</p>
             </div>
+            <button onclick="openCityRequestModal()" class="text-[11px] font-bold text-emerald-200 hover:text-white underline shrink-0 self-end sm:self-auto">
+                ¿Falta tu ciudad o tienda? Pídela aquí
+            </button>
         </div>
 
         <!-- Buscador móvil -->
@@ -127,9 +130,12 @@
 
             <!-- Fila 2: Selectores directos (Ciudad, Tienda Exacta y Categoría) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100">
-                <!-- Provincia -->
+                <!-- Ciudad -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">1. Tu Provincia</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase">1. Tu Ciudad</label>
+                        <span class="text-[10px] font-semibold text-emerald-600">Fase Piloto</span>
+                    </div>
                     <div class="relative">
                         <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs sm:text-sm px-3 py-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
                         </select>
@@ -199,6 +205,40 @@
         </div>
     </main>
 
+    <!-- Modal para Pedir Nueva Ciudad o Tienda -->
+    <div id="cityRequestModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
+            <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot text-emerald-300 text-lg"></i>
+                    <h3 class="font-bold text-base">¡Pide tu ciudad o supermercado!</h3>
+                </div>
+                <button onclick="closeCityRequestModal()" class="text-emerald-200 hover:text-white p-1 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleCityRequestSubmit(event)" class="p-5 space-y-4">
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Ahora mismo <strong>SuperRadar</strong> está activo en <strong>Málaga</strong> y en las principales grandes ciudades de España. Dinos qué ciudad o tienda quieres que añadamos la próxima:
+                </p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">¿Qué ciudad o pueblo quieres que añadamos? *</label>
+                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Marbella, Córdoba, Alicante..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">¿Algún supermercado o calle en concreto? (opcional)</label>
+                    <input type="text" id="reqStoreName" placeholder="Ej. Mercadona de Av. América" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                </div>
+                <div id="requestedCitiesCounterBox" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 hidden">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeCityRequestModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cerrar</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Enviar petición</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal para Añadir / Reportar Novedad -->
     <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all my-auto">
@@ -248,7 +288,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Provincia *</label>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Ciudad *</label>
                         <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
                         </select>
                     </div>
@@ -307,13 +347,15 @@
             'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        const SPANISH_PROVINCES = [
-            "Málaga", "Madrid", "Barcelona", "Valencia", "Sevilla", "Zaragoza", "Alicante", "Murcia", "Cádiz", "Granada",
-            "Córdoba", "Vizcaya", "A Coruña", "Asturias", "Illes Balears", "Las Palmas", "Santa Cruz de Tenerife",
-            "Pontevedra", "Valladolid", "Tarragona", "Girona", "Almería", "Toledo", "Badajoz", "Navarra", "Jaén",
-            "Cantabria", "Castellón", "Huelva", "Ciudad Real", "León", "Lleida", "Cáceres", "Albacete", "Burgos",
-            "Salamanca", "Lugo", "Ourense", "La Rioja", "Guipúzcoa", "Álava", "Guadalajara", "Huesca", "Cuenca",
-            "Zamora", "Palencia", "Ávila", "Segovia", "Teruel", "Soria", "Ceuta", "Melilla"
+        // Selección estratégica: Málaga (ciudad piloto principal) + las grandes áreas metropolitanas de España
+        const ACTIVE_CITIES = [
+            "Málaga",
+            "Madrid",
+            "Barcelona",
+            "Valencia",
+            "Sevilla",
+            "Zaragoza",
+            "Bilbao"
         ];
 
         // Catálogo centrado 100% en NOVEDADES Y PRODUCTOS VIRALES que suelen agotarse o llegar en días distintos según la tienda
@@ -467,14 +509,14 @@
 
         let CITIES_AND_STORES = {};
 
-        function initializeSpanishProvincesAndStores() {
-            SPANISH_PROVINCES.forEach(prov => {
-                const key = prov.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+        function initializeActiveCitiesAndStores() {
+            ACTIVE_CITIES.forEach(city => {
+                const key = city.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
                 let storesList = [
-                    { id: 'all_' + key, chain: 'ALL', name: `📍 Todas las tiendas de ${prov} (Ver todo)` }
+                    { id: 'all_' + key, chain: 'ALL', name: `📍 Todas las tiendas de ${city} (Ver todo)` }
                 ];
 
-                if (prov === 'Málaga') {
+                if (city === 'Málaga') {
                     storesList.push(
                         // Mercadona Málaga (Completo incluyendo Av. Velázquez e Imperio Argentina)
                         { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez (Carretera de Cádiz)' },
@@ -519,7 +561,7 @@
                         { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA Market - Teatinos / El Cónsul' },
                         { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA Market - Calle la Victoria / Cristo de la Epidemia' }
                     );
-                } else if (prov === 'Madrid') {
+                } else if (city === 'Madrid') {
                     storesList.push(
                         { id: 'merca_mad_centro', chain: 'Mercadona', name: 'Mercadona - Centro Madrid (Calle Fuencarral / Chamberí)' },
                         { id: 'merca_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca (Calle Goya / Príncipe de Vergara)' },
@@ -535,7 +577,7 @@
                         { id: 'dia_mad_malasana', chain: 'DIA', name: 'DIA Market - Centro / Malasaña' },
                         { id: 'dia_mad_retiro', chain: 'DIA', name: 'DIA Market - Retiro / Av. Menéndez Pelayo' }
                     );
-                } else if (prov === 'Barcelona') {
+                } else if (city === 'Barcelona') {
                     storesList.push(
                         { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Centro / Eixample (Calle Mallorca)' },
                         { id: 'merca_bcn_sants', chain: 'Mercadona', name: 'Mercadona - Sants / Creu Coberta' },
@@ -548,33 +590,61 @@
                         { id: 'aldi_bcn_gracia', chain: 'Aldi', name: 'Aldi - Vila de Gràcia' },
                         { id: 'dia_bcn_born', chain: 'DIA', name: 'DIA Market - El Born / Ciutat Vella' }
                     );
-                } else {
+                } else if (city === 'Valencia') {
                     storesList.push(
-                        { id: `merca_${key}_cent`, chain: 'Mercadona', name: `Mercadona - Centro ${prov}` },
-                        { id: `merca_${key}_av`, chain: 'Mercadona', name: `Mercadona - Av. Principal ${prov}` },
-                        { id: `car_${key}_cc`, chain: 'Carrefour', name: `Carrefour - C.C. ${prov}` },
-                        { id: `car_${key}_market`, chain: 'Carrefour', name: `Carrefour Market - Centro ${prov}` },
-                        { id: `lidl_${key}_norte`, chain: 'Lidl', name: `Lidl - Zona Norte ${prov}` },
-                        { id: `lidl_${key}_sur`, chain: 'Lidl', name: `Lidl - Av. Comercial ${prov}` },
-                        { id: `aldi_${key}_cent`, chain: 'Aldi', name: `Aldi - Centro Comercial ${prov}` },
-                        { id: `aldi_${key}_av`, chain: 'Aldi', name: `Aldi - Zona Expansión ${prov}` },
-                        { id: `dia_${key}_cent`, chain: 'DIA', name: `DIA Market - Centro ${prov}` },
-                        { id: `dia_${key}_barrio`, chain: 'DIA', name: `DIA Market - Av. Principal ${prov}` }
+                        { id: 'merca_vlc_colon', chain: 'Mercadona', name: 'Mercadona - Centro / Calle Roger de Lauria (Colón)' },
+                        { id: 'merca_vlc_ruzafa', chain: 'Mercadona', name: 'Mercadona - Ruzafa / Gran Vía Germanías' },
+                        { id: 'merca_vlc_benimaclet', chain: 'Mercadona', name: 'Mercadona - Benimaclet / Av. Primado Reig' },
+                        { id: 'car_vlc_saler', chain: 'Carrefour', name: 'Carrefour - C.C. El Saler' },
+                        { id: 'car_vlc_campanar', chain: 'Carrefour', name: 'Carrefour - Campanar / Hipermercado' },
+                        { id: 'lidl_vlc_mestalla', chain: 'Lidl', name: 'Lidl - Av. del Puerto / Aragón' },
+                        { id: 'aldi_vlc_patraix', chain: 'Aldi', name: 'Aldi - Patraix / Jesús' },
+                        { id: 'dia_vlc_centro', chain: 'DIA', name: 'DIA Market - Ciutat Vella / El Carmen' }
+                    );
+                } else if (city === 'Sevilla') {
+                    storesList.push(
+                        { id: 'merca_sev_plazaarmas', chain: 'Mercadona', name: 'Mercadona - C.C. Plaza de Armas (Centro)' },
+                        { id: 'merca_sev_nervion', chain: 'Mercadona', name: 'Mercadona - Nervión / Luis Montoto' },
+                        { id: 'merca_sev_triana', chain: 'Mercadona', name: 'Mercadona - Triana / Calle San Jacinto' },
+                        { id: 'car_sev_macarena', chain: 'Carrefour', name: 'Carrefour - Macarena / Ronda Urbana Norte' },
+                        { id: 'car_sev_sanpablo', chain: 'Carrefour', name: 'Carrefour - San Pablo / Av. Kansas City' },
+                        { id: 'lidl_sev_nervion', chain: 'Lidl', name: 'Lidl - Nervión / Kansas City' },
+                        { id: 'aldi_sev_losremedios', chain: 'Aldi', name: 'Aldi - Los Remedios / Triana' },
+                        { id: 'dia_sev_alameda', chain: 'DIA', name: 'DIA Market - Alameda / Feria' }
+                    );
+                } else if (city === 'Zaragoza') {
+                    storesList.push(
+                        { id: 'merca_zgz_centro', chain: 'Mercadona', name: 'Mercadona - Centro / Paseo de Sagasta' },
+                        { id: 'merca_zgz_delicias', chain: 'Mercadona', name: 'Mercadona - Delicias / Av. Madrid' },
+                        { id: 'car_zgz_augusta', chain: 'Carrefour', name: 'Carrefour - C.C. Augusta' },
+                        { id: 'car_zgz_actur', chain: 'Carrefour', name: 'Carrefour - Actur / GranCasa' },
+                        { id: 'lidl_zgz_almozara', chain: 'Lidl', name: 'Lidl - La Almozara / Av. Puerta Sancho' },
+                        { id: 'aldi_zgz_romareda', chain: 'Aldi', name: 'Aldi - Romareda / Universidad' },
+                        { id: 'dia_zgz_centro', chain: 'DIA', name: 'DIA Market - Casco Histórico / Coso' }
+                    );
+                } else if (city === 'Bilbao') {
+                    storesList.push(
+                        { id: 'merca_bio_indautxu', chain: 'Mercadona', name: 'Mercadona - Indautxu / Alameda Urquijo' },
+                        { id: 'merca_bio_deusto', chain: 'Mercadona', name: 'Mercadona - Deusto / Av. Lehendakari Aguirre' },
+                        { id: 'car_bio_abando', chain: 'Carrefour', name: 'Carrefour Market - Abando / Gran Vía' },
+                        { id: 'lidl_bio_zabalburu', chain: 'Lidl', name: 'Lidl - Zabalburu / Autonomía' },
+                        { id: 'aldi_bio_bolueta', chain: 'Aldi', name: 'Aldi - Bolueta / Santutxu' },
+                        { id: 'dia_bio_casco', chain: 'DIA', name: 'DIA Market - Casco Viejo / Santutxu' }
                     );
                 }
 
-                CITIES_AND_STORES[prov] = {
-                    name: prov,
+                CITIES_AND_STORES[city] = {
+                    name: city,
                     stores: storesList
                 };
             });
         }
 
         let products = [];
-        // userVotes[productId] = 'seen' (Sí está) | 'missing' (No está / Agotado)
         let userInteractions = {
             votes: {},
-            customProducts: []
+            customProducts: [],
+            cityRequests: []
         };
         let currentCity = 'Málaga';
         let selectedChain = '';
@@ -582,7 +652,7 @@
         let uploadedImageDataUrl = '';
 
         window.addEventListener('DOMContentLoaded', () => {
-            initializeSpanishProvincesAndStores();
+            initializeActiveCitiesAndStores();
             populateCitySelectDropdowns();
             loadUserInteractionsAndBuildCatalog();
             renderSupermarketChainPills();
@@ -595,13 +665,14 @@
             const citySelect = document.getElementById('citySelect');
             const formCity = document.getElementById('formCity');
 
-            const optionsHTML = SPANISH_PROVINCES.map(prov => {
-                const selected = prov === 'Málaga' ? 'selected' : '';
-                return `<option value="${prov}" ${selected}>${prov}</option>`;
+            const mainOptions = ACTIVE_CITIES.map(city => {
+                const selected = city === 'Málaga' ? 'selected' : '';
+                const label = city === 'Málaga' ? '📍 Málaga (Ciudad Piloto)' : city;
+                return `<option value="${city}" ${selected}>${label}</option>`;
             }).join('');
 
-            citySelect.innerHTML = optionsHTML;
-            if (formCity) formCity.innerHTML = optionsHTML;
+            citySelect.innerHTML = mainOptions + `<option value="REQUEST_NEW_CITY">✨ ¿No está tu ciudad? ¡Pídela aquí!</option>`;
+            if (formCity) formCity.innerHTML = mainOptions;
         }
 
         function computeStockStatusFromVote(vote) {
@@ -621,11 +692,9 @@
 
         function getValidVoteRecord(rawRecord) {
             if (!rawRecord) return null;
-            // Compatibilidad si antes se guardaba solo 'seen' o 'missing' como texto
             if (typeof rawRecord === 'string') {
                 return { status: rawRecord, updatedAt: Date.now() };
             }
-            // Caducidad automática de 24 horas (los supermercados reponen por la noche)
             const HOURS_24 = 24 * 60 * 60 * 1000;
             if (Date.now() - rawRecord.updatedAt > HOURS_24) {
                 return null;
@@ -640,15 +709,16 @@
                     userInteractions = JSON.parse(savedState);
                     if (!userInteractions.votes) userInteractions.votes = {};
                     if (!userInteractions.customProducts) userInteractions.customProducts = [];
+                    if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
                 } catch (e) {
-                    userInteractions = { votes: {}, customProducts: [] };
+                    userInteractions = { votes: {}, customProducts: [], cityRequests: [] };
                 }
             }
 
             const generatedProducts = [];
 
-            SPANISH_PROVINCES.forEach(prov => {
-                const cityStores = CITIES_AND_STORES[prov].stores.filter(s => s.chain !== 'ALL');
+            ACTIVE_CITIES.forEach(city => {
+                const cityStores = CITIES_AND_STORES[city].stores.filter(s => s.chain !== 'ALL');
                 cityStores.forEach((store) => {
                     const catalogForChain = CHAIN_OFFERS_CATALOG[store.chain] || [];
                     catalogForChain.forEach((offer, offerIdx) => {
@@ -663,7 +733,7 @@
                             price: offer.price,
                             supermarket: store.chain,
                             category: offer.category,
-                            city: prov,
+                            city: city,
                             storeId: store.id,
                             storeName: store.name,
                             imageUrl: offer.imageUrl,
@@ -709,10 +779,58 @@
         }
 
         function handleCityChange() {
-            currentCity = document.getElementById('citySelect').value;
+            const selectedVal = document.getElementById('citySelect').value;
+            if (selectedVal === 'REQUEST_NEW_CITY') {
+                // Volver a dejar seleccionada la ciudad activa y abrir el modal de petición
+                document.getElementById('citySelect').value = currentCity;
+                openCityRequestModal();
+                return;
+            }
+            currentCity = selectedVal;
             document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[currentCity] ? CITIES_AND_STORES[currentCity].name : currentCity;
             updateStoreSelectDropdown();
             applyFilters();
+        }
+
+        function openCityRequestModal() {
+            document.getElementById('cityRequestModal').classList.remove('hidden');
+            renderRequestedCitiesSummary();
+        }
+
+        function closeCityRequestModal() {
+            document.getElementById('cityRequestModal').classList.add('hidden');
+        }
+
+        function renderRequestedCitiesSummary() {
+            const box = document.getElementById('requestedCitiesCounterBox');
+            const list = userInteractions.cityRequests || [];
+            if (list.length === 0) {
+                box.classList.add('hidden');
+                return;
+            }
+            box.classList.remove('hidden');
+            box.innerHTML = `<strong class="text-emerald-800 block mb-1">🗳️ Tus peticiones guardadas:</strong>` +
+                list.map(r => `• ${r.city}${r.store ? ' (' + r.store + ')' : ''}`).join('<br>');
+        }
+
+        function handleCityRequestSubmit(e) {
+            e.preventDefault();
+            const cityVal = document.getElementById('reqCityName').value.trim();
+            const storeVal = document.getElementById('reqStoreName').value.trim();
+            if (!cityVal) return;
+
+            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
+            userInteractions.cityRequests.push({
+                city: cityVal,
+                store: storeVal,
+                date: Date.now()
+            });
+            saveUserInteractions();
+
+            document.getElementById('reqCityName').value = '';
+            document.getElementById('reqStoreName').value = '';
+            closeCityRequestModal();
+            showToast(`¡Gracias! Hemos sumado tu voto para abrir ${cityVal}`);
         }
 
         function renderSupermarketChainPills() {
@@ -846,7 +964,6 @@
                 const superStyle = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
                 const timeLabel = formatVoteTime(p.updatedAt);
                 
-                // Etiqueta de estado real y honesta según el ÚLTIMO aviso vigente hoy en esa tienda
                 let stockBadgeText = '⚪ Sin confirmar hoy';
                 let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
                 let statusBannerText = p.viralContext || 'Novedad viral · Sin avisos en las últimas 24h';
@@ -917,7 +1034,6 @@
             if (!p) return;
 
             if (p.userVote === voteType) {
-                // Si pulsa el mismo botón otra vez, se desmarca (vuelve a 0)
                 p.userVote = null;
                 p.updatedAt = null;
                 p.seenCount = 0;
@@ -926,7 +1042,6 @@
                 delete userInteractions.votes[id];
                 showToast('Aviso retirado (vuelve a "Sin confirmar hoy")');
             } else {
-                // El último aviso manda: reemplaza el estado anterior y guarda la hora exacta
                 const now = Date.now();
                 p.userVote = voteType;
                 p.updatedAt = now;
@@ -1008,7 +1123,7 @@
             const storeSelectEl = document.getElementById('formStore');
             const storeName = storeSelectEl.options[storeSelectEl.selectedIndex].text;
             const customImgUrl = document.getElementById('formImageUrl').value.trim();
-            const initialVote = document.getElementById('formStockStatus').value; // 'seen' | 'missing'
+            const initialVote = document.getElementById('formStockStatus').value;
 
             const finalImage = uploadedImageDataUrl || customImgUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80';
             const newId = 'custom_' + Date.now();
@@ -1040,7 +1155,6 @@
             products.unshift(newP);
             saveUserInteractions();
 
-            // Reset modal fields
             uploadedImageDataUrl = '';
             document.getElementById('fileUploadLabel').textContent = 'Hacer o subir foto';
             document.getElementById('addProductForm').reset();
