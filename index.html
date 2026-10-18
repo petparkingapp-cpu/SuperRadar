@@ -40,16 +40,21 @@
 </head>
 <body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
 
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
+    <!-- Cabecera principal -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="flex items-center justify-between h-16 gap-3">
+            <div class="flex items-center justify-between h-16">
                 <!-- Logo limpio y directo -->
                 <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="resetAllFilters()">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm relative">
                         <i class="fa-solid fa-radar text-base"></i>
+                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5" title="Conectando en tiempo real..."></span>
                     </div>
                     <div>
-                        <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">Super<span class="text-emerald-600">Radar</span></span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">Super<span class="text-emerald-600">Radar</span></span>
+                            <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
+                        </div>
                         <span class="text-[10px] font-medium text-slate-500">¿Ha llegado esa novedad viral a tu súper?</span>
                     </div>
                 </div>
@@ -338,6 +343,7 @@
         <span id="toastMessage" class="text-xs sm:text-sm font-medium">Acción completada</span>
     </div>
 
+    <!-- Lógica Principal de la Aplicación -->
     <script>
         const SUPERMARKET_DATA = {
             'Mercadona': { badge: 'bg-emerald-700 text-white' },
@@ -347,7 +353,7 @@
             'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        // Selección estratégica: Málaga (ciudad piloto principal) + las grandes áreas metropolitanas de España
+        // Selección estratégica: Málaga (ciudad piloto principal) + grandes ciudades de España
         const ACTIVE_CITIES = [
             "Málaga",
             "Madrid",
@@ -358,7 +364,7 @@
             "Bilbao"
         ];
 
-        // Catálogo centrado 100% en NOVEDADES Y PRODUCTOS VIRALES que suelen agotarse o llegar en días distintos según la tienda
+        // Catálogo centrado 100% en NOVEDADES Y PRODUCTOS VIRALES
         const CHAIN_OFFERS_CATALOG = {
             'Mercadona': [
                 {
@@ -651,15 +657,28 @@
         let showOnlyFavorites = false;
         let uploadedImageDataUrl = '';
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initializeActiveCitiesAndStores();
-            populateCitySelectDropdowns();
-            loadUserInteractionsAndBuildCatalog();
-            renderSupermarketChainPills();
-            updateStoreSelectDropdown();
+        function loadLocalBackup() {
+            try {
+                const raw = localStorage.getItem('super_radar_honest_v3');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    userInteractions.votes = parsed.votes || {};
+                    userInteractions.customProducts = parsed.customProducts || [];
+                    userInteractions.cityRequests = parsed.cityRequests || [];
+                }
+            } catch (e) {
+                console.warn('Error leyendo memoria local:', e);
+            }
+        }
+
+        function saveUserInteractions() {
+            try {
+                localStorage.setItem('super_radar_honest_v3', JSON.stringify(userInteractions));
+            } catch (e) {
+                console.warn('No se pudo guardar localmente:', e);
+            }
             updateFavoritesCounter();
-            applyFilters();
-        });
+        }
 
         function populateCitySelectDropdowns() {
             const citySelect = document.getElementById('citySelect');
@@ -671,8 +690,12 @@
                 return `<option value="${city}" ${selected}>${label}</option>`;
             }).join('');
 
-            citySelect.innerHTML = mainOptions + `<option value="REQUEST_NEW_CITY">✨ ¿No está tu ciudad? ¡Pídela aquí!</option>`;
-            if (formCity) formCity.innerHTML = mainOptions;
+            if (citySelect) {
+                citySelect.innerHTML = mainOptions + `<option value="REQUEST_NEW_CITY">✨ ¿No está tu ciudad? ¡Pídela aquí!</option>`;
+            }
+            if (formCity) {
+                formCity.innerHTML = mainOptions;
+            }
         }
 
         function computeStockStatusFromVote(vote) {
@@ -702,28 +725,35 @@
             return rawRecord;
         }
 
-        function loadUserInteractionsAndBuildCatalog() {
-            const savedState = localStorage.getItem('super_radar_honest_v3');
-            if (savedState) {
-                try {
-                    userInteractions = JSON.parse(savedState);
-                    if (!userInteractions.votes) userInteractions.votes = {};
-                    if (!userInteractions.customProducts) userInteractions.customProducts = [];
-                    if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
-                } catch (e) {
-                    userInteractions = { votes: {}, customProducts: [], cityRequests: [] };
-                }
+        function rebuildCatalogFromCurrentState() {
+            if (!CITIES_AND_STORES['Málaga']) {
+                initializeActiveCitiesAndStores();
             }
+
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = {
+                ...(userInteractions.votes || {}),
+                ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {})
+            };
+
+            const customMap = new Map();
+            (userInteractions.customProducts || []).forEach(p => customMap.set(p.id, p));
+            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudCustomProducts)) {
+                cloudState.cloudCustomProducts.forEach(p => customMap.set(p.id, p));
+            }
+            const activeCustomList = Array.from(customMap.values());
 
             const generatedProducts = [];
 
             ACTIVE_CITIES.forEach(city => {
-                const cityStores = CITIES_AND_STORES[city].stores.filter(s => s.chain !== 'ALL');
+                const cityObj = CITIES_AND_STORES[city];
+                if (!cityObj) return;
+                const cityStores = cityObj.stores.filter(s => s.chain !== 'ALL');
                 cityStores.forEach((store) => {
                     const catalogForChain = CHAIN_OFFERS_CATALOG[store.chain] || [];
                     catalogForChain.forEach((offer, offerIdx) => {
                         const prodId = `offer_${store.id}_${offerIdx}`;
-                        const voteRecord = getValidVoteRecord(userInteractions.votes[prodId]);
+                        const voteRecord = getValidVoteRecord(mergedVotes[prodId]);
                         const userVote = voteRecord ? voteRecord.status : null;
                         const updatedAt = voteRecord ? voteRecord.updatedAt : null;
 
@@ -750,8 +780,8 @@
                 });
             });
 
-            const customProds = (userInteractions.customProducts || []).map(p => {
-                const voteRecord = getValidVoteRecord(userInteractions.votes[p.id]);
+            const customProds = activeCustomList.map(p => {
+                const voteRecord = getValidVoteRecord(mergedVotes[p.id]);
                 const userVote = voteRecord ? voteRecord.status : null;
                 const updatedAt = voteRecord ? voteRecord.updatedAt : null;
                 return {
@@ -766,22 +796,26 @@
             });
 
             products = [...customProds, ...generatedProducts];
+            updateFavoritesCounter();
+            applyFilters();
         }
 
-        function saveUserInteractions() {
-            localStorage.setItem('super_radar_honest_v3', JSON.stringify(userInteractions));
-            updateFavoritesCounter();
-        }
+        window.rebuildCatalogFromCurrentState = rebuildCatalogFromCurrentState;
 
         function updateFavoritesCounter() {
-            const count = Object.keys(userInteractions.votes).filter(id => !!getValidVoteRecord(userInteractions.votes[id])).length;
-            document.getElementById('favoritesBadge').textContent = count;
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = {
+                ...(userInteractions.votes || {}),
+                ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {})
+            };
+            const count = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const badge = document.getElementById('favoritesBadge');
+            if (badge) badge.textContent = count;
         }
 
         function handleCityChange() {
             const selectedVal = document.getElementById('citySelect').value;
             if (selectedVal === 'REQUEST_NEW_CITY') {
-                // Volver a dejar seleccionada la ciudad activa y abrir el modal de petición
                 document.getElementById('citySelect').value = currentCity;
                 openCityRequestModal();
                 return;
@@ -803,15 +837,22 @@
 
         function renderRequestedCitiesSummary() {
             const box = document.getElementById('requestedCitiesCounterBox');
-            const list = userInteractions.cityRequests || [];
-            if (list.length === 0) {
+            if (!box) return;
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const list = (cloudState.isCloudActive && cloudState.cloudCityRequests && cloudState.cloudCityRequests.length > 0)
+                ? cloudState.cloudCityRequests
+                : (userInteractions.cityRequests || []);
+
+            if (!list || list.length === 0) {
                 box.classList.add('hidden');
                 return;
             }
             box.classList.remove('hidden');
-            box.innerHTML = `<strong class="text-emerald-800 block mb-1">🗳️ Tus peticiones guardadas:</strong>` +
-                list.map(r => `• ${r.city}${r.store ? ' (' + r.store + ')' : ''}`).join('<br>');
+            box.innerHTML = `<strong class="text-emerald-800 block mb-1">🗳️ Ciudades pedidas por la comunidad (${list.length}):</strong>` +
+                list.slice(0, 8).map(r => `• ${r.city}${r.store ? ' (' + r.store + ')' : ''}`).join('<br>');
         }
+
+        window.renderRequestedCitiesSummary = renderRequestedCitiesSummary;
 
         function handleCityRequestSubmit(e) {
             e.preventDefault();
@@ -819,22 +860,28 @@
             const storeVal = document.getElementById('reqStoreName').value.trim();
             if (!cityVal) return;
 
-            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
-            userInteractions.cityRequests.push({
+            const reqObj = {
                 city: cityVal,
                 store: storeVal,
                 date: Date.now()
-            });
+            };
+
+            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
+            userInteractions.cityRequests.unshift(reqObj);
+            if (window.syncCityRequestToCloud) {
+                window.syncCityRequestToCloud(reqObj);
+            }
             saveUserInteractions();
 
             document.getElementById('reqCityName').value = '';
             document.getElementById('reqStoreName').value = '';
             closeCityRequestModal();
-            showToast(`¡Gracias! Hemos sumado tu voto para abrir ${cityVal}`);
+            showToast(`¡Gracias! Hemos sumado tu voto en vivo para abrir ${cityVal}`);
         }
 
         function renderSupermarketChainPills() {
             const container = document.getElementById('supermarketChainContainer');
+            if (!container) return;
             const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA'];
             
             container.innerHTML = chains.map(chain => {
@@ -862,7 +909,9 @@
 
         function updateStoreSelectDropdown() {
             const storeSelect = document.getElementById('storeSelect');
+            if (!storeSelect) return;
             const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
+            if (!cityData) return;
             
             const filteredStores = cityData.stores.filter(store => {
                 if (store.chain === 'ALL') return true;
@@ -870,7 +919,8 @@
                 return true;
             });
 
-            document.getElementById('storeCountIndicator').textContent = `${filteredStores.length - 1} tiendas`;
+            const countEl = document.getElementById('storeCountIndicator');
+            if (countEl) countEl.textContent = `${filteredStores.length - 1} tiendas`;
 
             storeSelect.innerHTML = filteredStores.map(store => `
                 <option value="${store.id}">${store.name}</option>
@@ -882,7 +932,7 @@
             const navBtn = document.getElementById('favoritesNavBtn');
             if (showOnlyFavorites) {
                 navBtn.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50');
-                showToast('Mostrando las tiendas donde has avisado hoy');
+                showToast('Mostrando las tiendas con avisos confirmados hoy');
             } else {
                 navBtn.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50');
             }
@@ -910,11 +960,14 @@
         }
 
         function applyFilters() {
+            const storeSelectEl = document.getElementById('storeSelect');
+            if (!storeSelectEl) return;
+
             const mobileInput = document.getElementById('heroSearchInput');
             const desktopInput = document.getElementById('desktopSearchInput');
             const searchQuery = ((mobileInput && mobileInput.value) || (desktopInput && desktopInput.value) || '').toLowerCase().trim();
             
-            const selectedStoreId = document.getElementById('storeSelect').value;
+            const selectedStoreId = storeSelectEl.value;
             const selectedCategory = document.getElementById('categoryFilter').value;
             const selectedStock = document.getElementById('stockFilter').value;
 
@@ -950,6 +1003,7 @@
             const grid = document.getElementById('productsGrid');
             const emptyState = document.getElementById('emptyState');
             const countLabel = document.getElementById('resultsCount');
+            if (!grid || !emptyState || !countLabel) return;
 
             countLabel.textContent = `${items.length} ${items.length === 1 ? 'novedad viral' : 'novedades virales'} en ${currentCity}`;
 
@@ -1040,21 +1094,29 @@
                 p.missingCount = 0;
                 p.stockStatus = 'Sin confirmar';
                 delete userInteractions.votes[id];
+                if (window.syncVoteToCloud) {
+                    window.syncVoteToCloud(id, null);
+                }
                 showToast('Aviso retirado (vuelve a "Sin confirmar hoy")');
             } else {
                 const now = Date.now();
+                const votePayload = { status: voteType, updatedAt: now };
                 p.userVote = voteType;
                 p.updatedAt = now;
                 p.seenCount = voteType === 'seen' ? 1 : 0;
                 p.missingCount = voteType === 'missing' ? 1 : 0;
                 p.stockStatus = computeStockStatusFromVote(voteType);
-                userInteractions.votes[id] = { status: voteType, updatedAt: now };
+                userInteractions.votes[id] = votePayload;
+
+                if (window.syncVoteToCloud) {
+                    window.syncVoteToCloud(id, votePayload);
+                }
 
                 const horaActual = formatVoteTime(now);
                 if (voteType === 'seen') {
-                    showToast(`¡Actualizado a "🟢 Sí está"! (${horaActual})`);
+                    showToast(`¡Actualizado en vivo a "🟢 Sí está"! (${horaActual})`);
                 } else {
-                    showToast(`¡Actualizado a "🔴 No está / Agotado"! (${horaActual})`);
+                    showToast(`¡Actualizado en vivo a "🔴 No está / Agotado"! (${horaActual})`);
                 }
             }
 
@@ -1081,9 +1143,7 @@
             applyFilters();
         }
 
-        function handleHeroSearch() { applyFilters(); }
         function clearHeroSearch() { syncSearch(''); }
-        function scrollToGrid() { document.getElementById('mainSection').scrollIntoView({ behavior: 'smooth' }); }
         
         function openModal() {
             document.getElementById('productModal').classList.remove('hidden');
@@ -1128,8 +1188,9 @@
             const finalImage = uploadedImageDataUrl || customImgUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80';
             const newId = 'custom_' + Date.now();
             const now = Date.now();
+            const votePayload = { status: initialVote, updatedAt: now };
 
-            userInteractions.votes[newId] = { status: initialVote, updatedAt: now };
+            userInteractions.votes[newId] = votePayload;
 
             const newP = {
                 id: newId,
@@ -1153,6 +1214,14 @@
 
             userInteractions.customProducts.unshift(newP);
             products.unshift(newP);
+
+            if (window.syncCustomProductToCloud) {
+                window.syncCustomProductToCloud(newP);
+            }
+            if (window.syncVoteToCloud) {
+                window.syncVoteToCloud(newId, votePayload);
+            }
+
             saveUserInteractions();
 
             uploadedImageDataUrl = '';
@@ -1169,15 +1238,193 @@
             document.getElementById('storeSelect').value = storeId;
             
             applyFilters();
-            showToast('¡Aviso de novedad publicado en la tienda!');
+            showToast('¡Aviso de novedad publicado en vivo para todos!');
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
+            if (!toast) return;
             document.getElementById('toastMessage').textContent = msg;
             toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeActiveCitiesAndStores();
+            populateCitySelectDropdowns();
+            loadLocalBackup();
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            rebuildCatalogFromCurrentState();
+        });
+    </script>
+
+    <!-- Sincronización en Tiempo Real en la Nube -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Si despliegas en Vercel, puedes pegar aquí tu objeto firebaseConfig de Firebase Console:
+        const EXTERNAL_FIREBASE_CONFIG = null;
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let isCloudActive = false;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'superradar-es-prod';
+
+        let cloudVotes = {};
+        let cloudCustomProducts = [];
+        let cloudCityRequests = [];
+
+        window.getCloudState = function() {
+            return {
+                isCloudActive,
+                currentUser,
+                cloudVotes,
+                cloudCustomProducts,
+                cloudCityRequests
+            };
+        };
+
+        function updateCloudIndicator(connected) {
+            const dot = document.getElementById('cloudStatusDot');
+            const badge = document.getElementById('liveSyncBadge');
+            if (!dot) return;
+            if (connected) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute -top-0.5 -right-0.5";
+                dot.title = "Conectado en tiempo real con todos los usuarios";
+                if (badge) {
+                    badge.textContent = "🟢 En vivo";
+                    badge.className = "text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block";
+                }
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5";
+                dot.title = "Modo local activo";
+            }
+        }
+
+        function setupRealtimeListeners() {
+            if (!currentUser || !db) return;
+
+            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stock_votes');
+            onSnapshot(votesRef, (snapshot) => {
+                cloudVotes = {};
+                snapshot.forEach((docSnap) => {
+                    cloudVotes[docSnap.id] = docSnap.data();
+                });
+                if (window.rebuildCatalogFromCurrentState) {
+                    window.rebuildCatalogFromCurrentState();
+                }
+            }, (error) => {
+                console.error("Error sincronizando votos:", error);
+            });
+
+            const customProdsRef = collection(db, 'artifacts', appId, 'public', 'data', 'custom_products');
+            onSnapshot(customProdsRef, (snapshot) => {
+                const list = [];
+                snapshot.forEach((docSnap) => {
+                    list.push(docSnap.data());
+                });
+                list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                cloudCustomProducts = list;
+                if (window.rebuildCatalogFromCurrentState) {
+                    window.rebuildCatalogFromCurrentState();
+                }
+            }, (error) => {
+                console.error("Error sincronizando productos:", error);
+            });
+
+            const cityReqRef = collection(db, 'artifacts', appId, 'public', 'data', 'city_requests');
+            onSnapshot(cityReqRef, (snapshot) => {
+                const reqs = [];
+                snapshot.forEach((docSnap) => {
+                    reqs.push(docSnap.data());
+                });
+                reqs.sort((a, b) => (b.date || 0) - (a.date || 0));
+                cloudCityRequests = reqs;
+                if (window.renderRequestedCitiesSummary) {
+                    window.renderRequestedCitiesSummary();
+                }
+            }, (error) => {
+                console.error("Error sincronizando peticiones de ciudades:", error);
+            });
+        }
+
+        window.syncVoteToCloud = async function(prodId, voteData) {
+            if (!isCloudActive || !currentUser || !db) return;
+            const voteDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stock_votes', prodId);
+            if (voteData === null) {
+                await deleteDoc(voteDocRef);
+            } else {
+                await setDoc(voteDocRef, {
+                    status: voteData.status,
+                    updatedAt: voteData.updatedAt,
+                    updatedBy: currentUser.uid
+                });
+            }
+        };
+
+        window.syncCustomProductToCloud = async function(newProduct) {
+            if (!isCloudActive || !currentUser || !db) return;
+            const prodDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', newProduct.id);
+            await setDoc(prodDocRef, {
+                ...newProduct,
+                createdAt: Date.now(),
+                createdBy: currentUser.uid
+            });
+        };
+
+        window.syncCityRequestToCloud = async function(reqObj) {
+            if (!isCloudActive || !currentUser || !db) return;
+            const reqId = 'req_' + Date.now() + '_' + currentUser.uid.slice(0, 5);
+            const reqDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'city_requests', reqId);
+            await setDoc(reqDocRef, {
+                ...reqObj,
+                requestedBy: currentUser.uid
+            });
+        };
+
+        async function initCloudSync() {
+            try {
+                let configToUse = null;
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    configToUse = JSON.parse(__firebase_config);
+                } else if (EXTERNAL_FIREBASE_CONFIG) {
+                    configToUse = EXTERNAL_FIREBASE_CONFIG;
+                }
+
+                if (!configToUse) {
+                    updateCloudIndicator(false);
+                    return;
+                }
+
+                const app = initializeApp(configToUse);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        isCloudActive = true;
+                        updateCloudIndicator(true);
+                        setupRealtimeListeners();
+                    }
+                });
+            } catch (err) {
+                console.warn("Modo local activo:", err);
+                updateCloudIndicator(false);
+            }
+        }
+
+        initCloudSync();
     </script>
 </body>
 </html>
