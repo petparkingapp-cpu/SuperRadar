@@ -32,140 +32,122 @@
         }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- Cabecera principal -->
+    <!-- Cabecera principal optimizada para móvil -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo limpio y directo -->
-                <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="resetAllFilters()">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm relative">
-                        <i class="fa-solid fa-radar text-base"></i>
-                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5" title="Conectando en tiempo real..."></span>
+        <div class="max-w-6xl mx-auto px-3 sm:px-6">
+            <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
+                <!-- Logo -->
+                <div class="flex items-center gap-2 cursor-pointer shrink-0 min-w-0" onclick="resetAllFilters()">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm relative shrink-0">
+                        <i class="fa-solid fa-radar text-sm sm:text-base"></i>
+                        <span id="cloudStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5" title="Conectando..."></span>
                     </div>
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 block leading-none">Super<span class="text-emerald-600">Radar</span></span>
-                            <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1">
+                            <span class="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 truncate">Super<span class="text-emerald-600">Radar</span></span>
+                            <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
                         </div>
-                        <span class="text-[10px] font-medium text-slate-500">¿Ha llegado esa novedad viral a tu súper?</span>
+                        <span class="text-[9px] sm:text-[10px] text-slate-500 truncate block">¿Ha llegado esa novedad viral?</span>
                     </div>
                 </div>
 
-                <!-- Buscador integrado en cabecera (escritorio) -->
+                <!-- Buscador de escritorio -->
                 <div class="hidden md:flex flex-1 max-w-md mx-4">
                     <div class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-400 text-sm"></i>
-                        <input 
-                            type="text" 
-                            id="desktopSearchInput" 
-                            oninput="syncSearch(this.value)" 
-                            placeholder="Buscar novedad viral (ej. colorete, pistacho, tequeños...)" 
-                            class="w-full pl-9 pr-8 py-2 bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none text-sm transition"
-                        >
+                        <input type="text" id="desktopSearchInput" oninput="syncSearch(this.value)" placeholder="Buscar novedad viral..." class="w-full pl-9 pr-8 py-2 bg-slate-100 border border-transparent focus:bg-white focus:border-emerald-500 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none text-sm transition">
                     </div>
                 </div>
 
-                <!-- Acciones principales -->
-                <div class="flex items-center gap-2">
-                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs sm:text-sm px-3 py-2 rounded-xl transition">
-                        <i class="fa-solid fa-check-double text-emerald-600"></i>
-                        <span class="hidden sm:inline">Mis avisos</span>
-                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[11px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                <!-- Botones de acción cabecera adaptados -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-check-double text-emerald-600 text-xs"></i>
+                        <span class="hidden sm:inline">Avisos</span>
+                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.1 rounded-full">0</span>
                     </button>
 
-                    <button onclick="openModal()" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl transition shadow-sm">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Subir novedad</span>
+                    <button onclick="openModal()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-2.5 sm:px-3.5 py-2 rounded-xl transition shadow-sm shrink-0">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                        <span class="truncate">Subir</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-5" id="mainSection">
+    <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-4" id="mainSection">
         
-        <!-- Explicación directa de 1 línea para nuevos usuarios -->
-        <div class="bg-emerald-900 text-white rounded-2xl px-4 py-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm">
-            <div class="flex items-center gap-2.5 text-xs sm:text-sm">
-                <span class="bg-emerald-700 text-emerald-200 w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold">?</span>
-                <p><strong class="font-bold text-emerald-300">Ahorra el paseo en balde:</strong> Elige tu supermercado exacto para ver si las novedades virales ya están en la estantería o si siguen agotadas.</p>
+        <!-- Aviso explicativo corto -->
+        <div class="bg-emerald-900 text-white rounded-2xl px-3.5 py-2.5 mb-3 flex items-center justify-between gap-2 shadow-sm text-xs">
+            <div class="flex items-center gap-2">
+                <span class="bg-emerald-700 text-emerald-200 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 font-bold text-[11px]">?</span>
+                <p><strong class="text-emerald-300">Evita el paseo en balde:</strong> Comprueba el stock real antes de salir.</p>
             </div>
-            <button onclick="openCityRequestModal()" class="text-[11px] font-bold text-emerald-200 hover:text-white underline shrink-0 self-end sm:self-auto">
-                ¿Falta tu ciudad o tienda? Pídela aquí
+            <button onclick="openCityRequestModal()" class="text-[10px] font-bold text-emerald-200 hover:text-white underline shrink-0">
+                Pedir ciudad
             </button>
         </div>
 
         <!-- Buscador móvil -->
-        <div class="md:hidden mb-4">
+        <div class="md:hidden mb-3">
             <div class="relative w-full">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-                <input 
-                    type="text" 
-                    id="heroSearchInput" 
-                    oninput="syncSearch(this.value)" 
-                    placeholder="Buscar novedad viral o tienda..." 
-                    class="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm shadow-sm"
-                >
-                <button id="clearSearchBtn" onclick="clearHeroSearch()" class="hidden absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark"></i>
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                <input type="text" id="heroSearchInput" oninput="syncSearch(this.value)" placeholder="Buscar novedad viral o tienda..." class="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs shadow-sm">
+                <button id="clearSearchBtn" onclick="clearHeroSearch()" class="hidden absolute right-3 top-2.5 text-slate-400">
+                    <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Panel de Filtros Sencillo e Intuitivo -->
-        <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 mb-6 space-y-4">
+        <!-- Panel de Filtros -->
+        <div class="bg-white rounded-2xl p-3.5 sm:p-5 shadow-sm border border-slate-200 mb-4 space-y-3">
             
-            <!-- Fila 1: Botones de Supermercado -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div id="supermarketChainContainer" class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-                    <!-- Populated dynamically via JS -->
+            <!-- Supermercados (Píldoras adaptadas a móvil sin desbordar) -->
+            <div>
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Supermercados</label>
+                    <button onclick="resetAllFilters()" class="text-[11px] text-slate-400 hover:text-emerald-600 font-medium">Limpiar</button>
                 </div>
-                <button onclick="resetAllFilters()" class="text-xs text-slate-400 hover:text-emerald-600 font-medium self-end sm:self-auto shrink-0 transition">
-                    Limpiar filtros
-                </button>
+                <div id="supermarketChainContainer" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                    <!-- Dinámico -->
+                </div>
             </div>
 
-            <!-- Fila 2: Selectores directos (Ciudad, Tienda Exacta y Categoría) -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100">
-                <!-- Ciudad -->
+            <!-- Selectores Ciudad y Tienda -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 text-xs">
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase">1. Tu Ciudad</label>
-                        <span class="text-[10px] font-semibold text-emerald-600">Fase Piloto</span>
-                    </div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">1. Ciudad</label>
                     <div class="relative">
-                        <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs sm:text-sm px-3 py-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
+                        <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-slate-400 text-xs pointer-events-none"></i>
+                        <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-slate-400 text-[10px] pointer-events-none"></i>
                     </div>
                 </div>
 
-                <!-- Tienda Exacta -->
                 <div>
                     <div class="flex items-center justify-between mb-1">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase">2. Tu Tienda en <span id="currentCityLabel" class="text-emerald-700">Málaga</span></label>
-                        <span id="storeCountIndicator" class="text-[10px] font-medium text-slate-400"></span>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">2. Tienda Exacta</label>
+                        <span id="storeCountIndicator" class="text-[9px] text-slate-400"></span>
                     </div>
                     <div class="relative">
-                        <select id="storeSelect" onchange="applyFilters()" class="w-full bg-emerald-50/60 border border-emerald-300 text-slate-900 font-bold text-xs sm:text-sm px-3 py-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none">
+                        <select id="storeSelect" onchange="applyFilters()" class="w-full bg-emerald-50/60 border border-emerald-300 text-slate-900 font-bold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-emerald-700 text-xs pointer-events-none"></i>
+                        <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-emerald-700 text-[10px] pointer-events-none"></i>
                     </div>
                 </div>
 
-                <!-- Categoría y Estado -->
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Sección</label>
-                        <select id="categoryFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs sm:text-sm px-2.5 py-2.5 rounded-xl focus:outline-none cursor-pointer">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Sección</label>
+                        <select id="categoryFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
                             <option value="">Todas</option>
                             <option value="Cosmética & Cuidado">Perfumería</option>
                             <option value="Alimentación / Snacks">Alimentación</option>
@@ -174,105 +156,251 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Estado en tienda</label>
-                        <select id="stockFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs sm:text-sm px-2.5 py-2.5 rounded-xl focus:outline-none cursor-pointer">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Estado</label>
+                        <select id="stockFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
                             <option value="">Todos</option>
-                            <option value="Sí está">🟢 Sí está (Confirmado)</option>
-                            <option value="Agotado">🔴 Agotado / No está</option>
-                            <option value="Sin confirmar">⚪ Sin confirmar aún</option>
+                            <option value="Sí está">🟢 Sí está</option>
+                            <option value="Agotado">🔴 Agotado</option>
+                            <option value="Sin confirmar">⚪ Sin confirmar</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Contador e info de transparencia -->
-        <div class="flex items-center justify-between mb-4 px-1">
-            <span id="resultsCount" class="text-xs sm:text-sm font-bold text-slate-700">Cargando novedades...</span>
-            <span class="text-[11px] text-slate-500 hidden sm:inline">
-                <i class="fa-regular fa-clock text-emerald-600 mr-1"></i>El <strong>último aviso del día manda</strong> (los avisos caducan a las 24h tras la reposición nocturna)
-            </span>
+        <!-- Contador resultados -->
+        <div class="flex items-center justify-between mb-3 px-1 text-xs">
+            <span id="resultsCount" class="font-bold text-slate-700">Cargando...</span>
+            <span class="text-[10px] text-slate-400 hidden sm:inline">Los avisos caducan a las 24h</span>
         </div>
 
-        <!-- Grid de productos -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+        <!-- Grid productos -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5"></div>
 
         <!-- Estado vacío -->
-        <div id="emptyState" class="hidden text-center py-14 px-4 bg-white rounded-2xl border border-slate-200">
-            <div class="w-12 h-12 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
+        <div id="emptyState" class="hidden text-center py-12 px-4 bg-white rounded-2xl border border-slate-200">
+            <div class="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-2 text-sm">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
-            <h3 class="text-sm font-bold text-slate-800 mb-1">No hay novedades con este filtro</h3>
-            <p id="emptyStateSubtitle" class="text-slate-500 text-xs max-w-sm mx-auto mb-4">Puedes cambiar el filtro de estado o subir una novedad viral que estés buscando.</p>
-            <button onclick="openModal()" class="bg-emerald-600 text-white font-semibold text-xs px-4 py-2.5 rounded-xl hover:bg-emerald-700 transition">
-                + Subir novedad viral
+            <h3 class="text-xs font-bold text-slate-800 mb-1">No hay novedades con este filtro</h3>
+            <p class="text-slate-400 text-[11px] max-w-xs mx-auto mb-3">Prueba a cambiar el filtro de estado o sube un aviso tú mismo.</p>
+            <button onclick="openModal()" class="bg-emerald-600 text-white font-semibold text-xs px-3 py-2 rounded-xl">
+                + Subir aviso
             </button>
         </div>
     </main>
 
-    <!-- Modal para Pedir Nueva Ciudad o Tienda -->
-    <div id="cityRequestModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
-            <div class="bg-emerald-900 text-white px-5 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-map-location-dot text-emerald-300 text-lg"></i>
-                    <h3 class="font-bold text-base">¡Pide tu ciudad o supermercado!</h3>
-                </div>
-                <button onclick="closeCityRequestModal()" class="text-emerald-200 hover:text-white p-1 rounded-lg transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+    <!-- Pie de página con acceso Admin visible también en móvil -->
+    <footer class="bg-white border-t border-slate-200 mt-8 py-4 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 text-center sm:text-left">
+            <div>
+                <span class="font-bold text-slate-600">SuperRadar España</span>
+                <span class="block sm:inline sm:ml-1">· Radar colaborativo de stock en supermercados</span>
+            </div>
+            <div class="flex items-center justify-center gap-4">
+                <button onclick="openCityRequestModal()" class="hover:text-emerald-600 transition">Pedir ciudad</button>
+                <button onclick="openAdminModal()" class="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold px-3 py-1.5 rounded-xl transition shadow-sm">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                    <span>Panel Admin</span>
+                    <span id="adminActiveBadge" class="hidden w-2 h-2 rounded-full bg-emerald-500"></span>
                 </button>
             </div>
-            <form onsubmit="handleCityRequestSubmit(event)" class="p-5 space-y-4">
-                <p class="text-xs text-slate-600 leading-relaxed">
-                    Ahora mismo <strong>SuperRadar</strong> está activo en <strong>Málaga</strong> y en las principales grandes ciudades de España. Dinos qué ciudad o tienda quieres que añadamos la próxima:
-                </p>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">¿Qué ciudad o pueblo quieres que añadamos? *</label>
-                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Marbella, Córdoba, Alicante..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+        </div>
+    </footer>
+
+    <!-- Modal Panel Admin -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden my-auto">
+            <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xs">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xs sm:text-sm">Panel de Control Admin</h3>
+                        <span class="text-[10px] text-slate-400">Publica novedades oficiales en todas las tiendas</span>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Pantalla PIN Admin -->
+            <div id="adminLoginSection" class="p-5 text-center space-y-3">
+                <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mx-auto text-base border border-amber-200">
+                    <i class="fa-solid fa-key"></i>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">¿Algún supermercado o calle en concreto? (opcional)</label>
-                    <input type="text" id="reqStoreName" placeholder="Ej. Mercadona de Av. América" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                    <h4 class="font-bold text-slate-800 text-sm">Clave de Administradora</h4>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Clave por defecto: <strong class="text-emerald-700">malaga2025</strong></p>
                 </div>
-                <div id="requestedCitiesCounterBox" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 hidden">
+                <form onsubmit="handleAdminLogin(event)" class="max-w-xs mx-auto space-y-2.5">
+                    <input type="password" id="adminPinInput" placeholder="Introduce tu clave..." required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-center font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl transition shadow-sm">
+                        Entrar al Panel
+                    </button>
+                </form>
+            </div>
+
+            <!-- Pantalla Dashboard Admin -->
+            <div id="adminDashboardSection" class="hidden p-4 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
+                
+                <!-- Publicar Novedad Global -->
+                <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5">
+                    <h4 class="font-bold text-slate-900 text-xs mb-1">🚀 Publicar Novedad Oficial (Toda una Cadena)</h4>
+                    <p class="text-[11px] text-slate-600 mb-3">Aparecerá automáticamente en todas las sucursales de la cadena elegida en España.</p>
+
+                    <form id="adminCatalogForm" onsubmit="handleAdminPublishCatalogOffer(event)" class="space-y-2.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Producto Viral *</label>
+                                <input type="text" id="adminProdTitle" required placeholder="Ej. Perfume Pistacho..." class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Precio (€) *</label>
+                                <input type="number" step="0.01" id="adminProdPrice" required placeholder="3.50" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Supermercado *</label>
+                                <select id="adminProdChain" required class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                                    <option value="Mercadona">Mercadona</option>
+                                    <option value="Carrefour">Carrefour</option>
+                                    <option value="Lidl">Lidl</option>
+                                    <option value="Aldi">Aldi</option>
+                                    <option value="DIA">DIA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Sección *</label>
+                                <select id="adminProdCategory" required class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                                    <option value="Cosmética & Cuidado">Perfumería</option>
+                                    <option value="Alimentación / Snacks">Alimentación</option>
+                                    <option value="Fit & Proteínas">Fit & Proteínas</option>
+                                    <option value="Bazar / Semanales">Bazar</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Etiqueta *</label>
+                                <input type="text" id="adminProdContext" required value="Nuevo en TikTok · Muy buscado" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Foto o Enlace</label>
+                                <div class="flex gap-1.5">
+                                    <label class="shrink-0 flex items-center gap-1 px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg cursor-pointer hover:bg-emerald-50 text-[11px] font-bold text-slate-700">
+                                        <i class="fa-solid fa-camera text-emerald-600"></i>
+                                        <span id="adminFileLabel">Foto</span>
+                                        <input type="file" accept="image/*" class="hidden" onchange="handleAdminFileSelect(event)">
+                                    </label>
+                                    <input type="url" id="adminProdImageUrl" placeholder="https://..." class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Nota breve *</label>
+                                <input type="text" id="adminProdDesc" required placeholder="Ej. Unidades muy limitadas." class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                        </div>
+
+                        <div class="pt-1 flex justify-end">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Publicar en toda la cadena</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeCityRequestModal()" class="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">Cerrar</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Enviar petición</button>
+
+                <!-- Listas de gestión -->
+                <div class="border border-slate-200 rounded-xl p-3">
+                    <h4 class="font-bold text-slate-800 text-[11px] uppercase mb-1.5 flex justify-between">
+                        <span>📦 Novedades Oficiales Publicadas</span>
+                        <span id="adminOfficialCount" class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px]">0</span>
+                    </h4>
+                    <div id="adminOfficialList" class="space-y-1.5 max-h-36 overflow-y-auto text-slate-600"></div>
+                </div>
+
+                <div class="border border-slate-200 rounded-xl p-3">
+                    <h4 class="font-bold text-slate-800 text-[11px] uppercase mb-1.5 flex justify-between">
+                        <span>👥 Avisos de Usuarios</span>
+                        <span id="adminCustomCount" class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px]">0</span>
+                    </h4>
+                    <div id="adminCustomList" class="space-y-1.5 max-h-36 overflow-y-auto text-slate-600"></div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                    <button type="button" onclick="handleAdminLogout()" class="text-rose-600 font-semibold hover:underline">Cerrar sesión</button>
+                    <button type="button" onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pedir Ciudad -->
+    <div id="cityRequestModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden text-xs">
+            <div class="bg-emerald-900 text-white px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot text-emerald-300"></i>
+                    <h3 class="font-bold text-sm">¡Pide tu ciudad!</h3>
+                </div>
+                <button onclick="closeCityRequestModal()" class="text-emerald-200 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            <form onsubmit="handleCityRequestSubmit(event)" class="p-4 space-y-3">
+                <p class="text-slate-600">¿Qué ciudad o supermercado quieres que añadamos próximamente?</p>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Ciudad *</label>
+                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Marbella, Córdoba..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Supermercado (opcional)</label>
+                    <input type="text" id="reqStoreName" placeholder="Ej. Mercadona centro" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div id="requestedCitiesCounterBox" class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-600 hidden"></div>
+                <div class="flex justify-end gap-2 pt-1">
+                    <button type="button" onclick="closeCityRequestModal()" class="px-3 py-1.5 text-slate-500 font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Enviar petición</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal para Añadir / Reportar Novedad -->
-    <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden transform transition-all my-auto">
-            <div class="bg-slate-900 text-white px-5 py-4 flex items-center justify-between">
+    <!-- Modal Añadir Novedad Usuario -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-auto text-xs">
+            <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-400 text-lg"></i>
-                    <h3 class="font-bold text-base">Avisar de una novedad viral en tienda</h3>
+                    <i class="fa-solid fa-plus-circle text-emerald-400"></i>
+                    <h3 class="font-bold text-sm">Avisar de una novedad en mi tienda</h3>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
 
-            <form id="addProductForm" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-3.5 max-h-[80vh] overflow-y-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <form id="addProductForm" onsubmit="handleFormSubmit(event)" class="p-4 space-y-3 max-h-[80vh] overflow-y-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-slate-600 mb-1">¿Qué novedad es? *</label>
-                        <input type="text" id="formTitle" required placeholder="Ej. Crema de Pistacho / Colorete Deliplus" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                        <label class="block font-bold text-slate-600 mb-1">Producto *</label>
+                        <input type="text" id="formTitle" required placeholder="Ej. Crema de Pistacho..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Precio aprox. (€) *</label>
-                        <input type="number" step="0.01" id="formPrice" required placeholder="4.50" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                        <label class="block font-bold text-slate-600 mb-1">Precio (€) *</label>
+                        <input type="number" step="0.01" id="formPrice" required placeholder="4.50" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Supermercado *</label>
-                        <select id="formSupermarket" required onchange="handleFormSupermarketChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                        <label class="block font-bold text-slate-600 mb-1">Supermercado *</label>
+                        <select id="formSupermarket" required onchange="handleFormSupermarketChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white">
                             <option value="Mercadona">Mercadona</option>
                             <option value="Carrefour">Carrefour</option>
                             <option value="Lidl">Lidl</option>
@@ -281,70 +409,72 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Sección *</label>
-                        <select id="formCategory" required class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
-                            <option value="Cosmética & Cuidado">Perfumería & Cosmética</option>
-                            <option value="Alimentación / Snacks">Alimentación / Dulces / Salados</option>
+                        <label class="block font-bold text-slate-600 mb-1">Sección *</label>
+                        <select id="formCategory" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white">
+                            <option value="Cosmética & Cuidado">Perfumería</option>
+                            <option value="Alimentación / Snacks">Alimentación</option>
                             <option value="Fit & Proteínas">Fit & Proteínas</option>
                             <option value="Bazar / Semanales">Bazar</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Ciudad *</label>
-                        <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
-                        </select>
+                        <label class="block font-bold text-slate-600 mb-1">Ciudad *</label>
+                        <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white"></select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Tienda Exacta *</label>
-                        <select id="formStore" required class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white"></select>
+                        <label class="block font-bold text-slate-600 mb-1">Tienda Exacta *</label>
+                        <select id="formStore" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white"></select>
                     </div>
                 </div>
 
-                <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <label class="block text-xs font-bold text-slate-600">Foto del producto (opcional)</label>
+                <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <label class="block font-bold text-slate-600">Foto del producto (opcional)</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <label class="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-slate-300 rounded-xl cursor-pointer hover:bg-emerald-50 hover:border-emerald-400 transition text-xs font-semibold text-slate-700">
+                        <label class="flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-slate-300 rounded-xl cursor-pointer hover:bg-emerald-50 font-semibold text-slate-700">
                             <i class="fa-solid fa-camera text-emerald-600"></i>
-                            <span id="fileUploadLabel">Hacer o subir foto</span>
+                            <span id="fileUploadLabel">Subir foto</span>
                             <input type="file" id="formImageFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
                         </label>
-                        <input type="url" id="formImageUrl" placeholder="O pegar enlace https://..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs bg-white">
+                        <input type="url" id="formImageUrl" placeholder="O enlace https://..." class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">¿Estaba cuando fuiste? *</label>
-                        <select id="formStockStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs font-semibold text-slate-700 bg-white">
+                        <label class="block font-bold text-slate-600 mb-1">Estado actual *</label>
+                        <select id="formStockStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white">
                             <option value="seen">🟢 Sí está (Lo acabo de ver)</option>
-                            <option value="missing">🔴 Fui a buscarlo y está agotado / no está</option>
+                            <option value="missing">🔴 Agotado / No está</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Nota útil (opcional)</label>
-                        <input type="text" id="formDesc" placeholder="Ej. Quedan pocos en el pasillo de congelados" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+                        <label class="block font-bold text-slate-600 mb-1">Nota (opcional)</label>
+                        <input type="text" id="formDesc" placeholder="Ej. Quedan pocos" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                     </div>
                 </div>
 
-                <div class="pt-2 flex items-center justify-end gap-3">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 transition">Cancelar</button>
-                    <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition">Publicar aviso</button>
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-slate-600 font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Publicar aviso</button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-        <span id="toastMessage" class="text-xs sm:text-sm font-medium">Acción completada</span>
+    <div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-3.5 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none text-xs">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toastMessage" class="font-medium">OK</span>
     </div>
 
-    <!-- Lógica Principal de la Aplicación -->
     <script>
+        const ADMIN_SECRET_PIN = 'malaga2025';
+        let isAdminAuthenticated = false;
+        let adminUploadedImageDataUrl = '';
+
         const SUPERMARKET_DATA = {
             'Mercadona': { badge: 'bg-emerald-700 text-white' },
             'Carrefour': { badge: 'bg-blue-700 text-white' },
@@ -353,7 +483,6 @@
             'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        // Selección estratégica: Málaga (ciudad piloto principal) + grandes ciudades de España
         const ACTIVE_CITIES = [
             "Málaga",
             "Madrid",
@@ -364,151 +493,135 @@
             "Bilbao"
         ];
 
-        // Catálogo centrado 100% en NOVEDADES Y PRODUCTOS VIRALES
         const CHAIN_OFFERS_CATALOG = {
             'Mercadona': [
                 {
+                    id: 'base_merca_0',
                     title: 'Colorete Líquido Blush Luminoso Deliplus Tono 02 Coral',
                     price: 5.00,
                     category: 'Cosmética & Cuidado',
                     imageUrl: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Viral en TikTok · Suele agotarse en perfumería',
-                    description: 'Colorete fluido con aplicador en esponja. Muy buscado estas semanas; el stock varía mucho por tienda.'
+                    viralContext: 'Viral en TikTok · Surtido habitual en perfumería',
+                    description: 'Colorete fluido con aplicador en esponja. Muy buscado estas semanas; stock variable.'
                 },
                 {
-                    title: 'Galletas Chocolate Blanco y Nueces de Macadamia Hacendado',
+                    id: 'base_merca_1',
+                    title: 'Galletas Chocolate Blanco y Macadamia Hacendado',
                     price: 1.75,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.openfoodfacts.org/images/products/848/000/014/4478/front_es.28.400.jpg',
                     fallbackImg: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=500&auto=format&fit=crop&q=80',
                     viralContext: 'Novedad viral · Pasillo de galletas',
-                    description: 'Galletas estilo americano recién incorporadas al surtido. Suelen volar a primera hora.'
+                    description: 'Galletas estilo americano recién incorporadas al surtido.'
                 },
                 {
-                    title: 'Tequeños de Queso Hacendado (Caja en Congelados)',
+                    id: 'base_merca_2',
+                    title: 'Tequeños de Queso Hacendado (Congelados)',
                     price: 4.80,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Muy buscado · Reposición irregular',
-                    description: 'Deditos crujientes rellenos de queso para freidora de aire o sartén en la zona de congelados.'
+                    viralContext: 'Muy buscado · Zona congelados',
+                    description: 'Deditos crujientes rellenos de queso para freidora de aire o sartén.'
                 },
                 {
-                    title: 'Natillas / Pudding +Proteínas Caramelo Hacendado (Pack 4)',
+                    id: 'base_merca_3',
+                    title: 'Natillas / Pudding +Proteínas Caramelo Hacendado',
                     price: 1.80,
                     category: 'Fit & Proteínas',
                     imageUrl: 'https://images.openfoodfacts.org/images/products/848/000/010/8258/front_es.19.400.jpg',
                     fallbackImg: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Top ventas Fit · Se agota por las tardes',
-                    description: '12g de proteína por vasito sin azúcares añadidos en el mural de refrigerados.'
+                    viralContext: 'Top ventas Fit · Mural refrigerados',
+                    description: '12g de proteína por vasito sin azúcares añadidos.'
                 }
             ],
             'Lidl': [
                 {
-                    title: 'Crema para Untar de Pistacho Italiamo Lidl (Tarro 190g)',
+                    id: 'base_lidl_0',
+                    title: 'Crema para Untar de Pistacho Italiamo Lidl (190g)',
                     price: 3.49,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Edición viral · Vuela en cuanto sale',
-                    description: 'La famosa crema dulce de pistacho de Lidl. Solo llega en lotes puntuales y se agota rapidísimo.'
+                    viralContext: 'Edición viral · Lotes puntuales',
+                    description: 'La famosa crema dulce de pistacho de Lidl. Vuela rapidísimo.'
                 },
                 {
-                    title: 'High Protein Mousse / Pudding Chocolate Milbona (20g Proteína)',
+                    id: 'base_lidl_1',
+                    title: 'High Protein Mousse Chocolate Milbona (20g Proteína)',
                     price: 1.19,
                     category: 'Fit & Proteínas',
                     imageUrl: 'https://images.openfoodfacts.org/images/products/405/648/926/5559/front_en.69.400.jpg',
                     fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Muy buscado en frío · Sabores se agotan rápido',
-                    description: '20g de proteína por tarrina y bajo en calorías. Suele quedar poca variedad a última hora.'
+                    viralContext: 'Muy buscado en frío',
+                    description: '20g de proteína por tarrina y bajo en calorías.'
                 },
                 {
-                    title: 'Freidora de Aire Digital SilverCrest 4.2L 1400W',
+                    id: 'base_lidl_2',
+                    title: 'Freidora de Aire Digital SilverCrest 4.2L',
                     price: 39.99,
                     category: 'Bazar / Semanales',
                     imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Bazar SilverCrest · Unidades muy limitadas',
-                    description: 'Lanzamiento de bazar con pantalla táctil. En muchas tiendas solo llegan unas pocas cajas.'
+                    viralContext: 'Bazar SilverCrest · Unidades limitadas',
+                    description: 'Lanzamiento de bazar con pantalla táctil.'
                 }
             ],
             'Aldi': [
                 {
-                    title: 'Mochis Helados de Mango y Coco / Pistacho Special Aldi',
+                    id: 'base_aldi_0',
+                    title: 'Mochis Helados de Mango y Coco Special Aldi',
                     price: 3.29,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
                     viralContext: 'Viral en redes · Sección congelados',
-                    description: 'Caja de 6 mochis helados. Uno de los postres más buscados en Aldi que suele agotarse el fin de semana.'
+                    description: 'Caja de 6 mochis helados. Muy buscados el fin de semana.'
                 },
                 {
-                    title: 'Pizza Fresca Masa Madre Trufa y Boletus Special Aldi',
+                    id: 'base_aldi_1',
+                    title: 'Pizza Fresca Masa Madre Trufa Special Aldi',
                     price: 2.99,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80',
                     viralContext: 'Gama gourmet Special · Mural de frío',
-                    description: 'Base de masa madre con crema de trufa y boletus. Muy recomendada en vídeos de novedades.'
-                },
-                {
-                    title: 'Sartén / Cazuela de Hierro Fundido Esmaltado Crofton',
-                    price: 19.99,
-                    category: 'Bazar / Semanales',
-                    imageUrl: 'https://images.unsplash.com/photo-1584990347449-a5d9f800a783?w=500&auto=format&fit=crop&q=80',
-                    fallbackImg: 'https://images.unsplash.com/photo-1584990347449-a5d9f800a783?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Bazar Aldi · Suele agotarse el primer día',
-                    description: 'Menaje viral de hierro fundido apto para horno e inducción en el pasillo central de bazar.'
+                    description: 'Base de masa madre con crema de trufa y boletus.'
                 }
             ],
             'Carrefour': [
                 {
+                    id: 'base_car_0',
                     title: 'Tarrina Açaí Orgánico Congelado Carrefour Bio (400g)',
                     price: 3.99,
                     category: 'Fit & Proteínas',
                     imageUrl: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Muy buscado para Açaí Bowls · Congelados Bio',
-                    description: 'Pulpa de açaí sin azúcares añadidos. No todos los Carrefour Express o Market lo tienen siempre.'
+                    viralContext: 'Muy buscado para Açaí Bowls',
+                    description: 'Pulpa de açaí sin azúcares añadidos en congelados.'
                 },
                 {
-                    title: 'Crema Lotus Biscoff Crunchy / Suave (Formato 400g)',
+                    id: 'base_car_1',
+                    title: 'Crema Lotus Biscoff Crunchy (400g)',
                     price: 3.85,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Repostería viral · La versión Crunchy suele faltar',
-                    description: 'Crema de galleta caramelizada con trocitos crujientes en el pasillo de desayunos y cremas.'
-                },
-                {
-                    title: 'Gama Postres y Mousses High Protein Carrefour Sensation',
-                    price: 1.59,
-                    category: 'Fit & Proteínas',
-                    imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop&q=80',
-                    fallbackImg: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Novedades Proteicas · Mural de lácteos',
-                    description: 'Nuevos sabores de puddings y mousses proteicos de marca propia Carrefour.'
+                    viralContext: 'Repostería viral',
+                    description: 'Crema de galleta caramelizada con trocitos crujientes.'
                 }
             ],
             'DIA': [
                 {
-                    title: 'Helado Estilo Americano Cookie Dough / Brownie Tentaciones DIA',
+                    id: 'base_dia_0',
+                    title: 'Helado Estilo Americano Cookie Dough Tentaciones DIA',
                     price: 2.99,
                     category: 'Alimentación / Snacks',
                     imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
                     fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
                     viralContext: 'Viral gama Tentaciones · Congelados',
-                    description: 'Tarrinas con trozos de galleta y brownie de la nueva línea Tentaciones DIA.'
-                },
-                {
-                    title: 'Fingers de Mozzarella / Snacks Airfryer Al Punto DIA',
-                    price: 2.49,
-                    category: 'Alimentación / Snacks',
-                    imageUrl: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
-                    fallbackImg: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
-                    viralContext: 'Especial Airfryer · Muy buscado en congelados',
-                    description: 'Gama rápida pensada para freidora de aire en 8 minutos. Suele agotarse en tiendas pequeñas.'
+                    description: 'Tarrinas con trozos de galleta.'
                 }
             ]
         };
@@ -517,141 +630,72 @@
 
         function initializeActiveCitiesAndStores() {
             ACTIVE_CITIES.forEach(city => {
-                const key = city.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
                 let storesList = [
-                    { id: 'all_' + key, chain: 'ALL', name: `📍 Todas las tiendas de ${city} (Ver todo)` }
+                    { id: 'all_' + city, chain: 'ALL', name: `📍 Todas las tiendas de ${city}` }
                 ];
 
                 if (city === 'Málaga') {
                     storesList.push(
-                        // Mercadona Málaga (Completo incluyendo Av. Velázquez e Imperio Argentina)
-                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez (Carretera de Cádiz)' },
-                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - Calle Imperio Argentina (Parque Litoral / Palacio de Ferias)' },
+                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez' },
+                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina (Parque Litoral)' },
                         { id: 'merca_mlg_teatinos', chain: 'Mercadona', name: 'Mercadona - Teatinos (Av. Plutarco)' },
-                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Paseo de los Tilos / C. Ayala)' },
+                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Paseo de los Tilos)' },
                         { id: 'merca_mlg_hilera', chain: 'Mercadona', name: 'Mercadona - Centro (Calle Hilera)' },
-                        { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - Estación María Zambrano (C.C. Vialia)' },
-                        { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - Barrio de La Luz / Av. de la Luz' },
-                        { id: 'merca_mlg_aurora', chain: 'Mercadona', name: 'Mercadona - Málaga 2000 (Av. de la Aurora)' },
-                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - El Palo (Av. Juan Sebastián Elcano)' },
-                        { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - El Limonar / Mayorazgo' },
-                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Ciudad Jardín (Av. Jacinto Benavente)' },
-                        { id: 'merca_mlg_rosaleda', chain: 'Mercadona', name: 'Mercadona - La Rosaleda / Av. Simón Bolívar' },
-
-                        // Carrefour Málaga
-                        { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios (Av. de Velázquez)' },
+                        { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - Vialia (María Zambrano)' },
+                        { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - La Luz' },
+                        { id: 'merca_mlg_aurora', chain: 'Mercadona', name: 'Mercadona - Málaga 2000' },
+                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - El Palo' },
+                        { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - El Limonar' },
+                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Ciudad Jardín' },
+                        { id: 'merca_mlg_rosaleda', chain: 'Mercadona', name: 'Mercadona - La Rosaleda' },
+                        { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios' },
                         { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - C.C. La Rosaleda' },
-                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour Market - Alameda Principal (Centro)' },
-                        { id: 'car_mlg_nostrum', chain: 'Carrefour', name: 'Carrefour - P.C. Málaga Nostrum / Azucarera' },
-                        { id: 'car_mlg_rincon', chain: 'Carrefour', name: 'Carrefour - C.C. Rincón de la Victoria' },
-                        { id: 'car_mlg_vialia', chain: 'Carrefour', name: 'Carrefour Express - Estación María Zambrano' },
-
-                        // Lidl Málaga
-                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez (Carretera de Cádiz)' },
-                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - Huelin (Calle Tomás Echeverría)' },
-                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Teatinos (Calle Orson Welles)' },
-                        { id: 'lidl_mlg_portada', chain: 'Lidl', name: 'Lidl - Portada Alta / Cruz de Humilladero' },
-                        { id: 'lidl_mlg_nostrum', chain: 'Lidl', name: 'Lidl - Parque Comercial Málaga Nostrum' },
-                        { id: 'lidl_mlg_ciudadjardin', chain: 'Lidl', name: 'Lidl - Ciudad Jardín / Camino Casabermeja' },
-
-                        // Aldi Málaga
-                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière / Av. Pacífico (Ctra. de Cádiz)' },
-                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos (Av. Carlos Haya)' },
-                        { id: 'aldi_mlg_martiricos', chain: 'Aldi', name: 'Aldi - Martiricos (Paseo de Martiricos)' },
-                        { id: 'aldi_mlg_nostrum', chain: 'Aldi', name: 'Aldi - Parque Comercial Málaga Nostrum' },
-
-                        // DIA Málaga
-                        { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA Market - Calle Carretería (Centro Histórico)' },
-                        { id: 'dia_mlg_huelin', chain: 'DIA', name: 'DIA Market - Huelin (Calle Tomás Echeverría)' },
-                        { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA Market - Av. de Velázquez / La Luz' },
-                        { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA Market - Teatinos / El Cónsul' },
-                        { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA Market - Calle la Victoria / Cristo de la Epidemia' }
+                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour Market - Alameda Principal' },
+                        { id: 'car_mlg_nostrum', chain: 'Carrefour', name: 'Carrefour - Málaga Nostrum' },
+                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez' },
+                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - Huelin' },
+                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Teatinos' },
+                        { id: 'lidl_mlg_portada', chain: 'Lidl', name: 'Lidl - Portada Alta' },
+                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière / Pacífico' },
+                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos' },
+                        { id: 'aldi_mlg_martiricos', chain: 'Aldi', name: 'Aldi - Martiricos' },
+                        { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA Market - Calle Carretería' },
+                        { id: 'dia_mlg_huelin', chain: 'DIA', name: 'DIA Market - Huelin' },
+                        { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA Market - Teatinos' }
                     );
                 } else if (city === 'Madrid') {
                     storesList.push(
-                        { id: 'merca_mad_centro', chain: 'Mercadona', name: 'Mercadona - Centro Madrid (Calle Fuencarral / Chamberí)' },
-                        { id: 'merca_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca (Calle Goya / Príncipe de Vergara)' },
-                        { id: 'merca_mad_atocha', chain: 'Mercadona', name: 'Mercadona - Atocha / Méndez Álvaro' },
-                        { id: 'merca_mad_castellana', chain: 'Mercadona', name: 'Mercadona - Paseo de la Castellana / Cuzco' },
-                        { id: 'car_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - C.C. Gran Vía de Hortaleza' },
-                        { id: 'car_mad_aluche', chain: 'Carrefour', name: 'Carrefour - C.C. Plaza Aluche' },
-                        { id: 'car_mad_lavapies', chain: 'Carrefour', name: 'Carrefour Market - Centro / Lavapiés' },
-                        { id: 'lidl_mad_tetuan', chain: 'Lidl', name: 'Lidl - Centro / Bravo Murillo (Tetuán)' },
-                        { id: 'lidl_mad_embajadores', chain: 'Lidl', name: 'Lidl - Embajadores / Arganzuela' },
-                        { id: 'aldi_mad_chamberi', chain: 'Aldi', name: 'Aldi - Centro / Chamberí (Calle Arapiles)' },
-                        { id: 'aldi_mad_vallecas', chain: 'Aldi', name: 'Aldi - Ensanche de Vallecas' },
-                        { id: 'dia_mad_malasana', chain: 'DIA', name: 'DIA Market - Centro / Malasaña' },
-                        { id: 'dia_mad_retiro', chain: 'DIA', name: 'DIA Market - Retiro / Av. Menéndez Pelayo' }
+                        { id: 'merca_mad_centro', chain: 'Mercadona', name: 'Mercadona - Fuencarral / Centro' },
+                        { id: 'merca_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca' },
+                        { id: 'car_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - Gran Vía de Hortaleza' },
+                        { id: 'lidl_mad_tetuan', chain: 'Lidl', name: 'Lidl - Tetuán / Bravo Murillo' },
+                        { id: 'aldi_mad_chamberi', chain: 'Aldi', name: 'Aldi - Chamberí' },
+                        { id: 'dia_mad_malasana', chain: 'DIA', name: 'DIA Market - Malasaña' }
                     );
                 } else if (city === 'Barcelona') {
                     storesList.push(
-                        { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Centro / Eixample (Calle Mallorca)' },
-                        { id: 'merca_bcn_sants', chain: 'Mercadona', name: 'Mercadona - Sants / Creu Coberta' },
-                        { id: 'merca_bcn_diagonal', chain: 'Mercadona', name: 'Mercadona - Av. Diagonal / Glòries' },
-                        { id: 'car_bcn_ramblas', chain: 'Carrefour', name: 'Carrefour Market - Las Ramblas (Centro)' },
-                        { id: 'car_bcn_glories', chain: 'Carrefour', name: 'Carrefour - C.C. Westfield Glòries' },
-                        { id: 'lidl_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família / Eixample' },
-                        { id: 'lidl_bcn_lescorts', chain: 'Lidl', name: 'Lidl - Les Corts / Travessera' },
-                        { id: 'aldi_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou / Diagonal Mar' },
-                        { id: 'aldi_bcn_gracia', chain: 'Aldi', name: 'Aldi - Vila de Gràcia' },
-                        { id: 'dia_bcn_born', chain: 'DIA', name: 'DIA Market - El Born / Ciutat Vella' }
+                        { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Eixample' },
+                        { id: 'car_bcn_glories', chain: 'Carrefour', name: 'Carrefour - Glòries' },
+                        { id: 'lidl_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família' },
+                        { id: 'aldi_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou' },
+                        { id: 'dia_bcn_born', chain: 'DIA', name: 'DIA Market - El Born' }
                     );
-                } else if (city === 'Valencia') {
+                } else {
                     storesList.push(
-                        { id: 'merca_vlc_colon', chain: 'Mercadona', name: 'Mercadona - Centro / Calle Roger de Lauria (Colón)' },
-                        { id: 'merca_vlc_ruzafa', chain: 'Mercadona', name: 'Mercadona - Ruzafa / Gran Vía Germanías' },
-                        { id: 'merca_vlc_benimaclet', chain: 'Mercadona', name: 'Mercadona - Benimaclet / Av. Primado Reig' },
-                        { id: 'car_vlc_saler', chain: 'Carrefour', name: 'Carrefour - C.C. El Saler' },
-                        { id: 'car_vlc_campanar', chain: 'Carrefour', name: 'Carrefour - Campanar / Hipermercado' },
-                        { id: 'lidl_vlc_mestalla', chain: 'Lidl', name: 'Lidl - Av. del Puerto / Aragón' },
-                        { id: 'aldi_vlc_patraix', chain: 'Aldi', name: 'Aldi - Patraix / Jesús' },
-                        { id: 'dia_vlc_centro', chain: 'DIA', name: 'DIA Market - Ciutat Vella / El Carmen' }
-                    );
-                } else if (city === 'Sevilla') {
-                    storesList.push(
-                        { id: 'merca_sev_plazaarmas', chain: 'Mercadona', name: 'Mercadona - C.C. Plaza de Armas (Centro)' },
-                        { id: 'merca_sev_nervion', chain: 'Mercadona', name: 'Mercadona - Nervión / Luis Montoto' },
-                        { id: 'merca_sev_triana', chain: 'Mercadona', name: 'Mercadona - Triana / Calle San Jacinto' },
-                        { id: 'car_sev_macarena', chain: 'Carrefour', name: 'Carrefour - Macarena / Ronda Urbana Norte' },
-                        { id: 'car_sev_sanpablo', chain: 'Carrefour', name: 'Carrefour - San Pablo / Av. Kansas City' },
-                        { id: 'lidl_sev_nervion', chain: 'Lidl', name: 'Lidl - Nervión / Kansas City' },
-                        { id: 'aldi_sev_losremedios', chain: 'Aldi', name: 'Aldi - Los Remedios / Triana' },
-                        { id: 'dia_sev_alameda', chain: 'DIA', name: 'DIA Market - Alameda / Feria' }
-                    );
-                } else if (city === 'Zaragoza') {
-                    storesList.push(
-                        { id: 'merca_zgz_centro', chain: 'Mercadona', name: 'Mercadona - Centro / Paseo de Sagasta' },
-                        { id: 'merca_zgz_delicias', chain: 'Mercadona', name: 'Mercadona - Delicias / Av. Madrid' },
-                        { id: 'car_zgz_augusta', chain: 'Carrefour', name: 'Carrefour - C.C. Augusta' },
-                        { id: 'car_zgz_actur', chain: 'Carrefour', name: 'Carrefour - Actur / GranCasa' },
-                        { id: 'lidl_zgz_almozara', chain: 'Lidl', name: 'Lidl - La Almozara / Av. Puerta Sancho' },
-                        { id: 'aldi_zgz_romareda', chain: 'Aldi', name: 'Aldi - Romareda / Universidad' },
-                        { id: 'dia_zgz_centro', chain: 'DIA', name: 'DIA Market - Casco Histórico / Coso' }
-                    );
-                } else if (city === 'Bilbao') {
-                    storesList.push(
-                        { id: 'merca_bio_indautxu', chain: 'Mercadona', name: 'Mercadona - Indautxu / Alameda Urquijo' },
-                        { id: 'merca_bio_deusto', chain: 'Mercadona', name: 'Mercadona - Deusto / Av. Lehendakari Aguirre' },
-                        { id: 'car_bio_abando', chain: 'Carrefour', name: 'Carrefour Market - Abando / Gran Vía' },
-                        { id: 'lidl_bio_zabalburu', chain: 'Lidl', name: 'Lidl - Zabalburu / Autonomía' },
-                        { id: 'aldi_bio_bolueta', chain: 'Aldi', name: 'Aldi - Bolueta / Santutxu' },
-                        { id: 'dia_bio_casco', chain: 'DIA', name: 'DIA Market - Casco Viejo / Santutxu' }
+                        { id: 'merca_' + city, chain: 'Mercadona', name: `Mercadona - ${city} Centro` },
+                        { id: 'car_' + city, chain: 'Carrefour', name: `Carrefour - ${city}` },
+                        { id: 'lidl_' + city, chain: 'Lidl', name: `Lidl - ${city}` },
+                        { id: 'aldi_' + city, chain: 'Aldi', name: `Aldi - ${city}` },
+                        { id: 'dia_' + city, chain: 'DIA', name: `DIA Market - ${city}` }
                     );
                 }
 
-                CITIES_AND_STORES[city] = {
-                    name: city,
-                    stores: storesList
-                };
+                CITIES_AND_STORES[city] = { name: city, stores: storesList };
             });
         }
 
         let products = [];
-        let userInteractions = {
-            votes: {},
-            customProducts: [],
-            cityRequests: []
-        };
+        let userInteractions = { votes: {}, customProducts: [], officialCatalogOffers: [], cityRequests: [] };
         let currentCity = 'Málaga';
         let selectedChain = '';
         let showOnlyFavorites = false;
@@ -664,38 +708,31 @@
                     const parsed = JSON.parse(raw);
                     userInteractions.votes = parsed.votes || {};
                     userInteractions.customProducts = parsed.customProducts || [];
+                    userInteractions.officialCatalogOffers = parsed.officialCatalogOffers || [];
                     userInteractions.cityRequests = parsed.cityRequests || [];
                 }
+                if (sessionStorage.getItem('super_radar_admin_auth') === 'true') {
+                    isAdminAuthenticated = true;
+                    document.getElementById('adminActiveBadge').classList.remove('hidden');
+                }
             } catch (e) {
-                console.warn('Error leyendo memoria local:', e);
+                console.warn(e);
             }
         }
 
         function saveUserInteractions() {
             try {
                 localStorage.setItem('super_radar_honest_v3', JSON.stringify(userInteractions));
-            } catch (e) {
-                console.warn('No se pudo guardar localmente:', e);
-            }
+            } catch (e) {}
             updateFavoritesCounter();
         }
 
         function populateCitySelectDropdowns() {
             const citySelect = document.getElementById('citySelect');
             const formCity = document.getElementById('formCity');
-
-            const mainOptions = ACTIVE_CITIES.map(city => {
-                const selected = city === 'Málaga' ? 'selected' : '';
-                const label = city === 'Málaga' ? '📍 Málaga (Ciudad Piloto)' : city;
-                return `<option value="${city}" ${selected}>${label}</option>`;
-            }).join('');
-
-            if (citySelect) {
-                citySelect.innerHTML = mainOptions + `<option value="REQUEST_NEW_CITY">✨ ¿No está tu ciudad? ¡Pídela aquí!</option>`;
-            }
-            if (formCity) {
-                formCity.innerHTML = mainOptions;
-            }
+            const opts = ACTIVE_CITIES.map(c => `<option value="${c}">${c === 'Málaga' ? '📍 Málaga (Piloto)' : c}</option>`).join('');
+            if (citySelect) citySelect.innerHTML = opts + `<option value="REQUEST_NEW_CITY">✨ ¿Otra ciudad? Pídela</option>`;
+            if (formCity) formCity.innerHTML = opts;
         }
 
         function computeStockStatusFromVote(vote) {
@@ -715,192 +752,272 @@
 
         function getValidVoteRecord(rawRecord) {
             if (!rawRecord) return null;
-            if (typeof rawRecord === 'string') {
-                return { status: rawRecord, updatedAt: Date.now() };
-            }
-            const HOURS_24 = 24 * 60 * 60 * 1000;
-            if (Date.now() - rawRecord.updatedAt > HOURS_24) {
-                return null;
-            }
+            if (typeof rawRecord === 'string') return { status: rawRecord, updatedAt: Date.now() };
+            if (Date.now() - rawRecord.updatedAt > 24 * 60 * 60 * 1000) return null;
             return rawRecord;
         }
 
-        function rebuildCatalogFromCurrentState() {
-            if (!CITIES_AND_STORES['Málaga']) {
-                initializeActiveCitiesAndStores();
-            }
-
+        function getMergedOfficialOffers() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = {
-                ...(userInteractions.votes || {}),
-                ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {})
-            };
-
-            const customMap = new Map();
-            (userInteractions.customProducts || []).forEach(p => customMap.set(p.id, p));
-            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudCustomProducts)) {
-                cloudState.cloudCustomProducts.forEach(p => customMap.set(p.id, p));
+            const m = new Map();
+            (userInteractions.officialCatalogOffers || []).forEach(o => m.set(o.id, o));
+            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudOfficialOffers)) {
+                cloudState.cloudOfficialOffers.forEach(o => m.set(o.id, o));
             }
-            const activeCustomList = Array.from(customMap.values());
+            return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
 
-            const generatedProducts = [];
+        function getMergedCustomProducts() {
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const m = new Map();
+            (userInteractions.customProducts || []).forEach(p => m.set(p.id, p));
+            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudCustomProducts)) {
+                cloudState.cloudCustomProducts.forEach(p => m.set(p.id, p));
+            }
+            return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
+
+        function rebuildCatalogFromCurrentState() {
+            if (!CITIES_AND_STORES['Málaga']) initializeActiveCitiesAndStores();
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+
+            const activeOfficial = getMergedOfficialOffers();
+            const activeCustom = getMergedCustomProducts();
+            const generated = [];
 
             ACTIVE_CITIES.forEach(city => {
                 const cityObj = CITIES_AND_STORES[city];
                 if (!cityObj) return;
-                const cityStores = cityObj.stores.filter(s => s.chain !== 'ALL');
-                cityStores.forEach((store) => {
-                    const catalogForChain = CHAIN_OFFERS_CATALOG[store.chain] || [];
-                    catalogForChain.forEach((offer, offerIdx) => {
-                        const prodId = `offer_${store.id}_${offerIdx}`;
-                        const voteRecord = getValidVoteRecord(mergedVotes[prodId]);
-                        const userVote = voteRecord ? voteRecord.status : null;
-                        const updatedAt = voteRecord ? voteRecord.updatedAt : null;
+                cityObj.stores.filter(s => s.chain !== 'ALL').forEach(store => {
+                    activeOfficial.filter(o => o.chain === store.chain).forEach(offer => {
+                        const prodId = `admin_${offer.id}_${store.id}`;
+                        const vRec = getValidVoteRecord(mergedVotes[prodId]);
+                        const vote = vRec ? vRec.status : null;
+                        generated.push({
+                            id: prodId, adminOfferId: offer.id, title: offer.title, price: offer.price,
+                            supermarket: store.chain, category: offer.category, city: city, storeId: store.id,
+                            storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                            viralContext: offer.viralContext || 'Novedad oficial', description: offer.description,
+                            userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote)
+                        });
+                    });
 
-                        generatedProducts.push({
-                            id: prodId,
-                            title: offer.title,
-                            price: offer.price,
-                            supermarket: store.chain,
-                            category: offer.category,
-                            city: city,
-                            storeId: store.id,
-                            storeName: store.name,
-                            imageUrl: offer.imageUrl,
-                            fallbackImg: offer.fallbackImg,
-                            viralContext: offer.viralContext,
-                            description: offer.description,
-                            userVote: userVote,
-                            updatedAt: updatedAt,
-                            seenCount: userVote === 'seen' ? 1 : 0,
-                            missingCount: userVote === 'missing' ? 1 : 0,
-                            stockStatus: computeStockStatusFromVote(userVote)
+                    (CHAIN_OFFERS_CATALOG[store.chain] || []).forEach((offer, offerIdx) => {
+                        const prodId = `offer_${store.id}_${offerIdx}`;
+                        const vRec = getValidVoteRecord(mergedVotes[prodId]);
+                        const vote = vRec ? vRec.status : null;
+                        generated.push({
+                            id: prodId, title: offer.title, price: offer.price, supermarket: store.chain,
+                            category: offer.category, city: city, storeId: store.id, storeName: store.name,
+                            imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
+                            description: offer.description, userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote)
                         });
                     });
                 });
             });
 
-            const customProds = activeCustomList.map(p => {
-                const voteRecord = getValidVoteRecord(mergedVotes[p.id]);
-                const userVote = voteRecord ? voteRecord.status : null;
-                const updatedAt = voteRecord ? voteRecord.updatedAt : null;
+            const customs = activeCustom.map(p => {
+                const vRec = getValidVoteRecord(mergedVotes[p.id]);
+                const vote = vRec ? vRec.status : null;
                 return {
-                    ...p,
-                    viralContext: p.viralContext || 'Novedad subida por un usuario',
-                    userVote: userVote,
-                    updatedAt: updatedAt,
-                    seenCount: userVote === 'seen' ? 1 : 0,
-                    missingCount: userVote === 'missing' ? 1 : 0,
-                    stockStatus: computeStockStatusFromVote(userVote)
+                    ...p, isCustomUserProduct: true, viralContext: p.viralContext || 'Reportado por usuario',
+                    userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                    seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                    stockStatus: computeStockStatusFromVote(vote)
                 };
             });
 
-            products = [...customProds, ...generatedProducts];
+            products = [...customs, ...generated];
             updateFavoritesCounter();
             applyFilters();
+            if (isAdminAuthenticated) renderAdminLists();
         }
 
         window.rebuildCatalogFromCurrentState = rebuildCatalogFromCurrentState;
 
         function updateFavoritesCounter() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = {
-                ...(userInteractions.votes || {}),
-                ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {})
-            };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
             const count = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
             const badge = document.getElementById('favoritesBadge');
             if (badge) badge.textContent = count;
         }
 
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            if (isAdminAuthenticated) {
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                renderAdminLists();
+            } else {
+                document.getElementById('adminLoginSection').classList.remove('hidden');
+                document.getElementById('adminDashboardSection').classList.add('hidden');
+            }
+        }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin === ADMIN_SECRET_PIN) {
+                isAdminAuthenticated = true;
+                sessionStorage.setItem('super_radar_admin_auth', 'true');
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
+                document.getElementById('adminActiveBadge').classList.remove('hidden');
+                renderAdminLists();
+                rebuildCatalogFromCurrentState();
+                showToast('⚡ Modo Admin activado');
+            } else {
+                showToast('❌ Clave incorrecta (malaga2025)');
+            }
+        }
+
+        function handleAdminLogout() {
+            isAdminAuthenticated = false;
+            sessionStorage.removeItem('super_radar_admin_auth');
+            document.getElementById('adminActiveBadge').classList.add('hidden');
+            closeAdminModal();
+            rebuildCatalogFromCurrentState();
+            showToast('Sesión cerrada');
+        }
+
+        function handleAdminFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                adminUploadedImageDataUrl = ev.target.result;
+                document.getElementById('adminFileLabel').textContent = '✅ Listo';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAdminPublishCatalogOffer(e) {
+            e.preventDefault();
+            const newOffer = {
+                id: 'off_' + Date.now(),
+                chain: document.getElementById('adminProdChain').value,
+                title: document.getElementById('adminProdTitle').value.trim(),
+                price: parseFloat(document.getElementById('adminProdPrice').value),
+                category: document.getElementById('adminProdCategory').value,
+                viralContext: document.getElementById('adminProdContext').value.trim(),
+                description: document.getElementById('adminProdDesc').value.trim(),
+                imageUrl: adminUploadedImageDataUrl || document.getElementById('adminProdImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                createdAt: Date.now()
+            };
+
+            if (!userInteractions.officialCatalogOffers) userInteractions.officialCatalogOffers = [];
+            userInteractions.officialCatalogOffers.unshift(newOffer);
+            saveUserInteractions();
+            if (window.syncOfficialOfferToCloud) window.syncOfficialOfferToCloud(newOffer);
+
+            adminUploadedImageDataUrl = '';
+            document.getElementById('adminFileLabel').textContent = 'Foto';
+            document.getElementById('adminCatalogForm').reset();
+            document.getElementById('adminProdContext').value = 'Nuevo en TikTok · Muy buscado';
+            rebuildCatalogFromCurrentState();
+            showToast(`🚀 ¡Publicado en todos los ${newOffer.chain}!`);
+        }
+
+        function deleteOfficialOffer(id) {
+            userInteractions.officialCatalogOffers = (userInteractions.officialCatalogOffers || []).filter(o => o.id !== id);
+            saveUserInteractions();
+            if (window.deleteOfficialOfferFromCloud) window.deleteOfficialOfferFromCloud(id);
+            rebuildCatalogFromCurrentState();
+            showToast('🗑️ Novedad eliminada');
+        }
+
+        function deleteCustomUserProduct(id) {
+            userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== id);
+            saveUserInteractions();
+            if (window.deleteCustomProductFromCloud) window.deleteCustomProductFromCloud(id);
+            rebuildCatalogFromCurrentState();
+            showToast('🗑️ Aviso borrado');
+        }
+
+        function renderAdminLists() {
+            const offList = document.getElementById('adminOfficialList');
+            const offCount = document.getElementById('adminOfficialCount');
+            const custList = document.getElementById('adminCustomList');
+            const custCount = document.getElementById('adminCustomCount');
+            if (!offList) return;
+
+            const officials = getMergedOfficialOffers();
+            offCount.textContent = officials.length;
+            offList.innerHTML = officials.length === 0 ? '<p class="text-slate-400 italic">Sin novedades oficiales añadidas.</p>' :
+                officials.map(o => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
+                    <span class="truncate pr-2"><b>[${o.chain}]</b> ${o.title}</span>
+                    <button onclick="deleteOfficialOffer('${o.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                </div>`).join('');
+
+            const customs = getMergedCustomProducts();
+            custCount.textContent = customs.length;
+            classList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
+                customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
+                    <span class="truncate pr-2"><b>[${c.city}]</b> ${c.title}</span>
+                    <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                </div>`).join('');
+        }
+
         function handleCityChange() {
-            const selectedVal = document.getElementById('citySelect').value;
-            if (selectedVal === 'REQUEST_NEW_CITY') {
+            const val = document.getElementById('citySelect').value;
+            if (val === 'REQUEST_NEW_CITY') {
                 document.getElementById('citySelect').value = currentCity;
                 openCityRequestModal();
                 return;
             }
-            currentCity = selectedVal;
-            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[currentCity] ? CITIES_AND_STORES[currentCity].name : currentCity;
+            currentCity = val;
             updateStoreSelectDropdown();
             applyFilters();
         }
 
-        function openCityRequestModal() {
-            document.getElementById('cityRequestModal').classList.remove('hidden');
-            renderRequestedCitiesSummary();
-        }
+        function openCityRequestModal() { document.getElementById('cityRequestModal').classList.remove('hidden'); renderReqs(); }
+        function closeCityRequestModal() { document.getElementById('cityRequestModal').classList.add('hidden'); }
 
-        function closeCityRequestModal() {
-            document.getElementById('cityRequestModal').classList.add('hidden');
-        }
-
-        function renderRequestedCitiesSummary() {
+        function renderReqs() {
             const box = document.getElementById('requestedCitiesCounterBox');
             if (!box) return;
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const list = (cloudState.isCloudActive && cloudState.cloudCityRequests && cloudState.cloudCityRequests.length > 0)
-                ? cloudState.cloudCityRequests
-                : (userInteractions.cityRequests || []);
-
-            if (!list || list.length === 0) {
-                box.classList.add('hidden');
-                return;
-            }
+            const list = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
+            if (list.length === 0) { box.classList.add('hidden'); return; }
             box.classList.remove('hidden');
-            box.innerHTML = `<strong class="text-emerald-800 block mb-1">🗳️ Ciudades pedidas por la comunidad (${list.length}):</strong>` +
-                list.slice(0, 8).map(r => `• ${r.city}${r.store ? ' (' + r.store + ')' : ''}`).join('<br>');
+            box.innerHTML = `<b>Peticiones de la comunidad:</b><br>` + list.slice(0, 5).map(r => `• ${r.city}`).join('<br>');
         }
-
-        window.renderRequestedCitiesSummary = renderRequestedCitiesSummary;
+        window.renderRequestedCitiesSummary = renderReqs;
 
         function handleCityRequestSubmit(e) {
             e.preventDefault();
-            const cityVal = document.getElementById('reqCityName').value.trim();
-            const storeVal = document.getElementById('reqStoreName').value.trim();
-            if (!cityVal) return;
-
-            const reqObj = {
-                city: cityVal,
-                store: storeVal,
-                date: Date.now()
-            };
-
+            const req = { city: document.getElementById('reqCityName').value.trim(), store: document.getElementById('reqStoreName').value.trim(), date: Date.now() };
+            if (!req.city) return;
             if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
-            userInteractions.cityRequests.unshift(reqObj);
-            if (window.syncCityRequestToCloud) {
-                window.syncCityRequestToCloud(reqObj);
-            }
+            userInteractions.cityRequests.unshift(req);
+            if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
             saveUserInteractions();
-
             document.getElementById('reqCityName').value = '';
             document.getElementById('reqStoreName').value = '';
             closeCityRequestModal();
-            showToast(`¡Gracias! Hemos sumado tu voto en vivo para abrir ${cityVal}`);
+            showToast('¡Petición enviada con éxito!');
         }
 
         function renderSupermarketChainPills() {
             const container = document.getElementById('supermarketChainContainer');
             if (!container) return;
             const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA'];
-            
             container.innerHTML = chains.map(chain => {
                 const label = chain === '' ? 'Todos' : chain;
-                const isSelected = selectedChain === chain;
-                const activeClass = isSelected 
-                    ? 'bg-emerald-600 text-white shadow-sm' 
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200';
-                
-                return `
-                    <button onclick="selectChainFilter('${chain}')" class="text-xs font-bold px-3.5 py-2 rounded-xl transition shrink-0 ${activeClass}">
-                        ${label}
-                    </button>
-                `;
+                const isSel = selectedChain === chain;
+                return `<button onclick="selectChainFilter('${chain}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition shrink-0 ${isSel ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">${label}</button>`;
             }).join('');
         }
 
         function selectChainFilter(chain) {
-            showOnlyFavorites = false;
             selectedChain = chain;
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
@@ -908,172 +1025,117 @@
         }
 
         function updateStoreSelectDropdown() {
-            const storeSelect = document.getElementById('storeSelect');
-            if (!storeSelect) return;
+            const sel = document.getElementById('storeSelect');
+            if (!sel) return;
             const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
-            if (!cityData) return;
-            
-            const filteredStores = cityData.stores.filter(store => {
-                if (store.chain === 'ALL') return true;
-                if (selectedChain && store.chain !== selectedChain) return false;
-                return true;
-            });
-
-            const countEl = document.getElementById('storeCountIndicator');
-            if (countEl) countEl.textContent = `${filteredStores.length - 1} tiendas`;
-
-            storeSelect.innerHTML = filteredStores.map(store => `
-                <option value="${store.id}">${store.name}</option>
-            `).join('');
+            const filtered = cityData.stores.filter(s => s.chain === 'ALL' || !selectedChain || s.chain === selectedChain);
+            document.getElementById('storeCountIndicator').textContent = `${filtered.length - 1} tiendas`;
+            sel.innerHTML = filtered.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
         }
 
         function toggleOnlyFavoritesFilter() {
             showOnlyFavorites = !showOnlyFavorites;
-            const navBtn = document.getElementById('favoritesNavBtn');
-            if (showOnlyFavorites) {
-                navBtn.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50');
-                showToast('Mostrando las tiendas con avisos confirmados hoy');
-            } else {
-                navBtn.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50');
-            }
+            document.getElementById('favoritesNavBtn').classList.toggle('ring-2', showOnlyFavorites);
             applyFilters();
         }
 
         function resetAllFilters() {
-            const mobileInput = document.getElementById('heroSearchInput');
-            const desktopInput = document.getElementById('desktopSearchInput');
-            if (mobileInput) mobileInput.value = '';
-            if (desktopInput) desktopInput.value = '';
+            document.getElementById('heroSearchInput').value = '';
+            document.getElementById('desktopSearchInput').value = '';
             document.getElementById('citySelect').value = 'Málaga';
             currentCity = 'Málaga';
-            document.getElementById('currentCityLabel').textContent = 'Málaga';
             selectedChain = '';
             showOnlyFavorites = false;
-            const navBtn = document.getElementById('favoritesNavBtn');
-            if (navBtn) navBtn.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50');
             document.getElementById('categoryFilter').value = '';
             document.getElementById('stockFilter').value = '';
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
             applyFilters();
-            showToast('Filtros restablecidos');
         }
 
         function applyFilters() {
-            const storeSelectEl = document.getElementById('storeSelect');
-            if (!storeSelectEl) return;
+            const storeId = document.getElementById('storeSelect').value;
+            const query = (document.getElementById('heroSearchInput').value || document.getElementById('desktopSearchInput').value || '').toLowerCase().trim();
+            const cat = document.getElementById('categoryFilter').value;
+            const stock = document.getElementById('stockFilter').value;
 
-            const mobileInput = document.getElementById('heroSearchInput');
-            const desktopInput = document.getElementById('desktopSearchInput');
-            const searchQuery = ((mobileInput && mobileInput.value) || (desktopInput && desktopInput.value) || '').toLowerCase().trim();
-            
-            const selectedStoreId = storeSelectEl.value;
-            const selectedCategory = document.getElementById('categoryFilter').value;
-            const selectedStock = document.getElementById('stockFilter').value;
-
-            const clearBtn = document.getElementById('clearSearchBtn');
-            if (clearBtn) {
-                if (searchQuery) clearBtn.classList.remove('hidden');
-                else clearBtn.classList.add('hidden');
-            }
-
-            const filtered = products.filter(product => {
-                if (showOnlyFavorites && !product.userVote) return false;
-                if (product.city !== currentCity) return false;
-                if (selectedChain && product.supermarket !== selectedChain) return false;
-                if (selectedStoreId && !selectedStoreId.startsWith('all_') && product.storeId !== selectedStoreId) return false;
-                if (selectedCategory && product.category !== selectedCategory) return false;
-                if (selectedStock && product.stockStatus !== selectedStock) return false;
-
-                if (searchQuery) {
-                    const matchTitle = product.title.toLowerCase().includes(searchQuery);
-                    const matchDesc = product.description.toLowerCase().includes(searchQuery);
-                    const matchStore = product.storeName.toLowerCase().includes(searchQuery);
-                    const matchSuper = product.supermarket.toLowerCase().includes(searchQuery);
-                    if (!matchTitle && !matchDesc && !matchStore && !matchSuper) return false;
-                }
-
+            const filtered = products.filter(p => {
+                if (showOnlyFavorites && !p.userVote) return false;
+                if (p.city !== currentCity) return false;
+                if (selectedChain && p.supermarket !== selectedChain) return false;
+                if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
+                if (cat && p.category !== cat) return false;
+                if (stock && p.stockStatus !== stock) return false;
+                if (query && !p.title.toLowerCase().includes(query) && !p.description.toLowerCase().includes(query) && !p.supermarket.toLowerCase().includes(query)) return false;
                 return true;
             });
-
             renderProducts(filtered);
         }
 
         function renderProducts(items) {
             const grid = document.getElementById('productsGrid');
-            const emptyState = document.getElementById('emptyState');
-            const countLabel = document.getElementById('resultsCount');
-            if (!grid || !emptyState || !countLabel) return;
+            const empty = document.getElementById('emptyState');
+            const count = document.getElementById('resultsCount');
+            if (!grid) return;
 
-            countLabel.textContent = `${items.length} ${items.length === 1 ? 'novedad viral' : 'novedades virales'} en ${currentCity}`;
+            count.textContent = `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'} en ${currentCity}`;
+            if (items.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
 
-            if (items.length === 0) {
-                grid.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
             grid.innerHTML = items.map(p => {
-                const superStyle = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
-                const timeLabel = formatVoteTime(p.updatedAt);
-                
-                let stockBadgeText = '⚪ Sin confirmar hoy';
+                const badge = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
+                const timeStr = formatVoteTime(p.updatedAt);
+                let stockText = '⚪ Sin confirmar hoy';
                 let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
-                let statusBannerText = p.viralContext || 'Novedad viral · Sin avisos en las últimas 24h';
-                let statusBannerColor = 'text-slate-400';
+                let bannerText = p.viralContext || 'Novedad viral';
+                let bannerColor = 'text-slate-400';
 
                 if (p.userVote === 'seen') {
-                    stockBadgeText = '🟢 ¡Sí hay stock!';
+                    stockText = '🟢 ¡Sí hay!';
                     stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
-                    statusBannerText = `✅ Último aviso (${timeLabel}): SÍ ESTÁ en estantería`;
-                    statusBannerColor = 'text-emerald-700 font-semibold';
+                    bannerText = `✅ Último aviso (${timeStr}): SÍ ESTÁ`;
+                    bannerColor = 'text-emerald-700 font-semibold';
                 } else if (p.userVote === 'missing') {
-                    stockBadgeText = '🔴 Agotado / No está';
+                    stockText = '🔴 Agotado';
                     stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
-                    statusBannerText = `⚠️ Último aviso (${timeLabel}): AGOTADO o sin llegar`;
-                    statusBannerColor = 'text-rose-600 font-semibold';
+                    bannerText = `⚠️ Último aviso (${timeStr}): AGOTADO`;
+                    bannerColor = 'text-rose-600 font-semibold';
                 }
 
-                const fallback = p.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80';
-
-                const isSeenActive = p.userVote === 'seen';
-                const isMissingActive = p.userVote === 'missing';
+                let adminDel = '';
+                if (isAdminAuthenticated) {
+                    if (p.adminOfferId) adminDel = `<button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar global</button>`;
+                    else if (p.isCustomUserProduct) adminDel = `<button onclick="deleteCustomUserProduct('${p.id}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar</button>`;
+                }
 
                 return `
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
-                        <div class="relative h-44 bg-white flex items-center justify-center overflow-hidden border-b border-slate-100 p-3">
-                            <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${fallback}';">
-                            <span class="absolute top-2.5 left-2.5 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${superStyle.badge}">
-                                ${p.supermarket}
-                            </span>
-                            <span class="absolute top-2.5 right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">
-                                ${stockBadgeText}
-                            </span>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
+                        <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
+                            <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <span class="absolute top-2 left-2 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                            <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
+                            ${adminDel}
                         </div>
-
-                        <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
                             <div>
-                                <div class="flex items-center justify-between gap-2 mb-1">
-                                    <span class="text-[11px] ${statusBannerColor} truncate" title="${statusBannerText}">${statusBannerText}</span>
-                                    <span class="text-base font-extrabold text-slate-900 shrink-0">${p.price.toFixed(2)} €</span>
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="font-extrabold text-slate-900">${Number(p.price).toFixed(2)} €</span>
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm leading-snug mb-1 line-clamp-2">${p.title}</h3>
-                                <p class="text-slate-500 text-xs line-clamp-2 mb-3">${p.description}</p>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
+                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
                             </div>
-
-                            <div class="space-y-2.5 pt-2.5 border-t border-slate-100">
-                                <div class="flex items-center gap-1.5 text-[11px] text-slate-700 font-semibold bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100" title="${p.storeName}">
+                            <div class="space-y-2 pt-2 border-t border-slate-100">
+                                <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
                                     <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
                                     <span class="truncate">${p.storeName}</span>
                                 </div>
-
-                                <div class="grid grid-cols-2 gap-1.5 text-xs">
-                                    <button onclick="handleStoreVote('${p.id}', 'seen')" title="${isSeenActive ? 'Pulsa de nuevo para borrar tu aviso' : 'Confirmar que han repuesto y lo has visto hoy'}" class="py-2 px-2 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${isSeenActive ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-white text-slate-700 hover:bg-emerald-50 hover:border-emerald-300 border-slate-200'}">
-                                        <span>🟢 Sí está (${p.seenCount})</span>
+                                <div class="grid grid-cols-2 gap-1.5">
+                                    <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                        <span>🟢 Sí (${p.seenCount})</span>
                                     </button>
-                                    <button onclick="handleStoreVote('${p.id}', 'missing')" title="${isMissingActive ? 'Pulsa de nuevo para borrar tu aviso' : 'Avisar de que ahora mismo está agotado o no ha llegado'}" class="py-2 px-2 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${isMissingActive ? 'bg-rose-600 text-white border-rose-600 shadow-sm' : 'bg-white text-slate-700 hover:bg-rose-50 hover:border-rose-300 border-slate-200'}">
-                                        <span>🔴 No está (${p.missingCount})</span>
+                                    <button onclick="handleStoreVote('${p.id}', 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                        <span>🔴 No (${p.missingCount})</span>
                                     </button>
                                 </div>
                             </div>
@@ -1083,170 +1145,106 @@
             }).join('');
         }
 
-        function handleStoreVote(id, voteType) {
+        function handleStoreVote(id, type) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
-
-            if (p.userVote === voteType) {
-                p.userVote = null;
-                p.updatedAt = null;
-                p.seenCount = 0;
-                p.missingCount = 0;
-                p.stockStatus = 'Sin confirmar';
+            if (p.userVote === type) {
+                p.userVote = null; p.updatedAt = null; p.seenCount = 0; p.missingCount = 0; p.stockStatus = 'Sin confirmar';
                 delete userInteractions.votes[id];
-                if (window.syncVoteToCloud) {
-                    window.syncVoteToCloud(id, null);
-                }
-                showToast('Aviso retirado (vuelve a "Sin confirmar hoy")');
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
+                showToast('Aviso retirado');
             } else {
                 const now = Date.now();
-                const votePayload = { status: voteType, updatedAt: now };
-                p.userVote = voteType;
-                p.updatedAt = now;
-                p.seenCount = voteType === 'seen' ? 1 : 0;
-                p.missingCount = voteType === 'missing' ? 1 : 0;
-                p.stockStatus = computeStockStatusFromVote(voteType);
-                userInteractions.votes[id] = votePayload;
-
-                if (window.syncVoteToCloud) {
-                    window.syncVoteToCloud(id, votePayload);
-                }
-
-                const horaActual = formatVoteTime(now);
-                if (voteType === 'seen') {
-                    showToast(`¡Actualizado en vivo a "🟢 Sí está"! (${horaActual})`);
-                } else {
-                    showToast(`¡Actualizado en vivo a "🔴 No está / Agotado"! (${horaActual})`);
-                }
+                const payload = { status: type, updatedAt: now };
+                p.userVote = type; p.updatedAt = now;
+                p.seenCount = type === 'seen' ? 1 : 0; p.missingCount = type === 'missing' ? 1 : 0;
+                p.stockStatus = computeStockStatusFromVote(type);
+                userInteractions.votes[id] = payload;
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
+                showToast(type === 'seen' ? '¡Actualizado: SÍ hay!' : '¡Actualizado: AGOTADO!');
             }
-
             saveUserInteractions();
             applyFilters();
         }
 
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedImageDataUrl = e.target.result;
-                document.getElementById('fileUploadLabel').textContent = '✅ Foto lista: ' + file.name.slice(0, 14);
-            };
-            reader.readAsDataURL(file);
+        function handleFileSelect(e) {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = ev => { uploadedImageDataUrl = ev.target.result; document.getElementById('fileUploadLabel').textContent = '✅ Foto lista'; };
+            r.readAsDataURL(f);
         }
 
-        function syncSearch(val) {
-            const mobileInput = document.getElementById('heroSearchInput');
-            const desktopInput = document.getElementById('desktopSearchInput');
-            if (mobileInput && mobileInput.value !== val) mobileInput.value = val;
-            if (desktopInput && desktopInput.value !== val) desktopInput.value = val;
+        function syncSearch(v) {
+            document.getElementById('heroSearchInput').value = v;
+            document.getElementById('desktopSearchInput').value = v;
             applyFilters();
         }
-
         function clearHeroSearch() { syncSearch(''); }
-        
         function openModal() {
             document.getElementById('productModal').classList.remove('hidden');
             document.getElementById('formCity').value = currentCity;
-            if (selectedChain) {
-                document.getElementById('formSupermarket').value = selectedChain;
-            }
-            handleFormCityChange();
+            if (selectedChain) document.getElementById('formSupermarket').value = selectedChain;
+            handleFormSupermarketChange();
         }
         function closeModal() { document.getElementById('productModal').classList.add('hidden'); }
 
-        function handleFormCityChange() {
-            handleFormSupermarketChange();
-        }
-
+        function handleFormCityChange() { handleFormSupermarketChange(); }
         function handleFormSupermarketChange() {
             const city = document.getElementById('formCity').value;
-            const superVal = document.getElementById('formSupermarket').value;
-            const storeSelect = document.getElementById('formStore');
-            
-            const cityData = CITIES_AND_STORES[city];
-            const cityStores = cityData ? cityData.stores : [];
-            const matchingStores = cityStores.filter(s => s.chain === superVal);
-
-            if (matchingStores.length > 0) {
-                storeSelect.innerHTML = matchingStores.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            } else {
-                storeSelect.innerHTML = `<option value="gen_${city}_${superVal}">${superVal} - ${city} General</option>`;
-            }
+            const sup = document.getElementById('formSupermarket').value;
+            const storeSel = document.getElementById('formStore');
+            const stores = (CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].stores : []).filter(s => s.chain === sup);
+            storeSel.innerHTML = stores.length > 0 ? stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('') : `<option value="gen_${city}_${sup}">${sup} - General</option>`;
         }
 
         function handleFormSubmit(e) {
             e.preventDefault();
             const city = document.getElementById('formCity').value;
-            const supermarket = document.getElementById('formSupermarket').value;
-            const storeId = document.getElementById('formStore').value;
-            const storeSelectEl = document.getElementById('formStore');
-            const storeName = storeSelectEl.options[storeSelectEl.selectedIndex].text;
-            const customImgUrl = document.getElementById('formImageUrl').value.trim();
-            const initialVote = document.getElementById('formStockStatus').value;
-
-            const finalImage = uploadedImageDataUrl || customImgUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80';
-            const newId = 'custom_' + Date.now();
+            const sup = document.getElementById('formSupermarket').value;
+            const storeSel = document.getElementById('formStore');
+            const storeName = storeSel.options[storeSel.selectedIndex].text;
+            const status = document.getElementById('formStockStatus').value;
             const now = Date.now();
-            const votePayload = { status: initialVote, updatedAt: now };
+            const newId = 'custom_' + now;
+            const payload = { status: status, updatedAt: now };
 
-            userInteractions.votes[newId] = votePayload;
-
+            userInteractions.votes[newId] = payload;
             const newP = {
-                id: newId,
-                title: document.getElementById('formTitle').value,
+                id: newId, title: document.getElementById('formTitle').value,
                 price: parseFloat(document.getElementById('formPrice').value),
-                supermarket: supermarket,
-                category: document.getElementById('formCategory').value,
-                city: city,
-                storeId: storeId,
-                storeName: storeName,
-                imageUrl: finalImage,
+                supermarket: sup, category: document.getElementById('formCategory').value,
+                city: city, storeId: storeSel.value, storeName: storeName,
+                imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                 fallbackImg: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-                viralContext: 'Novedad reportada por la comunidad',
-                description: document.getElementById('formDesc').value || 'Novedad viral reportada directamente en esta tienda.',
-                userVote: initialVote,
-                updatedAt: now,
-                seenCount: initialVote === 'seen' ? 1 : 0,
-                missingCount: initialVote === 'missing' ? 1 : 0,
-                stockStatus: computeStockStatusFromVote(initialVote)
+                viralContext: 'Aviso de usuario', description: document.getElementById('formDesc').value || 'Reportado en tienda',
+                userVote: status, updatedAt: now, seenCount: status === 'seen' ? 1 : 0, missingCount: status === 'missing' ? 1 : 0,
+                stockStatus: computeStockStatusFromVote(status)
             };
 
             userInteractions.customProducts.unshift(newP);
             products.unshift(newP);
-
-            if (window.syncCustomProductToCloud) {
-                window.syncCustomProductToCloud(newP);
-            }
-            if (window.syncVoteToCloud) {
-                window.syncVoteToCloud(newId, votePayload);
-            }
-
+            if (window.syncCustomProductToCloud) window.syncCustomProductToCloud(newP);
+            if (window.syncVoteToCloud) window.syncVoteToCloud(newId, payload);
             saveUserInteractions();
 
             uploadedImageDataUrl = '';
-            document.getElementById('fileUploadLabel').textContent = 'Hacer o subir foto';
             document.getElementById('addProductForm').reset();
             closeModal();
-            
-            document.getElementById('citySelect').value = city;
             currentCity = city;
-            document.getElementById('currentCityLabel').textContent = CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].name : city;
-            selectedChain = supermarket;
+            document.getElementById('citySelect').value = city;
+            selectedChain = sup;
             renderSupermarketChainPills();
             updateStoreSelectDropdown();
-            document.getElementById('storeSelect').value = storeId;
-            
             applyFilters();
-            showToast('¡Aviso de novedad publicado en vivo para todos!');
+            showToast('¡Aviso publicado con éxito!');
         }
 
         function showToast(msg) {
-            const toast = document.getElementById('toast');
-            if (!toast) return;
+            const t = document.getElementById('toast');
             document.getElementById('toastMessage').textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2500);
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1259,171 +1257,94 @@
         });
     </script>
 
-    <!-- Sincronización en Tiempo Real en la Nube -->
+    <!-- Sincronización en la nube -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Si despliegas en Vercel, puedes pegar aquí tu objeto firebaseConfig de Firebase Console:
         const EXTERNAL_FIREBASE_CONFIG = null;
-
-        let db = null;
-        let auth = null;
-        let currentUser = null;
-        let isCloudActive = false;
+        let db = null, auth = null, currentUser = null, isCloudActive = false;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'superradar-es-prod';
 
-        let cloudVotes = {};
-        let cloudCustomProducts = [];
-        let cloudCityRequests = [];
+        let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [];
 
         window.getCloudState = function() {
-            return {
-                isCloudActive,
-                currentUser,
-                cloudVotes,
-                cloudCustomProducts,
-                cloudCityRequests
-            };
+            return { isCloudActive, currentUser, cloudVotes, cloudCustomProducts, cloudOfficialOffers, cloudCityRequests };
         };
 
-        function updateCloudIndicator(connected) {
+        function updateCloudIndicator(conn) {
             const dot = document.getElementById('cloudStatusDot');
-            const badge = document.getElementById('liveSyncBadge');
             if (!dot) return;
-            if (connected) {
+            if (conn) {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute -top-0.5 -right-0.5";
-                dot.title = "Conectado en tiempo real con todos los usuarios";
-                if (badge) {
-                    badge.textContent = "🟢 En vivo";
-                    badge.className = "text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block";
-                }
+                dot.title = "En vivo";
             } else {
                 dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5";
-                dot.title = "Modo local activo";
+                dot.title = "Modo local";
             }
         }
 
         function setupRealtimeListeners() {
             if (!currentUser || !db) return;
-
-            const votesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stock_votes');
-            onSnapshot(votesRef, (snapshot) => {
-                cloudVotes = {};
-                snapshot.forEach((docSnap) => {
-                    cloudVotes[docSnap.id] = docSnap.data();
-                });
-                if (window.rebuildCatalogFromCurrentState) {
-                    window.rebuildCatalogFromCurrentState();
-                }
-            }, (error) => {
-                console.error("Error sincronizando votos:", error);
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'stock_votes'), snap => {
+                cloudVotes = {}; snap.forEach(d => cloudVotes[d.id] = d.data());
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             });
-
-            const customProdsRef = collection(db, 'artifacts', appId, 'public', 'data', 'custom_products');
-            onSnapshot(customProdsRef, (snapshot) => {
-                const list = [];
-                snapshot.forEach((docSnap) => {
-                    list.push(docSnap.data());
-                });
-                list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                cloudCustomProducts = list;
-                if (window.rebuildCatalogFromCurrentState) {
-                    window.rebuildCatalogFromCurrentState();
-                }
-            }, (error) => {
-                console.error("Error sincronizando productos:", error);
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudOfficialOffers = l;
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             });
-
-            const cityReqRef = collection(db, 'artifacts', appId, 'public', 'data', 'city_requests');
-            onSnapshot(cityReqRef, (snapshot) => {
-                const reqs = [];
-                snapshot.forEach((docSnap) => {
-                    reqs.push(docSnap.data());
-                });
-                reqs.sort((a, b) => (b.date || 0) - (a.date || 0));
-                cloudCityRequests = reqs;
-                if (window.renderRequestedCitiesSummary) {
-                    window.renderRequestedCitiesSummary();
-                }
-            }, (error) => {
-                console.error("Error sincronizando peticiones de ciudades:", error);
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'custom_products'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudCustomProducts = l;
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
+            });
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'city_requests'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudCityRequests = l;
+                if (window.renderRequestedCitiesSummary) window.renderRequestedCitiesSummary();
             });
         }
 
-        window.syncVoteToCloud = async function(prodId, voteData) {
+        window.syncVoteToCloud = async function(id, data) {
             if (!isCloudActive || !currentUser || !db) return;
-            const voteDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'stock_votes', prodId);
-            if (voteData === null) {
-                await deleteDoc(voteDocRef);
-            } else {
-                await setDoc(voteDocRef, {
-                    status: voteData.status,
-                    updatedAt: voteData.updatedAt,
-                    updatedBy: currentUser.uid
-                });
-            }
+            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'stock_votes', id);
+            if (data === null) await deleteDoc(ref); else await setDoc(ref, { ...data, updatedBy: currentUser.uid });
         };
-
-        window.syncCustomProductToCloud = async function(newProduct) {
+        window.syncOfficialOfferToCloud = async function(o) {
             if (!isCloudActive || !currentUser || !db) return;
-            const prodDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', newProduct.id);
-            await setDoc(prodDocRef, {
-                ...newProduct,
-                createdAt: Date.now(),
-                createdBy: currentUser.uid
-            });
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers', o.id), { ...o, createdBy: currentUser.uid });
         };
-
-        window.syncCityRequestToCloud = async function(reqObj) {
+        window.deleteOfficialOfferFromCloud = async function(id) {
             if (!isCloudActive || !currentUser || !db) return;
-            const reqId = 'req_' + Date.now() + '_' + currentUser.uid.slice(0, 5);
-            const reqDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'city_requests', reqId);
-            await setDoc(reqDocRef, {
-                ...reqObj,
-                requestedBy: currentUser.uid
-            });
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'official_catalog_offers', id));
+        };
+        window.syncCustomProductToCloud = async function(p) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', p.id), { ...p, createdBy: currentUser.uid });
+        };
+        window.deleteCustomProductFromCloud = async function(id) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'custom_products', id));
+        };
+        window.syncCityRequestToCloud = async function(req) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser.uid });
         };
 
         async function initCloudSync() {
             try {
-                let configToUse = null;
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    configToUse = JSON.parse(__firebase_config);
-                } else if (EXTERNAL_FIREBASE_CONFIG) {
-                    configToUse = EXTERNAL_FIREBASE_CONFIG;
-                }
-
-                if (!configToUse) {
-                    updateCloudIndicator(false);
-                    return;
-                }
-
-                const app = initializeApp(configToUse);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    if (user) {
-                        isCloudActive = true;
-                        updateCloudIndicator(true);
-                        setupRealtimeListeners();
-                    }
-                });
-            } catch (err) {
-                console.warn("Modo local activo:", err);
-                updateCloudIndicator(false);
-            }
+                let cfg = typeof __firebase_config !== 'undefined' && __firebase_config ? JSON.parse(__firebase_config) : EXTERNAL_FIREBASE_CONFIG;
+                if (!cfg) { updateCloudIndicator(false); return; }
+                const app = initializeApp(cfg);
+                db = getFirestore(app); auth = getAuth(app);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                else await signInAnonymously(auth);
+                onAuthStateChanged(auth, u => { currentUser = u; if (u) { isCloudActive = true; updateCloudIndicator(true); setupRealtimeListeners(); } });
+            } catch (e) { updateCloudIndicator(false); }
         }
-
         initCloudSync();
     </script>
 </body>
