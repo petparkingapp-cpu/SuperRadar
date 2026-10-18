@@ -18,11 +18,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Firebase SDKs (Compat / Modular) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -49,6 +44,7 @@
 </head>
 <body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
 
+    <!-- Cabecera principal optimizada para móvil -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div class="max-w-6xl mx-auto px-3 sm:px-6">
             <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
@@ -210,6 +206,7 @@
         </div>
     </main>
 
+    <!-- Pie de página con acceso Admin -->
     <footer class="bg-white border-t border-slate-200 mt-8 py-4 px-4">
         <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400 text-center sm:text-left">
             <div>
@@ -218,9 +215,9 @@
             </div>
             <div class="flex items-center justify-center gap-4">
                 <button onclick="openCityRequestModal()" class="hover:text-emerald-600 transition">Pedir ciudad</button>
-                <button onclick="openAdminModal()" class="inline-flex items-center gap-1 text-slate-300 hover:text-slate-500 transition text-[11px]" title="Gestión interna">
-                    <i class="fa-solid fa-lock text-[9px]"></i>
-                    <span>Admin</span>
+                <button onclick="openAdminModal()" class="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold px-3 py-1.5 rounded-xl transition shadow-sm">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                    <span>Panel Admin</span>
                     <span id="adminActiveBadge" class="hidden w-2 h-2 rounded-full bg-emerald-500"></span>
                 </button>
             </div>
@@ -237,7 +234,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-xs sm:text-sm">Panel de Control Admin</h3>
-                        <span class="text-[10px] text-slate-400">Acceso privado de gestión</span>
+                        <span class="text-[10px] text-slate-400">Publica novedades oficiales y revisa el tráfico</span>
                     </div>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
@@ -245,14 +242,14 @@
                 </button>
             </div>
 
-            <!-- Pantalla PIN Admin (Sin pista de contraseña visible) -->
+            <!-- Pantalla PIN Admin -->
             <div id="adminLoginSection" class="p-5 text-center space-y-3">
                 <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mx-auto text-base border border-amber-200">
                     <i class="fa-solid fa-key"></i>
                 </div>
                 <div>
-                    <h4 class="font-bold text-slate-800 text-sm">Acceso de Administradora</h4>
-                    <p class="text-[11px] text-slate-500 mt-0.5">Área privada restringida</p>
+                    <h4 class="font-bold text-slate-800 text-sm">Clave de Administradora</h4>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Clave por defecto: <strong class="text-emerald-700">malaga2025</strong></p>
                 </div>
                 <form onsubmit="handleAdminLogin(event)" class="max-w-xs mx-auto space-y-2.5">
                     <input type="password" id="adminPinInput" placeholder="Introduce tu clave..." required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-center font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
@@ -299,15 +296,15 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <div class="sm:col-span-2">
                                 <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Producto Viral *</label>
-                                <input type="text" id="adminProdTitle" required placeholder="Ej. Tarta Tres Leches..." class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                                <input type="text" id="adminProdTitle" required placeholder="Ej. Perfume Pistacho..." class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Precio (€) *</label>
-                                <input type="number" step="0.01" id="adminProdPrice" required placeholder="9.00" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                                <input type="number" step="0.01" id="adminProdPrice" required placeholder="3.50" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Supermercado *</label>
                                 <select id="adminProdChain" required class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
@@ -328,16 +325,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Estado Inicial *</label>
-                                <select id="adminProdStatus" required class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
-                                    <option value="Sí está">🟢 Sí está</option>
-                                    <option value="Agotado">🔴 Agotado</option>
-                                    <option value="Sin confirmar">⚪ Sin confirmar</option>
-                                </select>
-                            </div>
-                            <div>
                                 <label class="block text-[10px] font-bold text-slate-700 uppercase mb-0.5">Etiqueta *</label>
-                                <input type="text" id="adminProdContext" required value="🔥 Viral en TikTok" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                                <input type="text" id="adminProdContext" required value="Nuevo en TikTok · Muy buscado" class="w-full px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
                             </div>
                         </div>
 
@@ -471,859 +460,1063 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Ciudad y Tienda Específica *</label>
-                    <select id="formStoreId" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white">
-                        <!-- Dinámico -->
-                    </select>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Ciudad *</label>
+                        <select id="formCity" required onchange="handleFormCityChange()" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white"></select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-600 mb-1">Tienda Exacta *</label>
+                        <select id="formStore" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white"></select>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <label class="block font-bold text-slate-600">Foto del producto (opcional)</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-slate-300 rounded-xl cursor-pointer hover:bg-emerald-50 font-semibold text-slate-700">
+                            <i class="fa-solid fa-camera text-emerald-600"></i>
+                            <span id="fileUploadLabel">Subir foto</span>
+                            <input type="file" id="formImageFile" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                        </label>
+                        <input type="url" id="formImageUrl" placeholder="O enlace https://..." class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Estado de Stock *</label>
-                        <select id="formStockStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold bg-white text-emerald-700">
-                            <option value="Sí está">🟢 ¡Sí está disponible!</option>
-                            <option value="Agotado">🔴 Agotado / No queda</option>
-                            <option value="Sin confirmar">⚪ Sin confirmar</option>
+                        <label class="block font-bold text-slate-600 mb-1">Estado actual *</label>
+                        <select id="formStockStatus" required class="w-full px-3 py-2 border border-slate-300 rounded-xl font-semibold bg-white">
+                            <option value="seen">🟢 Sí está (Lo acabo de ver)</option>
+                            <option value="missing">🔴 Agotado / No está</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Foto del producto</label>
-                        <div class="flex gap-1.5">
-                            <label class="shrink-0 px-3 py-2 border border-slate-300 rounded-xl bg-slate-50 hover:bg-emerald-50 text-slate-700 font-bold cursor-pointer text-xs flex items-center gap-1">
-                                <i class="fa-solid fa-camera text-emerald-600"></i>
-                                <span id="fileLabelText">Subir</span>
-                                <input type="file" accept="image/*" onchange="handleImageUpload(event)" class="hidden">
-                            </label>
-                            <input type="url" id="formImageUrl" placeholder="O pega enlace de foto..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none text-[11px]">
-                        </div>
+                        <label class="block font-bold text-slate-600 mb-1">Nota (opcional)</label>
+                        <input type="text" id="formDesc" placeholder="Ej. Quedan pocos" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Nota rápida o pasillo (opcional)</label>
-                    <input type="text" id="formComment" placeholder="Ej. En la entrada junto a perfumería" class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none">
-                </div>
-
-                <div class="pt-2 flex justify-end gap-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 border border-slate-300 text-slate-600 font-semibold rounded-xl">Cancelar</button>
-                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Publicar Aviso</button>
+                <div class="pt-1 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-slate-600 font-semibold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Publicar aviso</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-3.5 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none text-xs">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toastMessage" class="font-medium">OK</span>
+    </div>
+
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCnilR1E7SkHo2jLdglX6_sjNGsgFKB3w",
-            authDomain: "superradar-99064.firebaseapp.com",
-            projectId: "superradar-99064",
-            storageBucket: "superradar-99064.appspot.com",
-            messagingSenderId: "123150876347",
-            appId: "1:123150876347:web:60c79635b1e2fddd98f39e",
-            measurementId: "G-C9ZV48DCB3"
+        const ADMIN_SECRET_PIN = 'malaga2025';
+        let isAdminAuthenticated = false;
+        let adminUploadedImageDataUrl = '';
+
+        const SUPERMARKET_DATA = {
+            'Mercadona': { badge: 'bg-emerald-700 text-white' },
+            'Carrefour': { badge: 'bg-blue-700 text-white' },
+            'Lidl': { badge: 'bg-amber-400 text-slate-950' },
+            'Aldi': { badge: 'bg-indigo-900 text-white' },
+            'DIA': { badge: 'bg-red-600 text-white' }
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        const ACTIVE_CITIES = [
+            "Málaga",
+            "Madrid",
+            "Barcelona",
+            "Valencia",
+            "Sevilla",
+            "Zaragoza",
+            "Bilbao"
+        ];
 
-        // Base de datos de ciudades y tiendas reales en España
-        const CITIES_DATA = {
-            "Málaga": [
-                { id: "mlg-mercadona-teatinos", name: "Mercadona · Teatinos (Bulevar)", chain: "Mercadona" },
-                { id: "mlg-mercadona-huelin", name: "Mercadona · Huelin (Paseo Marítimo)", chain: "Mercadona" },
-                { id: "mlg-mercadona-larios", name: "Mercadona · Centro Comercial Larios", chain: "Mercadona" },
-                { id: "mlg-mercadona-los-guindos", name: "Mercadona · Los Guindos", chain: "Mercadona" },
-                { id: "mlg-carrefour-alameda", name: "Carrefour · Alameda Principal", chain: "Carrefour" },
-                { id: "mlg-carrefour-rincon", name: "Carrefour · Rincón de la Victoria", chain: "Carrefour" },
-                { id: "mlg-lidl-carretera-cadiz", name: "Lidl · Carretera de Cádiz", chain: "Lidl" },
-                { id: "mlg-lidl-martiricos", name: "Lidl · Martiricos", chain: "Lidl" },
-                { id: "mlg-aldi-cruz-humilladero", name: "Aldi · Cruz de Humilladero", chain: "Aldi" },
-                { id: "mlg-dia-centro", name: "DIA · Calle Ancha del Carmen", chain: "DIA" }
+        const CHAIN_OFFERS_CATALOG = {
+            'Mercadona': [
+                {
+                    id: 'base_merca_0',
+                    title: 'Colorete Líquido Blush Luminoso Deliplus Tono 02 Coral',
+                    price: 5.00,
+                    category: 'Cosmética & Cuidado',
+                    imageUrl: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Viral en TikTok · Surtido habitual en perfumería',
+                    description: 'Colorete fluido con aplicador en esponja. Muy buscado estas semanas; stock variable.'
+                },
+                {
+                    id: 'base_merca_1',
+                    title: 'Galletas Chocolate Blanco y Macadamia Hacendado',
+                    price: 1.75,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.openfoodfacts.org/images/products/848/000/014/4478/front_es.28.400.jpg',
+                    fallbackImg: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Novedad viral · Pasillo de galletas',
+                    description: 'Galletas estilo americano recién incorporadas al surtido.'
+                },
+                {
+                    id: 'base_merca_2',
+                    title: 'Tequeños de Queso Hacendado (Congelados)',
+                    price: 4.80,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Muy buscado · Zona congelados',
+                    description: 'Deditos crujientes rellenos de queso para freidora de aire o sartén.'
+                },
+                {
+                    id: 'base_merca_3',
+                    title: 'Natillas / Pudding +Proteínas Caramelo Hacendado',
+                    price: 1.80,
+                    category: 'Fit & Proteínas',
+                    imageUrl: 'https://images.openfoodfacts.org/images/products/848/000/010/8258/front_es.19.400.jpg',
+                    fallbackImg: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Top ventas Fit · Mural refrigerados',
+                    description: '12g de proteína por vasito sin azúcares añadidos.'
+                }
             ],
-            "Madrid": [
-                { id: "mad-mercadona-goya", name: "Mercadona · Calle Goya", chain: "Mercadona" },
-                { id: "mad-mercadona-atocha", name: "Mercadona · Zona Atocha", chain: "Mercadona" },
-                { id: "mad-carrefour-ponzano", name: "Carrefour Express · Ponzano", chain: "Carrefour" },
-                { id: "mad-lidl-lavapies", name: "Lidl · Lavapiés", chain: "Lidl" },
-                { id: "mad-aldi-tetuan", name: "Aldi · Tetuán", chain: "Aldi" }
+            'Lidl': [
+                {
+                    id: 'base_lidl_0',
+                    title: 'Crema para Untar de Pistacho Italiamo Lidl (190g)',
+                    price: 3.49,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Edición viral · Lotes puntuales',
+                    description: 'La famosa crema dulce de pistacho de Lidl. Vuela rapidísimo.'
+                },
+                {
+                    id: 'base_lidl_1',
+                    title: 'High Protein Mousse Chocolate Milbona (20g Proteína)',
+                    price: 1.19,
+                    category: 'Fit & Proteínas',
+                    imageUrl: 'https://images.openfoodfacts.org/images/products/405/648/926/5559/front_en.69.400.jpg',
+                    fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Muy buscado en frío',
+                    description: '20g de proteína por tarrina y bajo en calorías.'
+                },
+                {
+                    id: 'base_lidl_2',
+                    title: 'Freidora de Aire Digital SilverCrest 4.2L',
+                    price: 39.99,
+                    category: 'Bazar / Semanales',
+                    imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Bazar SilverCrest · Unidades limitadas',
+                    description: 'Lanzamiento de bazar con pantalla táctil.'
+                }
             ],
-            "Barcelona": [
-                { id: "bcn-mercadona-sagrada", name: "Mercadona · Sagrada Família", chain: "Mercadona" },
-                { id: "bcn-carrefour-las-ramblas", name: "Carrefour · Las Ramblas", chain: "Carrefour" },
-                { id: "bcn-lidl-gracia", name: "Lidl · Gràcia", chain: "Lidl" }
+            'Aldi': [
+                {
+                    id: 'base_aldi_0',
+                    title: 'Mochis Helados de Mango y Coco Special Aldi',
+                    price: 3.29,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Viral en redes · Sección congelados',
+                    description: 'Caja de 6 mochis helados. Muy buscados el fin de semana.'
+                },
+                {
+                    id: 'base_aldi_1',
+                    title: 'Pizza Fresca Masa Madre Trufa Special Aldi',
+                    price: 2.99,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Gama gourmet Special · Mural de frío',
+                    description: 'Base de masa madre con crema de trufa y boletus.'
+                }
             ],
-            "Sevilla": [
-                { id: "sev-mercadona-nervion", name: "Mercadona · Nervión Plaza", chain: "Mercadona" },
-                { id: "sev-carrefour-sanjuan", name: "Carrefour · San Juan de Aznalfarache", chain: "Carrefour" }
+            'Carrefour': [
+                {
+                    id: 'base_car_0',
+                    title: 'Tarrina Açaí Orgánico Congelado Carrefour Bio (400g)',
+                    price: 3.99,
+                    category: 'Fit & Proteínas',
+                    imageUrl: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Muy buscado para Açaí Bowls',
+                    description: 'Pulpa de açaí sin azúcares añadidos en congelados.'
+                },
+                {
+                    id: 'base_car_1',
+                    title: 'Crema Lotus Biscoff Crunchy (400g)',
+                    price: 3.85,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Repostería viral',
+                    description: 'Crema de galleta caramelizada con trocitos crujientes.'
+                }
             ],
-            "Valencia": [
-                { id: "val-mercadona-avenida-puerto", name: "Mercadona · Av. del Puerto", chain: "Mercadona" },
-                { id: "val-lidl-blasco-ibanez", name: "Lidl · Blasco Ibáñez", chain: "Lidl" }
+            'DIA': [
+                {
+                    id: 'base_dia_0',
+                    title: 'Helado Estilo Americano Cookie Dough Tentaciones DIA',
+                    price: 2.99,
+                    category: 'Alimentación / Snacks',
+                    imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Viral gama Tentaciones · Congelados',
+                    description: 'Tarrinas con trozos de galleta.'
+                }
             ]
         };
 
-        // Estado inicial de productos virales en España
-        const INITIAL_PRODUCTS = [
-            {
-                id: 'prod-1',
-                title: 'Perfume de imitación "Monogotas / Rose Nude"',
-                price: 3.50,
-                supermarket: 'Mercadona',
-                category: 'Cosmética & Cuidado',
-                context: 'Viral en TikTok · Perfumería',
-                storeId: 'mlg-mercadona-teatinos',
-                storeName: 'Mercadona · Teatinos (Bulevar)',
-                city: 'Málaga',
-                stockStatus: 'Sí está',
-                imageUrl: 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80',
-                comment: 'Quedan 4 botes en el expositor central.',
-                timestamp: Date.now() - 3600000,
-                votesYes: 14,
-                votesNo: 1,
-                isOfficial: true
-            },
-            {
-                id: 'prod-2',
-                title: 'Crema de Pistacho Cremosa',
-                price: 3.90,
-                supermarket: 'Mercadona',
-                category: 'Alimentación / Snacks',
-                context: 'Dulces virales',
-                storeId: 'mlg-mercadona-huelin',
-                storeName: 'Mercadona · Huelin (Paseo Marítimo)',
-                city: 'Málaga',
-                stockStatus: 'Agotado',
-                imageUrl: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80',
-                comment: 'Estantería completamente vacía hasta el lunes.',
-                timestamp: Date.now() - 7200000,
-                votesYes: 2,
-                votesNo: 19,
-                isOfficial: true
-            },
-            {
-                id: 'prod-3',
-                title: 'Bebida Proteica de Pistacho',
-                price: 1.65,
-                supermarket: 'Lidl',
-                category: 'Fit & Proteínas',
-                context: 'Novedad Proteínas',
-                storeId: 'mlg-lidl-carretera-cadiz',
-                storeName: 'Lidl · Carretera de Cádiz',
-                city: 'Málaga',
-                stockStatus: 'Sí está',
-                imageUrl: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80',
-                comment: 'En la nevera principal de batidos al fondo.',
-                timestamp: Date.now() - 14400000,
-                votesYes: 8,
-                votesNo: 0,
-                isOfficial: true
-            },
-            {
-                id: 'prod-4',
-                title: 'Vela Aromática Calabaza / Otoño',
-                price: 2.99,
-                supermarket: 'Carrefour',
-                category: 'Bazar / Semanales',
-                context: 'Bazar semanal',
-                storeId: 'mlg-carrefour-alameda',
-                storeName: 'Carrefour · Alameda Principal',
-                city: 'Málaga',
-                stockStatus: 'Sí está',
-                imageUrl: 'https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=600&q=80',
-                comment: 'Pasillo de decoración.',
-                timestamp: Date.now() - 28800000,
-                votesYes: 6,
-                votesNo: 2,
-                isOfficial: false
-            }
-        ];
+        let CITIES_AND_STORES = {};
 
-        let state = {
-            products: [],
-            selectedChain: '',
-            selectedCity: 'Málaga',
-            selectedStoreId: '',
-            searchQuery: '',
-            categoryFilter: '',
-            stockFilter: '',
-            onlyFavorites: false,
-            onlyLatest: false,
-            favorites: JSON.parse(localStorage.getItem('superradar_favs') || '[]'),
-            requestedCities: JSON.parse(localStorage.getItem('superradar_reqs') || '[]'),
-            isAdminLoggedIn: false,
-            adminPin: 'malaga2025'
-        };
+        function initializeActiveCitiesAndStores() {
+            ACTIVE_CITIES.forEach(city => {
+                let storesList = [
+                    { id: 'all_' + city, chain: 'ALL', name: `📍 Todas las tiendas de ${city}` }
+                ];
 
-        // Iniciar app al cargar la página
-        window.addEventListener('DOMContentLoaded', async () => {
-            initAuthAndSync();
-            initCitySelects();
-            renderSupermarketFilters();
-            updateFormStoreSelect();
-            registerVisit();
-        });
-
-        async function registerVisit() {
-            try {
-                const visitsRef = db.collection('metadata').doc('stats');
-                const doc = await visitsRef.get();
-                if (!doc.exists) {
-                    await visitsRef.set({ totalVisits: 1 });
+                if (city === 'Málaga') {
+                    storesList.push(
+                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez' },
+                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina (Parque Litoral)' },
+                        { id: 'merca_mlg_teatinos', chain: 'Mercadona', name: 'Mercadona - Teatinos (Av. Plutarco)' },
+                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - Huelin (Paseo de los Tilos)' },
+                        { id: 'merca_mlg_hilera', chain: 'Mercadona', name: 'Mercadona - Centro (Calle Hilera)' },
+                        { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - Vialia (María Zambrano)' },
+                        { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - La Luz' },
+                        { id: 'merca_mlg_aurora', chain: 'Mercadona', name: 'Mercadona - Málaga 2000' },
+                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - El Palo' },
+                        { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - El Limonar' },
+                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Ciudad Jardín' },
+                        { id: 'merca_mlg_rosaleda', chain: 'Mercadona', name: 'Mercadona - La Rosaleda' },
+                        { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - C.C. Los Patios' },
+                        { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - C.C. La Rosaleda' },
+                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour Market - Alameda Principal' },
+                        { id: 'car_mlg_nostrum', chain: 'Carrefour', name: 'Carrefour - Málaga Nostrum' },
+                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez' },
+                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - Huelin' },
+                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Teatinos' },
+                        { id: 'lidl_mlg_portada', chain: 'Lidl', name: 'Lidl - Portada Alta' },
+                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière / Pacífico' },
+                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - Teatinos' },
+                        { id: 'aldi_mlg_martiricos', chain: 'Aldi', name: 'Aldi - Martiricos' },
+                        { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA Market - Calle Carretería' },
+                        { id: 'dia_mlg_huelin', chain: 'DIA', name: 'DIA Market - Huelin' },
+                        { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA Market - Teatinos' }
+                    );
+                } else if (city === 'Madrid') {
+                    storesList.push(
+                        { id: 'merca_mad_centro', chain: 'Mercadona', name: 'Mercadona - Fuencarral / Centro' },
+                        { id: 'merca_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca' },
+                        { id: 'car_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - Gran Vía de Hortaleza' },
+                        { id: 'lidl_mad_tetuan', chain: 'Lidl', name: 'Lidl - Tetuán / Bravo Murillo' },
+                        { id: 'aldi_mad_chamberi', chain: 'Aldi', name: 'Aldi - Chamberí' },
+                        { id: 'dia_mad_malasana', chain: 'DIA', name: 'DIA Market - Malasaña' }
+                    );
+                } else if (city === 'Barcelona') {
+                    storesList.push(
+                        { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Eixample' },
+                        { id: 'car_bcn_glories', chain: 'Carrefour', name: 'Carrefour - Glòries' },
+                        { id: 'lidl_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família' },
+                        { id: 'aldi_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou' },
+                        { id: 'dia_bcn_born', chain: 'DIA', name: 'DIA Market - El Born' }
+                    );
                 } else {
-                    await visitsRef.update({ totalVisits: firebase.firestore.FieldValue.increment(1) });
+                    storesList.push(
+                        { id: 'merca_' + city, chain: 'Mercadona', name: `Mercadona - ${city} Centro` },
+                        { id: 'car_' + city, chain: 'Carrefour', name: `Carrefour - ${city}` },
+                        { id: 'lidl_' + city, chain: 'Lidl', name: `Lidl - ${city}` },
+                        { id: 'aldi_' + city, chain: 'Aldi', name: `Aldi - ${city}` },
+                        { id: 'dia_' + city, chain: 'DIA', name: `DIA Market - ${city}` }
+                    );
+                }
+
+                CITIES_AND_STORES[city] = { name: city, stores: storesList };
+            });
+        }
+
+        let products = [];
+        let userInteractions = { votes: {}, customProducts: [], officialCatalogOffers: [], cityRequests: [] };
+        let currentCity = 'Málaga';
+        let selectedChain = '';
+        let showOnlyFavorites = false;
+        let showOnlyLatest = false;
+        let uploadedImageDataUrl = '';
+
+        function loadLocalBackup() {
+            try {
+                const raw = localStorage.getItem('super_radar_honest_v3');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    userInteractions.votes = parsed.votes || {};
+                    userInteractions.customProducts = parsed.customProducts || [];
+                    userInteractions.officialCatalogOffers = parsed.officialCatalogOffers || [];
+                    userInteractions.cityRequests = parsed.cityRequests || [];
+                }
+                if (sessionStorage.getItem('super_radar_admin_auth') === 'true') {
+                    isAdminAuthenticated = true;
+                    document.getElementById('adminActiveBadge').classList.remove('hidden');
                 }
             } catch (e) {
-                console.log("Visits counter notice:", e);
+                console.warn(e);
             }
         }
 
-        async function initAuthAndSync() {
+        function saveUserInteractions() {
             try {
-                await auth.signInAnonymously();
-                document.getElementById('cloudStatusDot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute -top-0.5 -right-0.5';
-                document.getElementById('cloudStatusDot').title = 'Conectado a Firebase en vivo';
-                
-                // Cargar datos de Firestore en tiempo real ordenados estrictamente por fecha (más nuevo primero)
-                db.collection('products').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-                    let remoteProducts = [];
-                    snapshot.forEach(doc => {
-                        remoteProducts.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    if (remoteProducts.length === 0) {
-                        INITIAL_PRODUCTS.forEach(p => {
-                            db.collection('products').doc(p.id).set(p);
+                localStorage.setItem('super_radar_honest_v3', JSON.stringify(userInteractions));
+            } catch (e) {}
+            updateFavoritesCounter();
+        }
+
+        function populateCitySelectDropdowns() {
+            const citySelect = document.getElementById('citySelect');
+            const formCity = document.getElementById('formCity');
+            const opts = ACTIVE_CITIES.map(c => `<option value="${c}">${c === 'Málaga' ? '📍 Málaga (Piloto)' : c}</option>`).join('');
+            if (citySelect) citySelect.innerHTML = opts + `<option value="REQUEST_NEW_CITY">✨ ¿Otra ciudad? Pídela</option>`;
+            if (formCity) formCity.innerHTML = opts;
+        }
+
+        function computeStockStatusFromVote(vote) {
+            if (vote === 'seen') return 'Sí está';
+            if (vote === 'missing') return 'Agotado';
+            return 'Sin confirmar';
+        }
+
+        function formatVoteTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const isToday = date.toDateString() === now.toDateString();
+            const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            return isToday ? `Hoy a las ${timeStr}` : `Ayer a las ${timeStr}`;
+        }
+
+        function getValidVoteRecord(rawRecord) {
+            if (!rawRecord) return null;
+            if (typeof rawRecord === 'string') return { status: rawRecord, updatedAt: Date.now() };
+            if (Date.now() - rawRecord.updatedAt > 24 * 60 * 60 * 1000) return null;
+            return rawRecord;
+        }
+
+        function getMergedOfficialOffers() {
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const m = new Map();
+            (userInteractions.officialCatalogOffers || []).forEach(o => m.set(o.id, o));
+            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudOfficialOffers)) {
+                cloudState.cloudOfficialOffers.forEach(o => m.set(o.id, o));
+            }
+            return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
+
+        function getMergedCustomProducts() {
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const m = new Map();
+            (userInteractions.customProducts || []).forEach(p => m.set(p.id, p));
+            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudCustomProducts)) {
+                cloudState.cloudCustomProducts.forEach(p => m.set(p.id, p));
+            }
+            return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
+
+        function rebuildCatalogFromCurrentState() {
+            if (!CITIES_AND_STORES['Málaga']) initializeActiveCitiesAndStores();
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+
+            const activeOfficial = getMergedOfficialOffers();
+            const activeCustom = getMergedCustomProducts();
+            const newOfficialGenerated = [];
+            const baseCatalogGenerated = [];
+
+            ACTIVE_CITIES.forEach(city => {
+                const cityObj = CITIES_AND_STORES[city];
+                if (!cityObj) return;
+                const realStores = cityObj.stores.filter(s => s.chain !== 'ALL');
+
+                // 1. Novedades oficiales subidas desde el Panel Admin
+                activeOfficial.forEach(offer => {
+                    realStores.filter(s => s.chain === offer.chain).forEach(store => {
+                        const prodId = `admin_${offer.id}_${store.id}`;
+                        const vRec = getValidVoteRecord(mergedVotes[prodId]);
+                        const vote = vRec ? vRec.status : null;
+                        newOfficialGenerated.push({
+                            id: prodId, adminOfferId: offer.id, title: offer.title, price: offer.price,
+                            supermarket: store.chain, category: offer.category, city: city, storeId: store.id,
+                            storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                            viralContext: offer.viralContext || 'Novedad oficial', description: offer.description,
+                            userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            createdAt: offer.createdAt || Date.now(),
+                            isRecentUpload: true,
+                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote)
                         });
-                        state.products = INITIAL_PRODUCTS;
-                    } else {
-                        state.products = remoteProducts;
-                    }
-                    applyFilters();
-                    updateAdminLists();
-                }, err => {
-                    console.log("Usando modo local offline:", err);
-                    state.products = INITIAL_PRODUCTS;
-                    applyFilters();
+                    });
                 });
 
-                // Cargar estadísticas admin
-                db.collection('metadata').doc('stats').onSnapshot(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        document.getElementById('adminTotalVisitsCount').innerText = data.totalVisits || 1;
-                    }
-                });
-
-                db.collection('cityRequests').onSnapshot(snapshot => {
-                    let reqs = [];
-                    snapshot.forEach(d => reqs.push(d.data()));
-                    document.getElementById('adminTotalReqsCount').innerText = reqs.length;
-                });
-
-            } catch (e) {
-                console.error("Error conectando Firebase:", e);
-                document.getElementById('cloudStatusDot').className = 'w-2.5 h-2.5 rounded-full bg-amber-500 border-2 border-white absolute -top-0.5 -right-0.5';
-                state.products = INITIAL_PRODUCTS;
-                applyFilters();
-            }
-        }
-
-        function initCitySelects() {
-            const citySelect = document.getElementById('citySelect');
-            citySelect.innerHTML = '';
-            Object.keys(CITIES_DATA).forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = city;
-                opt.textContent = city;
-                if (city === state.selectedCity) opt.selected = true;
-                citySelect.appendChild(opt);
-            });
-            updateStoreSelectForCity(state.selectedCity);
-        }
-
-        function handleCityChange() {
-            const citySelect = document.getElementById('citySelect');
-            state.selectedCity = citySelect.value;
-            state.selectedStoreId = '';
-            updateStoreSelectForCity(state.selectedCity);
-            applyFilters();
-        }
-
-        function updateStoreSelectForCity(cityName) {
-            const storeSelect = document.getElementById('storeSelect');
-            storeSelect.innerHTML = '<option value="">Todas las tiendas de ' + cityName + '</option>';
-            const stores = CITIES_DATA[cityName] || [];
-            
-            stores.forEach(st => {
-                const opt = document.createElement('option');
-                opt.value = st.id;
-                opt.textContent = st.name;
-                if (st.id === state.selectedStoreId) opt.selected = true;
-                storeSelect.appendChild(opt);
-            });
-
-            document.getElementById('storeCountIndicator').innerText = `(${stores.length} sucursales)`;
-        }
-
-        function renderSupermarketFilters() {
-            const chains = [
-                { name: 'Mercadona', color: 'bg-emerald-700 hover:bg-emerald-800 text-white' },
-                { name: 'Carrefour', color: 'bg-blue-800 hover:bg-blue-900 text-white' },
-                { name: 'Lidl', color: 'bg-blue-600 hover:bg-blue-700 text-white' },
-                { name: 'Aldi', color: 'bg-indigo-900 hover:bg-indigo-950 text-white' },
-                { name: 'DIA', color: 'bg-red-600 hover:bg-red-700 text-white' }
-            ];
-
-            const container = document.getElementById('supermarketChainContainer');
-            container.innerHTML = `
-                <button onclick="filterByChain('')" class="px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 transition ${state.selectedChain === '' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
-                    Todos
-                </button>
-            `;
-
-            chains.forEach(ch => {
-                const active = state.selectedChain === ch.name;
-                const btn = document.createElement('button');
-                btn.onclick = () => filterByChain(ch.name);
-                btn.className = `px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 transition flex items-center gap-1.5 ${active ? 'ring-2 ring-offset-1 ring-slate-900 ' + ch.color : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
-                btn.innerHTML = `<span>${ch.name}</span>`;
-                container.appendChild(btn);
-            });
-        }
-
-        function filterByChain(chain) {
-            state.selectedChain = chain;
-            renderSupermarketFilters();
-            applyFilters();
-        }
-
-        function updateFormStoreSelect() {
-            const select = document.getElementById('formStoreId');
-            select.innerHTML = '';
-            Object.keys(CITIES_DATA).forEach(cityName => {
-                CITIES_DATA[cityName].forEach(st => {
-                    const opt = document.createElement('option');
-                    opt.value = st.id;
-                    opt.textContent = `[${cityName}] ${st.name}`;
-                    select.appendChild(opt);
+                // 2. Catálogo base
+                realStores.forEach(store => {
+                    (CHAIN_OFFERS_CATALOG[store.chain] || []).forEach((offer, offerIdx) => {
+                        const prodId = `offer_${store.id}_${offerIdx}`;
+                        const vRec = getValidVoteRecord(mergedVotes[prodId]);
+                        const vote = vRec ? vRec.status : null;
+                        baseCatalogGenerated.push({
+                            id: prodId, title: offer.title, price: offer.price, supermarket: store.chain,
+                            category: offer.category, city: city, storeId: store.id, storeName: store.name,
+                            imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
+                            description: offer.description, userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            createdAt: 0,
+                            isRecentUpload: false,
+                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote)
+                        });
+                    });
                 });
             });
-        }
 
-        function syncSearch(val) {
-            state.searchQuery = val.toLowerCase().trim();
-            document.getElementById('desktopSearchInput').value = val;
-            document.getElementById('heroSearchInput').value = val;
-            const clearBtn = document.getElementById('clearSearchBtn');
-            if (val) clearBtn.classList.remove('hidden');
-            else clearBtn.classList.add('hidden');
-            applyFilters();
-        }
-
-        function clearHeroSearch() {
-            syncSearch('');
-        }
-
-        function resetAllFilters() {
-            state.selectedChain = '';
-            state.selectedCity = 'Málaga';
-            state.selectedStoreId = '';
-            state.searchQuery = '';
-            state.categoryFilter = '';
-            state.stockFilter = '';
-            state.onlyFavorites = false;
-            state.onlyLatest = false;
-            
-            document.getElementById('desktopSearchInput').value = '';
-            document.getElementById('heroSearchInput').value = '';
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('stockFilter').value = '';
-            document.getElementById('citySelect').value = 'Málaga';
-            
-            updateStoreSelectForCity('Málaga');
-            renderSupermarketFilters();
-            applyFilters();
-        }
-
-        function toggleOnlyFavoritesFilter() {
-            state.onlyFavorites = !state.onlyFavorites;
-            const btn = document.getElementById('favoritesNavBtn');
-            if (state.onlyFavorites) {
-                btn.className = 'inline-flex items-center gap-1 bg-emerald-600 text-white font-semibold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm';
-            } else {
-                btn.className = 'inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition';
-            }
-            applyFilters();
-        }
-
-        function toggleOnlyLatestFilter() {
-            state.onlyLatest = !state.onlyLatest;
-            const btn = document.getElementById('latestNavBtn');
-            const inlineBtn = document.getElementById('filterLatestInlineBtn');
-            if (state.onlyLatest) {
-                btn.className = 'inline-flex items-center gap-1 bg-amber-500 text-white font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm';
-                if (inlineBtn) inlineBtn.className = 'inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-400 bg-amber-500 text-white transition shadow-sm';
-            } else {
-                btn.className = 'inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm';
-                if (inlineBtn) inlineBtn.className = 'inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition';
-            }
-            applyFilters();
-        }
-
-        function applyFilters() {
-            state.selectedStoreId = document.getElementById('storeSelect').value;
-            state.categoryFilter = document.getElementById('categoryFilter').value;
-            state.stockFilter = document.getElementById('stockFilter').value;
-            
-            let filtered = state.products.filter(p => {
-                if (state.selectedChain && p.supermarket !== state.selectedChain) return false;
-                if (state.selectedCity && p.city !== state.selectedCity) return false;
-                if (state.selectedStoreId && p.storeId !== state.selectedStoreId) return false;
-                if (state.categoryFilter && p.category !== state.categoryFilter) return false;
-                if (state.stockFilter && p.stockStatus !== state.stockFilter) return false;
-                if (state.onlyFavorites && !state.favorites.includes(p.id)) return false;
-                if (state.onlyLatest && (Date.now() - p.timestamp > 86400000)) return false;
-                if (state.searchQuery) {
-                    const q = state.searchQuery;
-                    const matchTitle = p.title.toLowerCase().includes(q);
-                    const matchStore = (p.storeName || '').toLowerCase().includes(q);
-                    const matchSuper = p.supermarket.toLowerCase().includes(q);
-                    const matchComment = (p.comment || '').toLowerCase().includes(q);
-                    if (!matchTitle && !matchStore && !matchSuper && !matchComment) return false;
-                }
-                return true;
+            // 3. Novedades subidas por usuarios
+            const customs = activeCustom.map(p => {
+                const vRec = getValidVoteRecord(mergedVotes[p.id]);
+                const vote = vRec ? vRec.status : null;
+                return {
+                    ...p, isCustomUserProduct: true, isRecentUpload: true,
+                    createdAt: p.createdAt || Date.now(),
+                    viralContext: p.viralContext || 'Reportado por usuario',
+                    userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                    seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                    stockStatus: computeStockStatusFromVote(vote)
+                };
             });
 
-            renderProducts(filtered);
-            updateBadges();
-        }
+            const allRecentUploads = [...customs, ...newOfficialGenerated].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-        function updateBadges() {
-            document.getElementById('favoritesBadge').innerText = state.favorites.length;
-            const recentCount = state.products.filter(p => (Date.now() - p.timestamp) < 86400000).length;
-            document.getElementById('latestBadge').innerText = recentCount;
-        }
-
-        function renderProducts(products) {
-            const grid = document.getElementById('productsGrid');
-            const emptyState = document.getElementById('emptyState');
-            const resultsCount = document.getElementById('resultsCount');
-
-            resultsCount.innerText = `${products.length} ${products.length === 1 ? 'novedad encontrada' : 'novedades encontradas'}`;
-
-            if (products.length === 0) {
-                grid.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            grid.innerHTML = '';
-
-            products.forEach(p => {
-                const isFav = state.favorites.includes(p.id);
-                const isRecent = (Date.now() - p.timestamp) < 86400000;
-                
-                let chainBg = 'bg-slate-800 text-white';
-                if (p.supermarket === 'Mercadona') chainBg = 'bg-emerald-700 text-white';
-                else if (p.supermarket === 'Carrefour') chainBg = 'bg-blue-800 text-white';
-                else if (p.supermarket === 'Lidl') chainBg = 'bg-blue-600 text-white';
-                else if (p.supermarket === 'Aldi') chainBg = 'bg-indigo-900 text-white';
-                else if (p.supermarket === 'DIA') chainBg = 'bg-red-600 text-white';
-
-                let stockBadge = '';
-                if (p.stockStatus === 'Sí está') {
-                    stockBadge = '<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-lg font-bold text-[11px]"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sí está</span>';
-                } else if (p.stockStatus === 'Agotado') {
-                    stockBadge = '<span class="inline-flex items-center gap-1 bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-lg font-bold text-[11px]"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Agotado</span>';
-                } else {
-                    stockBadge = '<span class="inline-flex items-center gap-1 bg-slate-100 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-lg font-bold text-[11px]"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Sin confirmar</span>';
-                }
-
-                // Botón de borrado global que SOLO se muestra si eres Admin con sesión iniciada
-                const adminDeleteBtn = state.isAdminLoggedIn ? `
-                    <button onclick="deleteProductByTitle('${p.title.replace(/'/g, "\\'")}')" class="absolute bottom-2 right-2 z-20 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-md transition">
-                        Borrar global
-                    </button>
-                ` : '';
-
-                const card = document.createElement('div');
-                card.className = `bg-white rounded-2xl border ${isRecent ? 'border-amber-300 ring-2 ring-amber-400/20' : 'border-slate-200'} shadow-sm hover:shadow-md transition flex flex-col overflow-hidden relative`;
-                
-                card.innerHTML = `
-                    ${isRecent ? '<div class="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1"><i class="fa-solid fa-fire text-[9px]"></i> NUEVO</div>' : ''}
-                    
-                    <div class="relative h-36 bg-slate-100 overflow-hidden group">
-                        <img src="${p.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80'}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
-                        <span class="absolute top-2 right-2 text-[10px] font-extrabold px-2 py-0.5 rounded-lg ${chainBg} shadow-sm">
-                            ${p.supermarket}
-                        </span>
-                        ${adminDeleteBtn}
-                        <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-white text-xs font-bold pointer-events-none">
-                            <span class="bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-md text-[11px]">${p.context || p.category}</span>
-                            <span class="text-base font-extrabold text-emerald-300">${p.price.toFixed(2)} €</span>
-                        </div>
-                    </div>
-
-                    <div class="p-3.5 flex-1 flex flex-col justify-between text-xs space-y-2.5">
-                        <div>
-                            <div class="flex items-start justify-between gap-1 mb-1">
-                                <h3 class="font-extrabold text-slate-900 leading-snug line-clamp-2">${p.title}</h3>
-                                <button onclick="toggleFavorite('${p.id}')" class="text-slate-300 hover:text-emerald-600 transition shrink-0 p-1" title="Guardar aviso">
-                                    <i class="fa-solid fa-bookmark ${isFav ? 'text-emerald-600' : ''}"></i>
-                                </button>
-                            </div>
-                            <p class="text-[11px] text-slate-500 flex items-center gap-1 font-medium">
-                                <i class="fa-solid fa-store text-slate-400 text-[10px]"></i>
-                                <span class="truncate">${p.storeName || p.supermarket}</span>
-                            </p>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-1 border-t border-slate-100">
-                            ${stockBadge}
-                            <span class="text-[10px] text-slate-400">${getTimeAgo(p.timestamp)}</span>
-                        </div>
-
-                        ${p.comment ? `<div class="bg-slate-50 p-2 rounded-xl text-[11px] text-slate-600 italic border border-slate-100 flex items-start gap-1.5"><i class="fa-solid fa-quote-left text-slate-300 text-[10px] mt-0.5"></i><span class="line-clamp-2">${p.comment}</span></div>` : ''}
-
-                        <div class="grid grid-cols-2 gap-1.5 pt-1">
-                            <button onclick="voteProduct('${p.id}', 'Sí está')" class="w-full py-1.5 px-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl border border-emerald-200 transition flex items-center justify-center gap-1 text-[11px]">
-                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                                <span>¡Sí hay! (${p.votesYes || 0})</span>
-                            </button>
-                            <button onclick="voteProduct('${p.id}', 'Agotado')" class="w-full py-1.5 px-2 bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold rounded-xl border border-rose-200 transition flex items-center justify-center gap-1 text-[11px]">
-                                <i class="fa-solid fa-circle-xmark text-rose-600"></i>
-                                <span>Agotado (${p.votesNo || 0})</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function getTimeAgo(timestamp) {
-            const diff = Date.now() - timestamp;
-            const mins = Math.floor(diff / 60000);
-            if (mins < 60) return `Hace ${Math.max(1, mins)} min`;
-            const hours = Math.floor(mins / 60);
-            if (hours < 24) return `Hace ${hours} h`;
-            const days = Math.floor(hours / 24);
-            return `Hace ${days} d`;
-        }
-
-        function toggleFavorite(id) {
-            if (state.favorites.includes(id)) {
-                state.favorites = state.favorites.filter(fav => fav !== id);
-            } else {
-                state.favorites.push(id);
-            }
-            localStorage.setItem('superradar_favs', JSON.stringify(state.favorites));
+            products = [...allRecentUploads, ...baseCatalogGenerated];
+            updateFavoritesCounter();
+            updateLatestCounter();
             applyFilters();
+            if (isAdminAuthenticated) renderAdminLists();
         }
 
-        function openModal() {
-            document.getElementById('productModal').classList.remove('hidden');
+        window.rebuildCatalogFromCurrentState = rebuildCatalogFromCurrentState;
+
+        function updateLatestCounter() {
+            const activeOfficial = getMergedOfficialOffers();
+            const activeCustom = getMergedCustomProducts().filter(p => p.city === currentCity);
+            const totalNew = activeOfficial.length + activeCustom.length;
+            const badge = document.getElementById('latestBadge');
+            if (badge) badge.textContent = totalNew;
         }
 
-        function closeModal() {
-            document.getElementById('productModal').classList.add('hidden');
-            document.getElementById('addProductForm').reset();
-            document.getElementById('fileLabelText').innerText = 'Subir';
-        }
-
-        function openCityRequestModal() {
-            document.getElementById('cityRequestModal').classList.remove('hidden');
-            updateRequestedCitiesCounter();
-        }
-
-        function closeCityRequestModal() {
-            document.getElementById('cityRequestModal').classList.add('hidden');
+        function updateFavoritesCounter() {
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const count = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const badge = document.getElementById('favoritesBadge');
+            if (badge) badge.textContent = count;
         }
 
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
-            if (state.isAdminLoggedIn) {
+            if (isAdminAuthenticated) {
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminDashboardSection').classList.remove('hidden');
+                renderAdminLists();
             } else {
                 document.getElementById('adminLoginSection').classList.remove('hidden');
                 document.getElementById('adminDashboardSection').classList.add('hidden');
             }
         }
+        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        let uploadedImageBase64 = '';
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            document.getElementById('fileLabelText').innerText = 'Cargando...';
-            const reader = new FileReader();
-            reader.onload = function(uploadEvent) {
-                uploadedImageBase64 = uploadEvent.target.result;
-                document.getElementById('fileLabelText').innerText = '¡Foto lista!';
-                document.getElementById('formImageUrl').value = uploadedImageBase64;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        let adminImageBase64 = '';
-        function handleAdminFileSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            document.getElementById('adminFileLabel').innerText = 'Cargando...';
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                adminImageBase64 = ev.target.result;
-                document.getElementById('adminFileLabel').innerText = '¡Lista!';
-                document.getElementById('adminProdImageUrl').value = adminImageBase64;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const title = document.getElementById('formTitle').value.trim();
-            const price = parseFloat(document.getElementById('formPrice').value);
-            const supermarket = document.getElementById('formSupermarket').value;
-            const category = document.getElementById('formCategory').value;
-            const storeId = document.getElementById('formStoreId').value;
-            const stockStatus = document.getElementById('formStockStatus').value;
-            const imageUrl = document.getElementById('formImageUrl').value.trim() || uploadedImageBase64 || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
-            const comment = document.getElementById('formComment').value.trim();
-
-            let foundStoreName = supermarket;
-            let foundCity = 'Málaga';
-            Object.keys(CITIES_DATA).forEach(cityName => {
-                CITIES_DATA[cityName].forEach(st => {
-                    if (st.id === storeId) {
-                        foundStoreName = st.name;
-                        foundCity = cityName;
-                    }
-                });
-            });
-
-            const newProd = {
-                id: 'prod-' + Date.now(),
-                title,
-                price,
-                supermarket,
-                category,
-                context: `${supermarket} · ${category}`,
-                storeId,
-                storeName: foundStoreName,
-                city: foundCity,
-                stockStatus,
-                imageUrl,
-                comment,
-                timestamp: Date.now(),
-                votesYes: stockStatus === 'Sí está' ? 1 : 0,
-                votesNo: stockStatus === 'Agotado' ? 1 : 0,
-                isOfficial: false
-            };
-
-            try {
-                await db.collection('products').doc(newProd.id).set(newProd);
-                closeModal();
-                alert('¡Aviso publicado con éxito!');
-            } catch (e) {
-                console.error("Error guardando:", e);
-                state.products.unshift(newProd);
-                applyFilters();
-                closeModal();
-            }
-        }
-
-        async function voteProduct(productId, voteType) {
-            const prod = state.products.find(p => p.id === productId);
-            if (!prod) return;
-
-            let yes = prod.votesYes || 0;
-            let no = prod.votesNo || 0;
-            let newStatus = prod.stockStatus;
-
-            if (voteType === 'Sí está') {
-                yes++;
-                newStatus = 'Sí está';
-            } else {
-                no++;
-                newStatus = 'Agotado';
-            }
-
-            try {
-                await db.collection('products').doc(productId).update({
-                    votesYes: yes,
-                    votesNo: no,
-                    stockStatus: newStatus
-                });
-            } catch (e) {
-                prod.votesYes = yes;
-                prod.votesNo = no;
-                prod.stockStatus = newStatus;
-                applyFilters();
-            }
-        }
-
-        async function handleCityRequestSubmit(event) {
-            event.preventDefault();
-            const cityName = document.getElementById('reqCityName').value.trim();
-            const storeName = document.getElementById('reqStoreName').value.trim();
-            
-            const reqItem = { id: 'req-' + Date.now(), cityName, storeName, timestamp: Date.now() };
-            try {
-                await db.collection('cityRequests').doc(reqItem.id).set(reqItem);
-                state.requestedCities.push(reqItem);
-                localStorage.setItem('superradar_reqs', JSON.stringify(state.requestedCities));
-                document.getElementById('reqCityName').value = '';
-                document.getElementById('reqStoreName').value = '';
-                updateRequestedCitiesCounter();
-                alert('¡Petición enviada correctamente! La tendremos muy en cuenta.');
-            } catch (e) {
-                state.requestedCities.push(reqItem);
-                localStorage.setItem('superradar_reqs', JSON.stringify(state.requestedCities));
-                closeCityRequestModal();
-            }
-        }
-
-        function updateRequestedCitiesCounter() {
-            const box = document.getElementById('requestedCitiesCounterBox');
-            box.classList.remove('hidden');
-            box.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Llevamos <strong>${state.requestedCities.length + 12}</strong> peticiones acumuladas de toda España.`;
-        }
-
-        function handleAdminLogin(event) {
-            event.preventDefault();
+        function handleAdminLogin(e) {
+            e.preventDefault();
             const pin = document.getElementById('adminPinInput').value.trim();
-            if (pin === state.adminPin) {
-                state.isAdminLoggedIn = true;
+            if (pin === ADMIN_SECRET_PIN) {
+                isAdminAuthenticated = true;
+                sessionStorage.setItem('super_radar_admin_auth', 'true');
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('adminLoginSection').classList.add('hidden');
+                document.getElementById('adminDashboardSection').classList.remove('hidden');
                 document.getElementById('adminActiveBadge').classList.remove('hidden');
-                openAdminModal();
-                applyFilters();
+                renderAdminLists();
+                rebuildCatalogFromCurrentState();
+                showToast('⚡ Modo Admin activado');
             } else {
-                alert('Clave incorrecta.');
+                showToast('❌ Clave incorrecta (malaga2025)');
             }
         }
 
         function handleAdminLogout() {
-            state.isAdminLoggedIn = false;
+            isAdminAuthenticated = false;
+            sessionStorage.removeItem('super_radar_admin_auth');
             document.getElementById('adminActiveBadge').classList.add('hidden');
-            openAdminModal();
+            closeAdminModal();
+            rebuildCatalogFromCurrentState();
+            showToast('Sesión cerrada');
+        }
+
+        function handleAdminFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                adminUploadedImageDataUrl = ev.target.result;
+                document.getElementById('adminFileLabel').textContent = '✅ Listo';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAdminPublishCatalogOffer(e) {
+            e.preventDefault();
+            const newOffer = {
+                id: 'off_' + Date.now(),
+                chain: document.getElementById('adminProdChain').value,
+                title: document.getElementById('adminProdTitle').value.trim(),
+                price: parseFloat(document.getElementById('adminProdPrice').value),
+                category: document.getElementById('adminProdCategory').value,
+                viralContext: document.getElementById('adminProdContext').value.trim(),
+                description: document.getElementById('adminProdDesc').value.trim(),
+                imageUrl: adminUploadedImageDataUrl || document.getElementById('adminProdImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                createdAt: Date.now()
+            };
+
+            if (!userInteractions.officialCatalogOffers) userInteractions.officialCatalogOffers = [];
+            userInteractions.officialCatalogOffers.unshift(newOffer);
+            saveUserInteractions();
+            if (window.syncOfficialOfferToCloud) window.syncOfficialOfferToCloud(newOffer);
+
+            adminUploadedImageDataUrl = '';
+            document.getElementById('adminFileLabel').textContent = 'Foto';
+            document.getElementById('adminCatalogForm').reset();
+            document.getElementById('adminProdContext').value = 'Nuevo en TikTok · Muy buscado';
+            rebuildCatalogFromCurrentState();
+            showToast(`🚀 ¡Publicado en todos los ${newOffer.chain}!`);
+        }
+
+        function deleteOfficialOffer(id) {
+            userInteractions.officialCatalogOffers = (userInteractions.officialCatalogOffers || []).filter(o => o.id !== id);
+            saveUserInteractions();
+            if (window.deleteOfficialOfferFromCloud) window.deleteOfficialOfferFromCloud(id);
+            rebuildCatalogFromCurrentState();
+            showToast('🗑️ Novedad eliminada');
+        }
+
+        function deleteCustomUserProduct(id) {
+            userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== id);
+            saveUserInteractions();
+            if (window.deleteCustomProductFromCloud) window.deleteCustomProductFromCloud(id);
+            rebuildCatalogFromCurrentState();
+            showToast('🗑️ Aviso borrado');
+        }
+
+        function renderAdminLists() {
+            const offList = document.getElementById('adminOfficialList');
+            const offCount = document.getElementById('adminOfficialCount');
+            const custList = document.getElementById('adminCustomList');
+            const custCount = document.getElementById('adminCustomCount');
+            if (!offList || !custList) return;
+
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const validVotesCount = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const reqList = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
+
+            const visitsEl = document.getElementById('adminTotalVisitsCount');
+            const votesEl = document.getElementById('adminTotalVotesCount');
+            const reqsEl = document.getElementById('adminTotalReqsCount');
+            if (visitsEl) visitsEl.textContent = cloudState.totalVisits || 1;
+            if (votesEl) votesEl.textContent = validVotesCount;
+            if (reqsEl) reqsEl.textContent = reqList.length;
+
+            const officials = getMergedOfficialOffers();
+            offCount.textContent = officials.length;
+            offList.innerHTML = officials.length === 0 ? '<p class="text-slate-400 italic">Sin novedades oficiales añadidas.</p>' :
+                officials.map(o => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
+                    <span class="truncate pr-2"><b>[${o.chain}]</b> ${o.title}</span>
+                    <button onclick="deleteOfficialOffer('${o.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                </div>`).join('');
+
+            const customs = getMergedCustomProducts();
+            custCount.textContent = customs.length;
+            custList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
+                customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
+                    <span class="truncate pr-2"><b>[${c.city}]</b> ${c.title}</span>
+                    <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                </div>`).join('');
+        }
+        window.renderAdminLists = renderAdminLists;
+
+        function handleCityChange() {
+            const val = document.getElementById('citySelect').value;
+            if (val === 'REQUEST_NEW_CITY') {
+                document.getElementById('citySelect').value = currentCity;
+                openCityRequestModal();
+                return;
+            }
+            currentCity = val;
+            updateStoreSelectDropdown();
+            updateLatestCounter();
             applyFilters();
         }
 
-        async function handleAdminPublishCatalogOffer(event) {
-            event.preventDefault();
-            const title = document.getElementById('adminProdTitle').value.trim();
-            const price = parseFloat(document.getElementById('adminProdPrice').value);
-            const supermarket = document.getElementById('adminProdChain').value;
-            const category = document.getElementById('adminProdCategory').value;
-            const initialStatus = document.getElementById('adminProdStatus').value;
-            const context = document.getElementById('adminProdContext').value.trim();
-            const imageUrl = document.getElementById('adminProdImageUrl').value.trim() || adminImageBase64 || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
-            const comment = document.getElementById('adminProdDesc').value.trim();
+        function openCityRequestModal() { document.getElementById('cityRequestModal').classList.remove('hidden'); renderReqs(); }
+        function closeCityRequestModal() { document.getElementById('cityRequestModal').classList.add('hidden'); }
 
-            let batch = db.batch();
-            let count = 0;
+        function renderReqs() {
+            const box = document.getElementById('requestedCitiesCounterBox');
+            if (!box) return;
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const list = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
+            if (list.length === 0) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            box.innerHTML = `<b>Peticiones de la comunidad:</b><br>` + list.slice(0, 5).map(r => `• ${r.city}`).join('<br>');
+        }
+        window.renderRequestedCitiesSummary = renderReqs;
 
-            Object.keys(CITIES_DATA).forEach(cityName => {
-                CITIES_DATA[cityName].filter(st => st.chain === supermarket).forEach(st => {
-                    const prodId = 'admin-off-' + Date.now() + '-' + st.id;
-                    const prodData = {
-                        id: prodId,
-                        title,
-                        price,
-                        supermarket,
-                        category,
-                        context,
-                        storeId: st.id,
-                        storeName: st.name,
-                        city: cityName,
-                        stockStatus: initialStatus,
-                        imageUrl,
-                        comment,
-                        timestamp: Date.now(),
-                        votesYes: initialStatus === 'Sí está' ? 1 : 0,
-                        votesNo: initialStatus === 'Agotado' ? 1 : 0,
-                        isOfficial: true
-                    };
-                    const ref = db.collection('products').doc(prodId);
-                    batch.set(ref, prodData);
-                    count++;
-                });
+        function handleCityRequestSubmit(e) {
+            e.preventDefault();
+            const req = { city: document.getElementById('reqCityName').value.trim(), store: document.getElementById('reqStoreName').value.trim(), date: Date.now() };
+            if (!req.city) return;
+            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
+            userInteractions.cityRequests.unshift(req);
+            if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
+            saveUserInteractions();
+            document.getElementById('reqCityName').value = '';
+            document.getElementById('reqStoreName').value = '';
+            closeCityRequestModal();
+            showToast('¡Petición enviada con éxito!');
+        }
+
+        function renderSupermarketChainPills() {
+            const container = document.getElementById('supermarketChainContainer');
+            if (!container) return;
+            const chains = ['', 'Mercadona', 'Carrefour', 'Lidl', 'Aldi', 'DIA'];
+            container.innerHTML = chains.map(chain => {
+                const label = chain === '' ? 'Todos' : chain;
+                const isSel = selectedChain === chain;
+                return `<button onclick="selectChainFilter('${chain}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition shrink-0 ${isSel ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">${label}</button>`;
+            }).join('');
+        }
+
+        function selectChainFilter(chain) {
+            selectedChain = chain;
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            applyFilters();
+        }
+
+        function updateStoreSelectDropdown() {
+            const sel = document.getElementById('storeSelect');
+            if (!sel) return;
+            const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
+            const filtered = cityData.stores.filter(s => s.chain === 'ALL' || !selectedChain || s.chain === selectedChain);
+            document.getElementById('storeCountIndicator').textContent = `${filtered.length - 1} tiendas`;
+            sel.innerHTML = filtered.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        }
+
+        function toggleOnlyFavoritesFilter() {
+            showOnlyFavorites = !showOnlyFavorites;
+            if (showOnlyFavorites) showOnlyLatest = false;
+            updateTopFilterButtonsUI();
+            applyFilters();
+        }
+
+        function toggleOnlyLatestFilter() {
+            showOnlyLatest = !showOnlyLatest;
+            if (showOnlyLatest) showOnlyFavorites = false;
+            updateTopFilterButtonsUI();
+            applyFilters();
+            if (showOnlyLatest) {
+                showToast('🔥 Mostrando las últimas novedades subidas');
+            }
+        }
+
+        function updateTopFilterButtonsUI() {
+            const favBtn = document.getElementById('favoritesNavBtn');
+            const latestBtn = document.getElementById('latestNavBtn');
+            const inlineBtn = document.getElementById('filterLatestInlineBtn');
+
+            if (favBtn) favBtn.classList.toggle('ring-2', showOnlyFavorites);
+            if (latestBtn) {
+                latestBtn.classList.toggle('ring-2', showOnlyLatest);
+                latestBtn.classList.toggle('ring-amber-500', showOnlyLatest);
+                latestBtn.classList.toggle('bg-amber-200', showOnlyLatest);
+            }
+            if (inlineBtn) {
+                inlineBtn.classList.toggle('bg-amber-500', showOnlyLatest);
+                inlineBtn.classList.toggle('text-white', showOnlyLatest);
+                inlineBtn.classList.toggle('bg-amber-50', !showOnlyLatest);
+                inlineBtn.classList.toggle('text-amber-800', !showOnlyLatest);
+                inlineBtn.innerHTML = showOnlyLatest
+                    ? `<i class="fa-solid fa-xmark"></i><span>Quitar filtro de recién subidos</span>`
+                    : `<i class="fa-solid fa-fire text-amber-500"></i><span>Ver solo recién subidos</span>`;
+            }
+        }
+
+        function resetAllFilters() {
+            document.getElementById('heroSearchInput').value = '';
+            document.getElementById('desktopSearchInput').value = '';
+            document.getElementById('citySelect').value = 'Málaga';
+            currentCity = 'Málaga';
+            selectedChain = '';
+            showOnlyFavorites = false;
+            showOnlyLatest = false;
+            updateTopFilterButtonsUI();
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('stockFilter').value = '';
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            updateLatestCounter();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const storeId = document.getElementById('storeSelect').value;
+            const query = (document.getElementById('heroSearchInput').value || document.getElementById('desktopSearchInput').value || '').toLowerCase().trim();
+            const cat = document.getElementById('categoryFilter').value;
+            const stock = document.getElementById('stockFilter').value;
+
+            const filtered = products.filter(p => {
+                if (showOnlyFavorites && !p.userVote) return false;
+                if (showOnlyLatest && !p.isRecentUpload) return false;
+                if (p.city !== currentCity) return false;
+                if (selectedChain && p.supermarket !== selectedChain) return false;
+                if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
+                if (cat && p.category !== cat) return false;
+                if (stock && p.stockStatus !== stock) return false;
+                if (query && !p.title.toLowerCase().includes(query) && !p.description.toLowerCase().includes(query) && !p.supermarket.toLowerCase().includes(query)) return false;
+                return true;
             });
+            renderProducts(filtered);
+        }
 
+        function renderProducts(items) {
+            const grid = document.getElementById('productsGrid');
+            const empty = document.getElementById('emptyState');
+            const count = document.getElementById('resultsCount');
+            if (!grid) return;
+
+            count.textContent = showOnlyLatest
+                ? `🔥 ${items.length} ${items.length === 1 ? 'novedad recién subida' : 'novedades recién subidas'} en ${currentCity}`
+                : `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'} en ${currentCity}`;
+
+            if (items.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+
+            grid.innerHTML = items.map(p => {
+                const badge = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
+                const timeStr = formatVoteTime(p.updatedAt);
+                let stockText = '⚪ Sin confirmar hoy';
+                let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
+                let bannerText = p.viralContext || 'Novedad viral';
+                let bannerColor = 'text-slate-400';
+
+                if (p.userVote === 'seen') {
+                    stockText = '🟢 ¡Sí hay!';
+                    stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                    bannerText = `✅ Último aviso (${timeStr}): SÍ ESTÁ`;
+                    bannerColor = 'text-emerald-700 font-semibold';
+                } else if (p.userVote === 'missing') {
+                    stockText = '🔴 Agotado';
+                    stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
+                    bannerText = `⚠️ Último aviso (${timeStr}): AGOTADO`;
+                    bannerColor = 'text-rose-600 font-semibold';
+                }
+
+                let newBadgeHtml = p.isRecentUpload
+                    ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-fire"></i> NUEVO</span>`
+                    : '';
+
+                let adminDel = '';
+                if (isAdminAuthenticated) {
+                    if (p.adminOfferId) adminDel = `<button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar global</button>`;
+                    else if (p.isCustomUserProduct) adminDel = `<button onclick="deleteCustomUserProduct('${p.id}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar</button>`;
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl border ${p.isRecentUpload ? 'border-amber-300 ring-1 ring-amber-200/60' : 'border-slate-200'} overflow-hidden shadow-sm flex flex-col">
+                        <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
+                            <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <div class="absolute top-2 left-2 flex items-center gap-1">
+                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                                ${newBadgeHtml}
+                            </div>
+                            <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
+                            ${adminDel}
+                        </div>
+                        <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
+                            <div>
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="font-extrabold text-slate-900">${Number(p.price).toFixed(2)} €</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
+                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
+                            </div>
+                            <div class="space-y-2 pt-2 border-t border-slate-100">
+                                <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
+                                    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
+                                    <span class="truncate">${p.storeName}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-1.5">
+                                    <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                        <span>🟢 Sí (${p.seenCount})</span>
+                                    </button>
+                                    <button onclick="handleStoreVote('${p.id}', 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                        <span>🔴 No (${p.missingCount})</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleStoreVote(id, type) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+            if (p.userVote === type) {
+                p.userVote = null; p.updatedAt = null; p.seenCount = 0; p.missingCount = 0; p.stockStatus = 'Sin confirmar';
+                delete userInteractions.votes[id];
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
+                showToast('Aviso retirado');
+            } else {
+                const now = Date.now();
+                const payload = { status: type, updatedAt: now };
+                p.userVote = type; p.updatedAt = now;
+                p.seenCount = type === 'seen' ? 1 : 0; p.missingCount = type === 'missing' ? 1 : 0;
+                p.stockStatus = computeStockStatusFromVote(type);
+                userInteractions.votes[id] = payload;
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
+                showToast(type === 'seen' ? '¡Actualizado: SÍ hay!' : '¡Actualizado: AGOTADO!');
+            }
+            saveUserInteractions();
+            applyFilters();
+        }
+
+        function handleFileSelect(e) {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = ev => { uploadedImageDataUrl = ev.target.result; document.getElementById('fileUploadLabel').textContent = '✅ Foto lista'; };
+            r.readAsDataURL(f);
+        }
+
+        function syncSearch(v) {
+            document.getElementById('heroSearchInput').value = v;
+            document.getElementById('desktopSearchInput').value = v;
+            applyFilters();
+        }
+        function clearHeroSearch() { syncSearch(''); }
+        function openModal() {
+            document.getElementById('productModal').classList.remove('hidden');
+            document.getElementById('formCity').value = currentCity;
+            if (selectedChain) document.getElementById('formSupermarket').value = selectedChain;
+            handleFormSupermarketChange();
+        }
+        function closeModal() { document.getElementById('productModal').classList.add('hidden'); }
+
+        function handleFormCityChange() { handleFormSupermarketChange(); }
+        function handleFormSupermarketChange() {
+            const city = document.getElementById('formCity').value;
+            const sup = document.getElementById('formSupermarket').value;
+            const storeSel = document.getElementById('formStore');
+            const stores = (CITIES_AND_STORES[city] ? CITIES_AND_STORES[city].stores : []).filter(s => s.chain === sup);
+            storeSel.innerHTML = stores.length > 0 ? stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('') : `<option value="gen_${city}_${sup}">${sup} - General</option>`;
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const city = document.getElementById('formCity').value;
+            const sup = document.getElementById('formSupermarket').value;
+            const storeSel = document.getElementById('formStore');
+            const storeName = storeSel.options[storeSel.selectedIndex].text;
+            const status = document.getElementById('formStockStatus').value;
+            const now = Date.now();
+            const newId = 'custom_' + now;
+            const payload = { status: status, updatedAt: now };
+
+            userInteractions.votes[newId] = payload;
+            const newP = {
+                id: newId, title: document.getElementById('formTitle').value,
+                price: parseFloat(document.getElementById('formPrice').value),
+                supermarket: sup, category: document.getElementById('formCategory').value,
+                city: city, storeId: storeSel.value, storeName: storeName,
+                imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                fallbackImg: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                viralContext: 'Aviso de usuario', description: document.getElementById('formDesc').value || 'Reportado en tienda',
+                createdAt: now, isRecentUpload: true,
+                userVote: status, updatedAt: now, seenCount: status === 'seen' ? 1 : 0, missingCount: status === 'missing' ? 1 : 0,
+                stockStatus: computeStockStatusFromVote(status)
+            };
+
+            userInteractions.customProducts.unshift(newP);
+            if (window.syncCustomProductToCloud) window.syncCustomProductToCloud(newP);
+            if (window.syncVoteToCloud) window.syncVoteToCloud(newId, payload);
+            saveUserInteractions();
+
+            uploadedImageDataUrl = '';
+            document.getElementById('addProductForm').reset();
+            closeModal();
+            currentCity = city;
+            document.getElementById('citySelect').value = city;
+            selectedChain = sup;
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            rebuildCatalogFromCurrentState();
+            showToast('¡Aviso publicado con éxito!');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeActiveCitiesAndStores();
+            populateCitySelectDropdowns();
+            loadLocalBackup();
+            renderSupermarketChainPills();
+            updateStoreSelectDropdown();
+            rebuildCatalogFromCurrentState();
+        });
+    </script>
+
+    <!-- Sincronización en la nube directa con Firebase de SuperRadar -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Claves oficiales de Firebase de SuperRadar
+        const EXTERNAL_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyCniLR1E7SkHo2jlDkglX6_sjNGsgFKB3w",
+            authDomain: "superradar-99064.firebaseapp.com",
+            projectId: "superradar-99064",
+            storageBucket: "superradar-99064.firebasestorage.app",
+            messagingSenderId: "123150876347",
+            appId: "1:123150876347:web:60c79635b1e2fddd98f39e",
+            measurementId: "G-C9ZV48DCB3"
+        };
+
+        let db = null, auth = null, currentUser = null, isCloudActive = false;
+
+        let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
+
+        window.getCloudState = function() {
+            return { isCloudActive, currentUser, cloudVotes, cloudCustomProducts, cloudOfficialOffers, cloudCityRequests, totalVisits };
+        };
+
+        function updateCloudIndicator(conn) {
+            const dot = document.getElementById('cloudStatusDot');
+            if (!dot) return;
+            if (conn) {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute -top-0.5 -right-0.5";
+                dot.title = "En vivo (Base de datos conectada)";
+            } else {
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-white absolute -top-0.5 -right-0.5";
+                dot.title = "Modo local";
+            }
+        }
+
+        async function registerVisitInFirebase() {
+            if (!db || !currentUser) return;
             try {
-                await batch.commit();
-                document.getElementById('adminCatalogForm').reset();
-                adminImageBase64 = '';
-                document.getElementById('adminFileLabel').innerText = 'Foto';
-                alert(`¡Novedad oficial publicada con éxito en ${count} sucursales de ${supermarket}!`);
+                // Contar 1 visita por sesión de navegador para no inflar al recargar
+                if (!sessionStorage.getItem('sr_visit_counted')) {
+                    sessionStorage.setItem('sr_visit_counted', 'true');
+                    await setDoc(doc(db, 'site_stats', 'general'), {
+                        totalVisits: increment(1),
+                        lastVisitAt: Date.now()
+                    }, { merge: true });
+                }
             } catch (e) {
-                console.error("Error publicando catálogo:", e);
-                alert('Error al publicar en la nube.');
+                console.warn(e);
             }
         }
 
-        function updateAdminLists() {
-            const officialList = document.getElementById('adminOfficialList');
-            const customList = document.getElementById('adminCustomList');
-            
-            const officialProducts = state.products.filter(p => p.isOfficial);
-            const customProducts = state.products.filter(p => !p.isOfficial);
-
-            document.getElementById('adminOfficialCount').innerText = officialProducts.length;
-            document.getElementById('adminCustomCount').innerText = customProducts.length;
-            document.getElementById('adminTotalVotesCount').innerText = state.products.reduce((acc, p) => acc + (p.votesYes || 0), 0);
-
-            officialList.innerHTML = officialProducts.slice(0, 15).map(p => `
-                <div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    <div class="truncate"><strong class="text-slate-800">${p.title}</strong> (${p.supermarket} - ${p.city})</div>
-                    <button onclick="deleteProduct('${p.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-1.5 py-0.5 rounded text-[10px]">Eliminar</button>
-                </div>
-            `).join('') || '<span class="text-slate-400">No hay oficiales</span>';
-
-            customList.innerHTML = customProducts.slice(0, 15).map(p => `
-                <div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">
-                    <div class="truncate"><strong class="text-slate-800">${p.title}</strong> (${p.storeName})</div>
-                    <button onclick="deleteProduct('${p.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-1.5 py-0.5 rounded text-[10px]">Eliminar</button>
-                </div>
-            `).join('') || '<span class="text-slate-400">No hay avisos</span>';
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('¿Seguro que deseas eliminar este aviso?')) {
-                try {
-                    await db.collection('products').doc(id).delete();
-                } catch (e) {
-                    state.products = state.products.filter(p => p.id !== id);
-                    applyFilters();
-                    updateAdminLists();
+        function setupRealtimeListeners() {
+            if (!currentUser || !db) return;
+            onSnapshot(doc(db, 'site_stats', 'general'), docSnap => {
+                if (docSnap.exists()) {
+                    totalVisits = docSnap.data().totalVisits || 1;
+                    if (window.renderAdminLists) window.renderAdminLists();
                 }
-            }
+            });
+            onSnapshot(collection(db, 'stock_votes'), snap => {
+                cloudVotes = {}; snap.forEach(d => cloudVotes[d.id] = d.data());
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
+            });
+            onSnapshot(collection(db, 'official_catalog_offers'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudOfficialOffers = l;
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
+            });
+            onSnapshot(collection(db, 'custom_products'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudCustomProducts = l;
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
+            });
+            onSnapshot(collection(db, 'city_requests'), snap => {
+                const l = []; snap.forEach(d => l.push(d.data()));
+                cloudCityRequests = l;
+                if (window.renderRequestedCitiesSummary) window.renderRequestedCitiesSummary();
+            });
         }
 
-        async function deleteProductByTitle(title) {
-            if (confirm(`¿Seguro que quieres borrar "${title}" de TODAS las tiendas a la vez?`)) {
-                const matching = state.products.filter(p => p.title === title);
-                let batch = db.batch();
-                matching.forEach(p => {
-                    batch.delete(db.collection('products').doc(p.id));
+        window.syncVoteToCloud = async function(id, data) {
+            if (!isCloudActive || !currentUser || !db) return;
+            const ref = doc(db, 'stock_votes', id);
+            if (data === null) await deleteDoc(ref); else await setDoc(ref, { ...data, updatedBy: currentUser.uid });
+        };
+        window.syncOfficialOfferToCloud = async function(o) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser.uid });
+        };
+        window.deleteOfficialOfferFromCloud = async function(id) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await deleteDoc(doc(db, 'official_catalog_offers', id));
+        };
+        window.syncCustomProductToCloud = async function(p) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await setDoc(doc(db, 'custom_products', p.id), { ...p, createdBy: currentUser.uid });
+        };
+        window.deleteCustomProductFromCloud = async function(id) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await deleteDoc(doc(db, 'custom_products', id));
+        };
+        window.syncCityRequestToCloud = async function(req) {
+            if (!isCloudActive || !currentUser || !db) return;
+            await setDoc(doc(db, 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser.uid });
+        };
+
+        async function initCloudSync() {
+            try {
+                let cfg = EXTERNAL_FIREBASE_CONFIG;
+                if (!cfg || !cfg.apiKey) { updateCloudIndicator(false); return; }
+                const app = initializeApp(cfg);
+                db = getFirestore(app); 
+                auth = getAuth(app);
+                
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, u => { 
+                    currentUser = u; 
+                    if (u) { 
+                        isCloudActive = true; 
+                        updateCloudIndicator(true); 
+                        setupRealtimeListeners(); 
+                        registerVisitInFirebase();
+                    } 
                 });
-                try {
-                    await batch.commit();
-                } catch (e) {
-                    console.error("Error borrando globalmente:", e);
-                }
+            } catch (e) { 
+                console.warn("Firebase Auth / Sync:", e);
+                updateCloudIndicator(false); 
             }
         }
+        initCloudSync();
     </script>
 </body>
 </html>
