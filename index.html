@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperRadar</title>
+    <!-- Vercel Web Analytics para sitios HTML estáticos -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -229,7 +234,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-xs sm:text-sm">Panel de Control Admin</h3>
-                        <span class="text-[10px] text-slate-400">Publica novedades oficiales en todas las tiendas</span>
+                        <span class="text-[10px] text-slate-400">Publica novedades oficiales y revisa el tráfico</span>
                     </div>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
@@ -257,10 +262,35 @@
             <!-- Pantalla Dashboard Admin -->
             <div id="adminDashboardSection" class="hidden p-4 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
                 
+                <!-- Estadísticas en vivo desde Firebase -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-slate-900 text-white p-3 rounded-xl flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block uppercase font-bold">Visitas Totales</span>
+                            <span id="adminTotalVisitsCount" class="text-base sm:text-lg font-extrabold text-emerald-400">0</span>
+                        </div>
+                        <i class="fa-solid fa-eye text-slate-700 text-lg"></i>
+                    </div>
+                    <div class="bg-slate-100 p-3 rounded-xl flex items-center justify-between border border-slate-200">
+                        <div>
+                            <span class="text-[10px] text-slate-500 block uppercase font-bold">Votos Activos</span>
+                            <span id="adminTotalVotesCount" class="text-base sm:text-lg font-extrabold text-slate-800">0</span>
+                        </div>
+                        <i class="fa-solid fa-check-to-slot text-emerald-600 text-lg"></i>
+                    </div>
+                    <div class="bg-slate-100 p-3 rounded-xl flex items-center justify-between border border-slate-200">
+                        <div>
+                            <span class="text-[10px] text-slate-500 block uppercase font-bold">Ciudades Pedidas</span>
+                            <span id="adminTotalReqsCount" class="text-base sm:text-lg font-extrabold text-slate-800">0</span>
+                        </div>
+                        <i class="fa-solid fa-map-pin text-amber-500 text-lg"></i>
+                    </div>
+                </div>
+
                 <!-- Publicar Novedad Global -->
                 <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5">
                     <h4 class="font-bold text-slate-900 text-xs mb-1">🚀 Publicar Novedad Oficial (Toda una Cadena)</h4>
-                    <p class="text-[11px] text-slate-600 mb-3">Aparecerá automáticamente en todas las sucursales de la cadena elegida en España.</p>
+                    <p class="text-[11px] text-slate-600 mb-3">Aparecerá automáticamente en primera posición en todas las sucursales de la cadena elegida.</p>
 
                     <form id="adminCatalogForm" onsubmit="handleAdminPublishCatalogOffer(event)" class="space-y-2.5">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -986,6 +1016,18 @@
             const custCount = document.getElementById('adminCustomCount');
             if (!offList || !custList) return;
 
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const validVotesCount = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const reqList = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
+
+            const visitsEl = document.getElementById('adminTotalVisitsCount');
+            const votesEl = document.getElementById('adminTotalVotesCount');
+            const reqsEl = document.getElementById('adminTotalReqsCount');
+            if (visitsEl) visitsEl.textContent = cloudState.totalVisits || 1;
+            if (votesEl) votesEl.textContent = validVotesCount;
+            if (reqsEl) reqsEl.textContent = reqList.length;
+
             const officials = getMergedOfficialOffers();
             offCount.textContent = officials.length;
             offList.innerHTML = officials.length === 0 ? '<p class="text-slate-400 italic">Sin novedades oficiales añadidas.</p>' :
@@ -1002,6 +1044,7 @@
                     <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
                 </div>`).join('');
         }
+        window.renderAdminLists = renderAdminLists;
 
         function handleCityChange() {
             const val = document.getElementById('citySelect').value;
@@ -1346,7 +1389,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Claves oficiales de Firebase de SuperRadar
         const EXTERNAL_FIREBASE_CONFIG = {
@@ -1361,10 +1404,10 @@
 
         let db = null, auth = null, currentUser = null, isCloudActive = false;
 
-        let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [];
+        let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
 
         window.getCloudState = function() {
-            return { isCloudActive, currentUser, cloudVotes, cloudCustomProducts, cloudOfficialOffers, cloudCityRequests };
+            return { isCloudActive, currentUser, cloudVotes, cloudCustomProducts, cloudOfficialOffers, cloudCityRequests, totalVisits };
         };
 
         function updateCloudIndicator(conn) {
@@ -1379,8 +1422,30 @@
             }
         }
 
+        async function registerVisitInFirebase() {
+            if (!db || !currentUser) return;
+            try {
+                // Contar 1 visita por sesión de navegador para no inflar al recargar
+                if (!sessionStorage.getItem('sr_visit_counted')) {
+                    sessionStorage.setItem('sr_visit_counted', 'true');
+                    await setDoc(doc(db, 'site_stats', 'general'), {
+                        totalVisits: increment(1),
+                        lastVisitAt: Date.now()
+                    }, { merge: true });
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
         function setupRealtimeListeners() {
             if (!currentUser || !db) return;
+            onSnapshot(doc(db, 'site_stats', 'general'), docSnap => {
+                if (docSnap.exists()) {
+                    totalVisits = docSnap.data().totalVisits || 1;
+                    if (window.renderAdminLists) window.renderAdminLists();
+                }
+            });
             onSnapshot(collection(db, 'stock_votes'), snap => {
                 cloudVotes = {}; snap.forEach(d => cloudVotes[d.id] = d.data());
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
@@ -1443,6 +1508,7 @@
                         isCloudActive = true; 
                         updateCloudIndicator(true); 
                         setupRealtimeListeners(); 
+                        registerVisitInFirebase();
                     } 
                 });
             } catch (e) { 
