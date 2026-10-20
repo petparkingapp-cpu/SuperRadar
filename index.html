@@ -272,7 +272,7 @@
                 </button>
             </div>
 
-            <!-- Pantalla PIN Admin (Sin mostrar la contraseña por defecto) -->
+            <!-- Pantalla PIN Admin -->
             <div id="adminLoginSection" class="p-5 text-center space-y-3">
                 <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mx-auto text-base border border-amber-200">
                     <i class="fa-solid fa-key"></i>
@@ -317,7 +317,7 @@
                     </div>
                 </div>
 
-                <!-- Selector de Decoración de Temporada (Halloween / Navidad / Normal) -->
+                <!-- Selector de Decoración de Temporada -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
                     <div class="flex items-center justify-between mb-2">
                         <div>
@@ -732,7 +732,7 @@
 
                 if (city === 'Málaga') {
                     storesList.push(
-                        // Mercadona Málaga (Con calle y zona exacta)
+                        // Mercadona Málaga
                         { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 36 (El Torcal)' },
                         { id: 'merca_mlg_velazquez_91', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 91 (Puerta Blanca)' },
                         { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina, 5 (Parque Litoral)' },
@@ -769,7 +769,7 @@
                         { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Ctra. de Coín, 45 (Churriana)' },
                         { id: 'merca_mlg_campanillas', chain: 'Mercadona', name: 'Mercadona - C. José Calderón, 150 (Campanillas)' },
 
-                        // Carrefour Málaga (Con calle y zona exacta)
+                        // Carrefour Málaga
                         { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Av. Valle Inclán, s/n (C.C. Los Patios)' },
                         { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - Av. Simón Bolívar, s/n (C.C. La Rosaleda)' },
                         { id: 'car_mlg_nostrum', chain: 'Carrefour', name: 'Carrefour - C. Jaén, 1 (P.C. Málaga Nostrum)' },
@@ -778,7 +778,7 @@
                         { id: 'car_mlg_sostoa', chain: 'Carrefour', name: 'Carrefour Market - C. Héroe de Sostoa, 118 (Huelin)' },
                         { id: 'car_mlg_aurora', chain: 'Carrefour', name: 'Carrefour Market - Av. de la Aurora, 4 (Perchel Norte)' },
 
-                        // Lidl Málaga (Con calle y zona exacta)
+                        // Lidl Málaga
                         { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez, 224 (Puerta Blanca / El Torcal)' },
                         { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - C. Pacífico, 19 (Huelin)' },
                         { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Av. Editor Ángel Caffarena, 5 (Teatinos)' },
@@ -792,7 +792,7 @@
                         { id: 'lidl_mlg_limonar', chain: 'Lidl', name: 'Lidl - Camino de los Almendrales, 22 (El Mayorazgo / Limonar)' },
                         { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 98 (Churriana)' },
 
-                        // Aldi Málaga (Con calle y zona exacta)
+                        // Aldi Málaga
                         { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Parque Litoral / Pacífico)' },
                         { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Mesonero Romanos, 12 (Teatinos / Fuentenueva)' },
                         { id: 'aldi_mlg_elconsul', chain: 'Aldi', name: 'Aldi - C. Pintor Sandro Botticelli, 6 (Teatinos / El Cónsul)' },
@@ -833,6 +833,33 @@
                         { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n' },
                         { id: 'dia_mlg_huelin', chain: 'DIA', name: 'DIA - Huelin' },
                         { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA - Teatinos' }
+                    );
+                } else if (city === 'Bilbao') {
+                    // Los 6 supermercados Mercadona reales de Bilbao capital + principales tiendas
+                    storesList.push(
+                        // Mercadona Bilbao (6 tiendas exactas de la ciudad)
+                        { id: 'merca_Bilbao', chain: 'Mercadona', name: 'Mercadona - C. Rodríguez Arias, 17 (Abando / Indautxu)' },
+                        { id: 'merca_bio_urquijo', chain: 'Mercadona', name: 'Mercadona - Alameda de Urquijo, 85 (San Mamés)' },
+                        { id: 'merca_bio_deusto', chain: 'Mercadona', name: 'Mercadona - C. Jon Arrospide, 20 (Deusto)' },
+                        { id: 'merca_bio_miribilla', chain: 'Mercadona', name: 'Mercadona - C. Espinosa Orive, 2 (Miribilla)' },
+                        { id: 'merca_bio_rekalde', chain: 'Mercadona', name: 'Mercadona - C. Xalbador, s/n (Rekalde)' },
+                        { id: 'merca_bio_bolueta', chain: 'Mercadona', name: 'Mercadona - Ctra. Bilbao-Galdakao, 8 (Bolueta)' },
+
+                        // Carrefour Bilbao
+                        { id: 'car_Bilbao', chain: 'Carrefour', name: 'Carrefour Express - C.C. Zubiarte / Gran Vía' },
+                        { id: 'car_bio_market', chain: 'Carrefour', name: 'Carrefour Market - C. Doctor Achúcarro' },
+
+                        // Lidl Bilbao
+                        { id: 'lidl_Bilbao', chain: 'Lidl', name: 'Lidl - C. Autonomía, 1' },
+                        { id: 'lidl_bio_haro', chain: 'Lidl', name: 'Lidl - C. María Díaz de Haro, 14' },
+
+                        // Aldi Bilbao
+                        { id: 'aldi_Bilbao', chain: 'Aldi', name: 'Aldi - Plaza Emilio Campuzano, 3 (Indautxu)' },
+                        { id: 'aldi_bio_deusto', chain: 'Aldi', name: 'Aldi - Av. Madariaga, 47 (Deusto)' },
+
+                        // DIA Bilbao
+                        { id: 'dia_Bilbao', chain: 'DIA', name: 'Supermercados DIA - C. Luis Briñas, 37' },
+                        { id: 'dia_bio_bidebarrieta', chain: 'DIA', name: 'Supermercados DIA - Casco Viejo (C. Bidebarrieta)' }
                     );
                 } else if (city === 'Madrid') {
                     storesList.push(
@@ -876,7 +903,7 @@
 
         function resolveActiveSeason(selection) {
             if (selection && selection !== 'auto') return selection;
-            const month = new Date().getMonth(); // 0 = Enero, 9 = Octubre, 10 = Noviembre, 11 = Diciembre
+            const month = new Date().getMonth();
             if (month === 9) return 'halloween';
             if (month === 11 || (month === 10 && new Date().getDate() >= 15)) return 'christmas';
             return 'normal';
@@ -895,7 +922,6 @@
             const heroIcon = document.getElementById('infoHeroIcon');
             const heroText = document.getElementById('infoHeroText');
 
-            // Actualizar botones del Panel Admin si existen
             ['auto', 'halloween', 'christmas', 'normal'].forEach(k => {
                 const btn = document.getElementById('themeBtn_' + k);
                 if (btn) {
@@ -1637,7 +1663,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Claves oficiales de Firebase de SuperRadar
         const EXTERNAL_FIREBASE_CONFIG = {
             apiKey: "AIzaSyCniLR1E7SkHo2jlDkglX6_sjNGsgFKB3w",
             authDomain: "superradar-99064.firebaseapp.com",
@@ -1649,7 +1674,6 @@
         };
 
         let db = null, auth = null, currentUser = null, isCloudActive = false;
-
         let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
 
         window.getCloudState = function() {
@@ -1671,7 +1695,6 @@
         async function registerVisitInFirebase() {
             if (!db || !currentUser) return;
             try {
-                // Contar 1 visita por sesión de navegador para no inflar al recargar
                 if (!sessionStorage.getItem('sr_visit_counted')) {
                     sessionStorage.setItem('sr_visit_counted', 'true');
                     await setDoc(doc(db, 'site_stats', 'general'), {
