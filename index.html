@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es" class="min-h-screen bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,16 +64,10 @@
         }
     </style>
 </head>
-<body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
-
-    <!-- Cinta decorativa superior de temporada (Halloween / Navidad) -->
-    <div id="seasonalTopRibbon" class="hidden text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center transition-all duration-300 relative overflow-hidden">
-        <div id="seasonalParticlesContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-        <div id="seasonalRibbonContent" class="relative z-10 flex items-center justify-center gap-1"></div>
-    </div>
+<body class="min-h-screen font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
 
     <!-- Cabecera principal optimizada para móvil -->
-    <header id="mainHeader" class="bg-white border-b border-slate-200 sticky top-0 z-30 transition-colors duration-300">
+    <header id="mainHeader" class="bg-white border-b border-slate-200 sticky top-0 z-30 transition-colors duration-300 shrink-0">
         <div class="max-w-6xl mx-auto px-2.5 sm:px-6">
             <div class="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-2">
                 <!-- Logo -->
@@ -121,6 +115,12 @@
                     </button>
                 </div>
             </div>
+        </div>
+
+        <!-- Cinta decorativa de temporada integrada bajo la barra superior para evitar cortes en iOS/Android -->
+        <div id="seasonalTopRibbon" class="hidden text-[11px] sm:text-xs leading-snug font-bold py-2 px-3 text-center transition-all duration-300 relative overflow-hidden shrink-0">
+            <div id="seasonalParticlesContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+            <div id="seasonalRibbonContent" class="relative z-10 flex items-center justify-center gap-1.5 max-w-4xl mx-auto"></div>
         </div>
     </header>
 
@@ -940,11 +940,11 @@
             if (!ribbon || !heroBanner) return;
 
             if (activeMode === 'halloween') {
-                ribbon.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-orange-300 border-b border-orange-500/30 text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center relative overflow-hidden";
+                ribbon.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-orange-300 border-t border-orange-500/30 text-[11px] sm:text-xs leading-snug font-bold py-2 px-3 text-center relative overflow-hidden shrink-0";
                 ribbonContent.innerHTML = `
-                    <span class="seasonal-float">🎃</span>
+                    <span class="seasonal-float shrink-0 text-sm">🎃</span>
                     <span>Especial Halloween: ¿Han llegado ya las chucherías, calabazas y ediciones limitadas a tu súper?</span>
-                    <span class="seasonal-float" style="animation-delay: 1s">👻</span>
+                    <span class="seasonal-float shrink-0 text-sm" style="animation-delay: 1s">👻</span>
                 `;
                 particles.innerHTML = '';
                 logoBox.className = "w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm relative shrink-0 transition-colors duration-300";
@@ -959,11 +959,11 @@
                 heroIcon.textContent = "🎃";
                 heroText.innerHTML = `<strong class="text-orange-300">¡Truco o trato sin paseos en balde!</strong> Comprueba el stock real de Halloween y novedades antes de salir.`;
             } else if (activeMode === 'christmas') {
-                ribbon.className = "bg-gradient-to-r from-red-900 via-emerald-900 to-red-900 text-amber-100 border-b border-amber-400/30 text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center relative overflow-hidden";
+                ribbon.className = "bg-gradient-to-r from-red-900 via-emerald-900 to-red-900 text-amber-100 border-t border-amber-400/30 text-[11px] sm:text-xs leading-snug font-bold py-2 px-3 text-center relative overflow-hidden shrink-0";
                 ribbonContent.innerHTML = `
-                    <span class="seasonal-float">🎄</span>
+                    <span class="seasonal-float shrink-0 text-sm">🎄</span>
                     <span>Especial Navidad: Calendarios de Adviento, Turrones Virales y Gama Gourmet en tiempo real</span>
-                    <span class="seasonal-float" style="animation-delay: 1.2s">🎅</span>
+                    <span class="seasonal-float shrink-0 text-sm" style="animation-delay: 1.2s">🎅</span>
                 `;
                 particles.innerHTML = `
                     <span class="snow-particle text-[10px]" style="left: 12%; animation-delay: 0s;">❄️</span>
