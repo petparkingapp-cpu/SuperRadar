@@ -67,17 +67,17 @@
 <body class="h-full font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
 
     <!-- Cinta decorativa superior de temporada (Halloween / Navidad) -->
-    <div id="seasonalTopRibbon" class="hidden text-[11px] font-bold py-1 px-3 text-center transition-all duration-300 relative overflow-hidden">
+    <div id="seasonalTopRibbon" class="hidden text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center transition-all duration-300 relative overflow-hidden">
         <div id="seasonalParticlesContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-        <div id="seasonalRibbonContent" class="relative z-10 flex items-center justify-center gap-1.5"></div>
+        <div id="seasonalRibbonContent" class="relative z-10 flex items-center justify-center gap-1"></div>
     </div>
 
     <!-- Cabecera principal optimizada para móvil -->
     <header id="mainHeader" class="bg-white border-b border-slate-200 sticky top-0 z-30 transition-colors duration-300">
-        <div class="max-w-6xl mx-auto px-3 sm:px-6">
-            <div class="flex items-center justify-between h-14 sm:h-16 gap-2">
+        <div class="max-w-6xl mx-auto px-2.5 sm:px-6">
+            <div class="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-2">
                 <!-- Logo -->
-                <div class="flex items-center gap-2 cursor-pointer shrink-0 min-w-0" onclick="resetAllFilters()">
+                <div class="flex items-center gap-1.5 sm:gap-2 cursor-pointer min-w-0 flex-1 sm:flex-initial" onclick="resetAllFilters()">
                     <div id="logoIconBox" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-sm relative shrink-0 transition-colors duration-300">
                         <i id="logoMainIcon" class="fa-solid fa-radar text-sm sm:text-base"></i>
                         <span id="seasonalLogoCorner" class="hidden absolute -bottom-1 -left-1 text-xs leading-none select-none pointer-events-none"></span>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1">
-                            <span class="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 truncate">Super<span id="logoAccentText" class="text-emerald-600">Radar</span></span>
+                            <span class="font-extrabold text-sm sm:text-xl tracking-tight text-slate-900 truncate">Super<span id="logoAccentText" class="text-emerald-600">Radar</span></span>
                             <span id="seasonalHeaderBadge" class="hidden text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm"></span>
                             <span id="liveSyncBadge" class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 hidden sm:inline-block">En vivo</span>
                         </div>
@@ -102,22 +102,22 @@
                 </div>
 
                 <!-- Botones de acción cabecera adaptados -->
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button id="latestNavBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm" title="Ver lo último subido">
-                        <i class="fa-solid fa-fire text-amber-500 text-xs"></i>
+                <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                    <button id="latestNavBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition shadow-sm" title="Ver lo último subido">
+                        <i class="fa-solid fa-fire text-amber-500 text-[11px] sm:text-xs"></i>
                         <span>Últimas</span>
-                        <span id="latestBadge" class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                        <span id="latestBadge" class="bg-amber-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
                     </button>
 
-                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-2.5 sm:px-3 py-2 rounded-xl transition">
-                        <i class="fa-solid fa-check-double text-emerald-600 text-xs"></i>
+                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition" title="Mis avisos">
+                        <i class="fa-solid fa-check-double text-emerald-600 text-[11px] sm:text-xs"></i>
                         <span class="hidden sm:inline">Avisos</span>
-                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
                     </button>
 
-                    <button onclick="openModal()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-2.5 sm:px-3.5 py-2 rounded-xl transition shadow-sm shrink-0">
+                    <button onclick="openModal()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition shadow-sm shrink-0">
                         <i class="fa-solid fa-plus text-[10px]"></i>
-                        <span class="truncate">Subir</span>
+                        <span>Subir</span>
                     </button>
                 </div>
             </div>
@@ -157,7 +157,7 @@
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Supermercados</label>
                     <button onclick="resetAllFilters()" class="text-[11px] text-slate-400 hover:text-emerald-600 font-medium">Limpiar</button>
                 </div>
-                <div id="supermarketChainContainer" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                <div id="supermarketChainContainer" class="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5">
                     <!-- Dinámico -->
                 </div>
             </div>
@@ -940,7 +940,7 @@
             if (!ribbon || !heroBanner) return;
 
             if (activeMode === 'halloween') {
-                ribbon.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-orange-300 border-b border-orange-500/30 text-[11px] font-bold py-1.5 px-3 text-center relative overflow-hidden";
+                ribbon.className = "bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 text-orange-300 border-b border-orange-500/30 text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center relative overflow-hidden";
                 ribbonContent.innerHTML = `
                     <span class="seasonal-float">🎃</span>
                     <span>Especial Halloween: ¿Han llegado ya las chucherías, calabazas y ediciones limitadas a tu súper?</span>
@@ -951,7 +951,7 @@
                 logoCorner.textContent = "🎃";
                 logoCorner.classList.remove('hidden');
                 logoAccent.className = "text-orange-600";
-                headerBadge.className = "text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 border border-orange-300 inline-block";
+                headerBadge.className = "hidden sm:inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-orange-100 text-orange-800 border border-orange-300";
                 headerBadge.textContent = "🎃 Halloween";
 
                 heroBanner.className = "bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 text-white border border-orange-500/40 rounded-2xl px-3.5 py-2.5 mb-3 flex items-center justify-between gap-2 shadow-sm text-xs relative overflow-hidden";
@@ -959,7 +959,7 @@
                 heroIcon.textContent = "🎃";
                 heroText.innerHTML = `<strong class="text-orange-300">¡Truco o trato sin paseos en balde!</strong> Comprueba el stock real de Halloween y novedades antes de salir.`;
             } else if (activeMode === 'christmas') {
-                ribbon.className = "bg-gradient-to-r from-red-900 via-emerald-900 to-red-900 text-amber-100 border-b border-amber-400/30 text-[11px] font-bold py-1.5 px-3 text-center relative overflow-hidden";
+                ribbon.className = "bg-gradient-to-r from-red-900 via-emerald-900 to-red-900 text-amber-100 border-b border-amber-400/30 text-[10px] sm:text-[11px] leading-tight font-bold py-1.5 px-2.5 text-center relative overflow-hidden";
                 ribbonContent.innerHTML = `
                     <span class="seasonal-float">🎄</span>
                     <span>Especial Navidad: Calendarios de Adviento, Turrones Virales y Gama Gourmet en tiempo real</span>
@@ -975,7 +975,7 @@
                 logoCorner.textContent = "🎄";
                 logoCorner.classList.remove('hidden');
                 logoAccent.className = "text-red-700";
-                headerBadge.className = "text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-700 border border-red-200 inline-block";
+                headerBadge.className = "hidden sm:inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-red-50 text-red-700 border border-red-200";
                 headerBadge.textContent = "🎄 Navidad";
 
                 heroBanner.className = "bg-gradient-to-r from-emerald-950 via-red-950 to-emerald-950 text-white border border-amber-400/40 rounded-2xl px-3.5 py-2.5 mb-3 flex items-center justify-between gap-2 shadow-sm text-xs relative overflow-hidden";
@@ -1365,7 +1365,7 @@
             container.innerHTML = chains.map(chain => {
                 const label = chain === '' ? 'Todos' : chain;
                 const isSel = selectedChain === chain;
-                return `<button onclick="selectChainFilter('${chain}')" class="text-xs font-bold px-3 py-1.5 rounded-xl transition shrink-0 ${isSel ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">${label}</button>`;
+                return `<button onclick="selectChainFilter('${chain}')" class="w-full sm:w-auto text-center text-xs font-bold px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-xl transition ${isSel ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">${label}</button>`;
             }).join('');
         }
 
