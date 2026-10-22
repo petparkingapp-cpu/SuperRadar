@@ -2,11 +2,11 @@
 <html lang="es" class="min-h-screen bg-slate-50">
 <head>
     <meta name="google-site-verification" content="AeBz666_Toeq5Sa-AxvYqpdq80GiivVo4WtrIm8OAD0" />
-<meta name="description" content="SuperRadar: Comprueba en tiempo real si hay stock o están agotadas las novedades virales de Mercadona, Lidl, Carrefour, DIA y Aldi en tu tienda exacta sin dar paseos en balde." />
-<meta name="keywords" content="SuperRadar, stock mercadona, novedades mercadona, novedades lidl, novedades dia, productos virales supermercado, malaga, bilbao, sevilla, madrid" />
-<meta property="og:title" content="SuperRadar · Radar de Stock de Novedades de Supermercado" />
-<meta property="og:description" content="Consulta y avisa en directo si quedan unidades de los productos virales en tu supermercado antes de salir de casa." />
-<meta property="og:url" content="https://superradar-kappa.vercel.app/" />
+    <meta name="description" content="SuperRadar: Comprueba en tiempo real si hay stock o están agotadas las novedades virales de Mercadona, Lidl, Carrefour, DIA y Aldi en tu tienda exacta sin dar paseos en balde." />
+    <meta name="keywords" content="SuperRadar, stock mercadona, novedades mercadona, novedades lidl, novedades dia, productos virales supermercado, malaga, bilbao, sevilla, madrid" />
+    <meta property="og:title" content="SuperRadar · Radar de Stock de Novedades de Supermercado" />
+    <meta property="og:description" content="Consulta y avisa en directo si quedan unidades de los productos virales en tu supermercado antes de salir de casa." />
+    <meta property="og:url" content="https://superradar-kappa.vercel.app/" />
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -124,7 +124,7 @@
             </div>
         </div>
 
-        <!-- Cinta decorativa de temporada integrada bajo la barra superior para evitar cortes en iOS/Android -->
+        <!-- Cinta decorativa de temporada integrada bajo la barra superior -->
         <div id="seasonalTopRibbon" class="hidden text-[11px] sm:text-xs leading-snug font-bold py-2 px-3 text-center transition-all duration-300 relative overflow-hidden shrink-0">
             <div id="seasonalParticlesContainer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
             <div id="seasonalRibbonContent" class="relative z-10 flex items-center justify-center gap-1.5 max-w-4xl mx-auto"></div>
@@ -162,7 +162,7 @@
             <div>
                 <div class="flex items-center justify-between mb-1.5">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Supermercados</label>
-                    <button onclick="resetAllFilters()" class="text-[11px] text-slate-400 hover:text-emerald-600 font-medium">Limpiar</button>
+                    <button onclick="resetAllFilters()" class="text-[11px] text-slate-400 hover:text-emerald-600 font-medium">Limpiar filtros</button>
                 </div>
                 <div id="supermarketChainContainer" class="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5">
                     <!-- Dinámico -->
@@ -236,10 +236,15 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
             <h3 class="text-xs font-bold text-slate-800 mb-1">No hay novedades con este filtro</h3>
-            <p class="text-slate-400 text-[11px] max-w-xs mx-auto mb-3">Prueba a cambiar el filtro de estado o sube un aviso tú mismo.</p>
-            <button onclick="openModal()" class="bg-emerald-600 text-white font-semibold text-xs px-3 py-2 rounded-xl">
-                + Subir aviso
-            </button>
+            <p class="text-slate-400 text-[11px] max-w-xs mx-auto mb-3">Prueba a pulsar en "Limpiar filtros" para ver todas las tiendas o sube un aviso tú mismo.</p>
+            <div class="flex items-center justify-center gap-2">
+                <button onclick="resetAllFilters()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3 py-2 rounded-xl">
+                    Ver todas las tiendas
+                </button>
+                <button onclick="openModal()" class="bg-emerald-600 text-white font-semibold text-xs px-3 py-2 rounded-xl">
+                    + Subir aviso
+                </button>
+            </div>
         </div>
     </main>
 
@@ -271,7 +276,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-xs sm:text-sm">Panel de Control Admin</h3>
-                        <span class="text-[10px] text-slate-400">Publica novedades oficiales y revisa el tráfico</span>
+                        <span class="text-[10px] text-slate-400">Publica novedades oficiales, edita o borra avisos</span>
                     </div>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
@@ -430,14 +435,14 @@
 
                 <div class="border border-slate-200 rounded-xl p-3">
                     <h4 class="font-bold text-slate-800 text-[11px] uppercase mb-1.5 flex justify-between">
-                        <span>👥 Avisos de Usuarios</span>
+                        <span>👥 Avisos Subidos por Usuarios (En la Nube)</span>
                         <span id="adminCustomCount" class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px]">0</span>
                     </h4>
-                    <div id="adminCustomList" class="space-y-1.5 max-h-36 overflow-y-auto text-slate-600"></div>
+                    <div id="adminCustomList" class="space-y-1.5 max-h-44 overflow-y-auto text-slate-600"></div>
                 </div>
 
                 <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                    <button type="button" onclick="handleAdminLogout()" class="text-rose-600 font-semibold hover:underline">Cerrar sesión</button>
+                    <button type="button" onclick="handleAdminLogout()" class="text-rose-600 font-semibold hover:underline">Cerrar sesión Admin</button>
                     <button type="button" onclick="closeAdminModal()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl">Cerrar</button>
                 </div>
             </div>
@@ -475,13 +480,13 @@
         </div>
     </div>
 
-    <!-- Modal Añadir Novedad Usuario -->
+    <!-- Modal Añadir / Editar Novedad Usuario -->
     <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-auto text-xs">
             <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-emerald-400"></i>
-                    <h3 class="font-bold text-sm">Avisar de una novedad en mi tienda</h3>
+                    <i id="productModalIcon" class="fa-solid fa-plus-circle text-emerald-400"></i>
+                    <h3 id="productModalTitle" class="font-bold text-sm">Avisar de una novedad en mi tienda</h3>
                 </div>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-base"></i>
@@ -489,6 +494,7 @@
             </div>
 
             <form id="addProductForm" onsubmit="handleFormSubmit(event)" class="p-4 space-y-3 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="editingProductId" value="">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div class="sm:col-span-2">
                         <label class="block font-bold text-slate-600 mb-1">Producto *</label>
@@ -561,7 +567,7 @@
 
                 <div class="pt-1 flex items-center justify-end gap-2">
                     <button type="button" onclick="closeModal()" class="px-3 py-1.5 text-slate-600 font-semibold">Cancelar</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Publicar aviso</button>
+                    <button type="submit" id="submitProductBtn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Publicar aviso</button>
                 </div>
             </form>
         </div>
@@ -577,6 +583,84 @@
         const ADMIN_SECRET_PIN = 'malaga2025';
         let isAdminAuthenticated = false;
         let adminUploadedImageDataUrl = '';
+
+        // Identificador persistente del dispositivo para permitir al autor editar o borrar su propio aviso si se equivoca
+        function getDeviceAuthorId() {
+            let devId = localStorage.getItem('sr_device_author_id');
+            if (!devId) {
+                devId = 'dev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+                try { localStorage.setItem('sr_device_author_id', devId); } catch (e) {}
+            }
+            return devId;
+        }
+        const DEVICE_AUTHOR_ID = getDeviceAuthorId();
+
+        function getMyOwnUploadedIds() {
+            try {
+                return JSON.parse(localStorage.getItem('sr_my_uploaded_ids') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function markIdAsMyOwnUpload(id) {
+            try {
+                const list = getMyOwnUploadedIds();
+                if (!list.includes(id)) {
+                    list.push(id);
+                    localStorage.setItem('sr_my_uploaded_ids', JSON.stringify(list));
+                }
+            } catch (e) {}
+        }
+
+        function isMyOwnUpload(prod) {
+            if (!prod) return false;
+            const myIds = getMyOwnUploadedIds();
+            if (myIds.includes(prod.id)) return true;
+            if (prod.authorDeviceId && prod.authorDeviceId === DEVICE_AUTHOR_ID) return true;
+            const cloudState = window.getCloudState ? window.getCloudState() : {};
+            if (cloudState.currentUser && prod.createdBy && prod.createdBy === cloudState.currentUser.uid) return true;
+            return false;
+        }
+
+        // Compresor automático de fotos de cámara móvil (evita superar el límite de 1MB de Firebase)
+        function compressImageFile(file, maxDimension = 800, quality = 0.72) {
+            return new Promise((resolve) => {
+                if (!file) { resolve(''); return; }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        try {
+                            let width = img.width;
+                            let height = img.height;
+                            if (width > maxDimension || height > maxDimension) {
+                                if (width > height) {
+                                    height = Math.round((height * maxDimension) / width);
+                                    width = maxDimension;
+                                } else {
+                                    width = Math.round((width * maxDimension) / height);
+                                    height = maxDimension;
+                                }
+                            }
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                            resolve(compressedDataUrl);
+                        } catch (err) {
+                            resolve(event.target.result);
+                        }
+                    };
+                    img.onerror = () => resolve(event.target.result);
+                    img.src = event.target.result;
+                };
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
 
         const SUPERMARKET_DATA = {
             'Mercadona': { badge: 'bg-emerald-700 text-white' },
@@ -762,7 +846,7 @@
                         { id: 'merca_mlg_thuillier', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Ciudad Jardín)' },
                         { id: 'merca_mlg_rosaleda', chain: 'Mercadona', name: 'Mercadona - Av. Simón Bolívar s/n (C.C. La Rosaleda)' },
                         { id: 'merca_mlg_valle_inclan', chain: 'Mercadona', name: 'Mercadona - Av. Valle Inclán, 26 (La Roca)' },
-                        { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suarez, 22 (Miraflores)' },
+                        { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suárez, 22 (Miraflores)' },
                         { id: 'merca_mlg_pelayo', chain: 'Mercadona', name: 'Mercadona - C. Pelayo, 13 (La Trinidad)' },
                         { id: 'merca_mlg_frailes', chain: 'Mercadona', name: 'Mercadona - C. Frailes, 26 (La Merced / Victoria)' },
                         { id: 'merca_mlg_jorge_silvela', chain: 'Mercadona', name: 'Mercadona - C. Jorge Silvela, 1 (Capuchinos)' },
@@ -842,29 +926,19 @@
                         { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA - Teatinos' }
                     );
                 } else if (city === 'Bilbao') {
-                    // Los 6 supermercados Mercadona reales de Bilbao capital + principales tiendas
                     storesList.push(
-                        // Mercadona Bilbao (6 tiendas exactas de la ciudad)
                         { id: 'merca_Bilbao', chain: 'Mercadona', name: 'Mercadona - C. Rodríguez Arias, 17 (Abando / Indautxu)' },
                         { id: 'merca_bio_urquijo', chain: 'Mercadona', name: 'Mercadona - Alameda de Urquijo, 85 (San Mamés)' },
                         { id: 'merca_bio_deusto', chain: 'Mercadona', name: 'Mercadona - C. Jon Arrospide, 20 (Deusto)' },
                         { id: 'merca_bio_miribilla', chain: 'Mercadona', name: 'Mercadona - C. Espinosa Orive, 2 (Miribilla)' },
                         { id: 'merca_bio_rekalde', chain: 'Mercadona', name: 'Mercadona - C. Xalbador, s/n (Rekalde)' },
                         { id: 'merca_bio_bolueta', chain: 'Mercadona', name: 'Mercadona - Ctra. Bilbao-Galdakao, 8 (Bolueta)' },
-
-                        // Carrefour Bilbao
                         { id: 'car_Bilbao', chain: 'Carrefour', name: 'Carrefour Express - C.C. Zubiarte / Gran Vía' },
                         { id: 'car_bio_market', chain: 'Carrefour', name: 'Carrefour Market - C. Doctor Achúcarro' },
-
-                        // Lidl Bilbao
                         { id: 'lidl_Bilbao', chain: 'Lidl', name: 'Lidl - C. Autonomía, 1' },
                         { id: 'lidl_bio_haro', chain: 'Lidl', name: 'Lidl - C. María Díaz de Haro, 14' },
-
-                        // Aldi Bilbao
                         { id: 'aldi_Bilbao', chain: 'Aldi', name: 'Aldi - Plaza Emilio Campuzano, 3 (Indautxu)' },
                         { id: 'aldi_bio_deusto', chain: 'Aldi', name: 'Aldi - Av. Madariaga, 47 (Deusto)' },
-
-                        // DIA Bilbao
                         { id: 'dia_Bilbao', chain: 'DIA', name: 'Supermercados DIA - C. Luis Briñas, 37' },
                         { id: 'dia_bio_bidebarrieta', chain: 'DIA', name: 'Supermercados DIA - Casco Viejo (C. Bidebarrieta)' }
                     );
@@ -1067,21 +1141,24 @@
             const now = new Date();
             const isToday = date.toDateString() === now.toDateString();
             const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            return isToday ? `Hoy a las ${timeStr}` : `Ayer a las ${timeStr}`;
+            return isToday ? `Hoy a las ${timeStr}` : `Reciente (${timeStr})`;
         }
 
         function getValidVoteRecord(rawRecord) {
             if (!rawRecord) return null;
             if (typeof rawRecord === 'string') return { status: rawRecord, updatedAt: Date.now() };
-            if (Date.now() - rawRecord.updatedAt > 24 * 60 * 60 * 1000) return null;
+            if (Date.now() - rawRecord.updatedAt > 48 * 60 * 60 * 1000) return null;
             return rawRecord;
         }
 
         function getMergedOfficialOffers() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            if (cloudState.isCloudActive && cloudState.hasLoadedOfficialSnap) {
+                return [...(cloudState.cloudOfficialOffers || [])].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            }
             const m = new Map();
             (userInteractions.officialCatalogOffers || []).forEach(o => m.set(o.id, o));
-            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudOfficialOffers)) {
+            if (Array.isArray(cloudState.cloudOfficialOffers)) {
                 cloudState.cloudOfficialOffers.forEach(o => m.set(o.id, o));
             }
             return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1089,9 +1166,13 @@
 
         function getMergedCustomProducts() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            // Si Firebase ya cargó la lista en vivo, mandan los datos en la nube para que los borrados se sincronicen en todos los móviles
+            if (cloudState.isCloudActive && cloudState.hasLoadedCustomSnap) {
+                return [...(cloudState.cloudCustomProducts || [])].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            }
             const m = new Map();
             (userInteractions.customProducts || []).forEach(p => m.set(p.id, p));
-            if (cloudState.isCloudActive && Array.isArray(cloudState.cloudCustomProducts)) {
+            if (Array.isArray(cloudState.cloudCustomProducts)) {
                 cloudState.cloudCustomProducts.forEach(p => m.set(p.id, p));
             }
             return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -1119,10 +1200,10 @@
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
                         newOfficialGenerated.push({
-                            id: prodId, adminOfferId: offer.id, title: offer.title, price: offer.price,
-                            supermarket: store.chain, category: offer.category, city: city, storeId: store.id,
+                            id: prodId, adminOfferId: offer.id, title: offer.title || 'Novedad', price: Number(offer.price || 0),
+                            supermarket: store.chain, category: offer.category || 'Alimentación / Snacks', city: city, storeId: store.id,
                             storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-                            viralContext: offer.viralContext || 'Novedad oficial', description: offer.description,
+                            viralContext: offer.viralContext || 'Novedad oficial', description: offer.description || '',
                             userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
                             createdAt: offer.createdAt || Date.now(),
                             isRecentUpload: true,
@@ -1152,16 +1233,36 @@
                 });
             });
 
-            // 3. Novedades subidas por usuarios
+            // 3. Novedades subidas por usuarios desde el botón "Subir"
             const customs = activeCustom.map(p => {
                 const vRec = getValidVoteRecord(mergedVotes[p.id]);
-                const vote = vRec ? vRec.status : null;
+                const vote = vRec ? vRec.status : (p.userVote || 'seen');
+                const updatedTime = vRec ? vRec.updatedAt : (p.updatedAt || p.createdAt || Date.now());
+                const cityVal = p.city || 'Málaga';
+                // Asegurar que el nombre de tienda se muestre actualizado (ej. Camino de Suárez, 22)
+                let resolvedStoreName = p.storeName || `${p.supermarket || 'Tienda'} - ${cityVal}`;
+                if (CITIES_AND_STORES[cityVal] && p.storeId) {
+                    const matchedStore = CITIES_AND_STORES[cityVal].stores.find(s => s.id === p.storeId);
+                    if (matchedStore) resolvedStoreName = matchedStore.name;
+                }
                 return {
-                    ...p, isCustomUserProduct: true, isRecentUpload: true,
+                    ...p,
+                    title: p.title || 'Producto subido por usuario',
+                    price: Number(p.price || 0),
+                    supermarket: p.supermarket || 'Mercadona',
+                    category: p.category || 'Alimentación / Snacks',
+                    city: cityVal,
+                    storeName: resolvedStoreName,
+                    description: p.description || 'Reportado en tienda',
+                    fallbackImg: p.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                    isCustomUserProduct: true,
+                    isRecentUpload: true,
                     createdAt: p.createdAt || Date.now(),
-                    viralContext: p.viralContext || 'Reportado por usuario',
-                    userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
-                    seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
+                    viralContext: p.viralContext || 'Aviso de la comunidad',
+                    userVote: vote,
+                    updatedAt: updatedTime,
+                    seenCount: vote === 'seen' ? 1 : 0,
+                    missingCount: vote === 'missing' ? 1 : 0,
                     stockStatus: computeStockStatusFromVote(vote)
                 };
             });
@@ -1179,7 +1280,7 @@
 
         function updateLatestCounter() {
             const activeOfficial = getMergedOfficialOffers();
-            const activeCustom = getMergedCustomProducts().filter(p => p.city === currentCity);
+            const activeCustom = getMergedCustomProducts().filter(p => (p.city || 'Málaga') === currentCity);
             const totalNew = activeOfficial.length + activeCustom.length;
             const badge = document.getElementById('latestBadge');
             if (badge) badge.textContent = totalNew;
@@ -1233,18 +1334,15 @@
             showToast('Sesión cerrada');
         }
 
-        function handleAdminFileSelect(e) {
+        async function handleAdminFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = ev => {
-                adminUploadedImageDataUrl = ev.target.result;
-                document.getElementById('adminFileLabel').textContent = '✅ Listo';
-            };
-            reader.readAsDataURL(file);
+            document.getElementById('adminFileLabel').textContent = '⏳...';
+            adminUploadedImageDataUrl = await compressImageFile(file, 800, 0.72);
+            document.getElementById('adminFileLabel').textContent = '✅ Listo';
         }
 
-        function handleAdminPublishCatalogOffer(e) {
+        async function handleAdminPublishCatalogOffer(e) {
             e.preventDefault();
             const newOffer = {
                 id: 'off_' + Date.now(),
@@ -1261,7 +1359,7 @@
             if (!userInteractions.officialCatalogOffers) userInteractions.officialCatalogOffers = [];
             userInteractions.officialCatalogOffers.unshift(newOffer);
             saveUserInteractions();
-            if (window.syncOfficialOfferToCloud) window.syncOfficialOfferToCloud(newOffer);
+            if (window.syncOfficialOfferToCloud) await window.syncOfficialOfferToCloud(newOffer);
 
             adminUploadedImageDataUrl = '';
             document.getElementById('adminFileLabel').textContent = 'Foto';
@@ -1271,20 +1369,49 @@
             showToast(`🚀 ¡Publicado en todos los ${newOffer.chain}!`);
         }
 
-        function deleteOfficialOffer(id) {
+        async function deleteOfficialOffer(id) {
             userInteractions.officialCatalogOffers = (userInteractions.officialCatalogOffers || []).filter(o => o.id !== id);
             saveUserInteractions();
-            if (window.deleteOfficialOfferFromCloud) window.deleteOfficialOfferFromCloud(id);
+            if (window.deleteOfficialOfferFromCloud) await window.deleteOfficialOfferFromCloud(id);
             rebuildCatalogFromCurrentState();
-            showToast('🗑️ Novedad eliminada');
+            showToast('🗑️ Novedad oficial eliminada');
         }
 
-        function deleteCustomUserProduct(id) {
+        async function deleteCustomUserProduct(id) {
             userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== id);
+            delete userInteractions.votes[id];
             saveUserInteractions();
-            if (window.deleteCustomProductFromCloud) window.deleteCustomProductFromCloud(id);
+            if (window.deleteCustomProductFromCloud) await window.deleteCustomProductFromCloud(id);
+            if (window.syncVoteToCloud) await window.syncVoteToCloud(id, null);
             rebuildCatalogFromCurrentState();
-            showToast('🗑️ Aviso borrado');
+            showToast('🗑️ Producto eliminado de todos los dispositivos');
+        }
+
+        function openEditCustomProductModal(id) {
+            const allCustoms = getMergedCustomProducts();
+            const target = allCustoms.find(p => p.id === id);
+            if (!target) return;
+
+            document.getElementById('editingProductId').value = target.id;
+            document.getElementById('productModalTitle').textContent = 'Editar aviso subido';
+            document.getElementById('submitProductBtn').textContent = 'Guardar cambios';
+
+            document.getElementById('formTitle').value = target.title || '';
+            document.getElementById('formPrice').value = target.price || '';
+            document.getElementById('formSupermarket').value = target.supermarket || 'Mercadona';
+            document.getElementById('formCategory').value = target.category || 'Alimentación / Snacks';
+            document.getElementById('formCity').value = target.city || currentCity;
+            handleFormSupermarketChange();
+            if (target.storeId) {
+                document.getElementById('formStore').value = target.storeId;
+            }
+            document.getElementById('formStockStatus').value = target.userVote === 'missing' ? 'missing' : 'seen';
+            document.getElementById('formDesc').value = target.description || '';
+            document.getElementById('formImageUrl').value = (target.imageUrl && !target.imageUrl.startsWith('data:')) ? target.imageUrl : '';
+            uploadedImageDataUrl = (target.imageUrl && target.imageUrl.startsWith('data:')) ? target.imageUrl : '';
+            document.getElementById('fileUploadLabel').textContent = uploadedImageDataUrl ? '✅ Foto actual' : 'Cambiar foto';
+
+            document.getElementById('productModal').classList.remove('hidden');
         }
 
         function renderAdminLists() {
@@ -1311,15 +1438,18 @@
             offList.innerHTML = officials.length === 0 ? '<p class="text-slate-400 italic">Sin novedades oficiales añadidas.</p>' :
                 officials.map(o => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
                     <span class="truncate pr-2"><b>[${o.chain}]</b> ${o.title}</span>
-                    <button onclick="deleteOfficialOffer('${o.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                    <button onclick="deleteOfficialOffer('${o.id}')" class="text-rose-600 font-bold shrink-0 hover:underline">Borrar</button>
                 </div>`).join('');
 
             const customs = getMergedCustomProducts();
             custCount.textContent = customs.length;
             custList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
-                customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
-                    <span class="truncate pr-2"><b>[${c.city}]</b> ${c.title}</span>
-                    <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold shrink-0">Borrar</button>
+                customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border gap-2">
+                    <span class="truncate"><b>[${c.city || 'Málaga'} · ${c.supermarket || ''}]</b> ${c.title} (${Number(c.price || 0).toFixed(2)}€)</span>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="closeAdminModal(); openEditCustomProductModal('${c.id}')" class="text-emerald-700 font-bold hover:underline">Editar</button>
+                        <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold hover:underline">Borrar</button>
+                    </div>
                 </div>`).join('');
         }
         window.renderAdminLists = renderAdminLists;
@@ -1457,12 +1587,18 @@
             const filtered = products.filter(p => {
                 if (showOnlyFavorites && !p.userVote) return false;
                 if (showOnlyLatest && !p.isRecentUpload) return false;
-                if (p.city !== currentCity) return false;
+                if ((p.city || 'Málaga') !== currentCity) return false;
                 if (selectedChain && p.supermarket !== selectedChain) return false;
                 if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
                 if (cat && p.category !== cat) return false;
                 if (stock && p.stockStatus !== stock) return false;
-                if (query && !p.title.toLowerCase().includes(query) && !p.description.toLowerCase().includes(query) && !p.supermarket.toLowerCase().includes(query)) return false;
+                if (query) {
+                    const t = (p.title || '').toLowerCase();
+                    const d = (p.description || '').toLowerCase();
+                    const s = (p.supermarket || '').toLowerCase();
+                    const st = (p.storeName || '').toLowerCase();
+                    if (!t.includes(query) && !d.includes(query) && !s.includes(query) && !st.includes(query)) return false;
+                }
                 return true;
             });
             renderProducts(filtered);
@@ -1505,10 +1641,26 @@
                     ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-fire"></i> NUEVO</span>`
                     : '';
 
-                let adminDel = '';
-                if (isAdminAuthenticated) {
-                    if (p.adminOfferId) adminDel = `<button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar global</button>`;
-                    else if (p.isCustomUserProduct) adminDel = `<button onclick="deleteCustomUserProduct('${p.id}')" class="absolute bottom-2 right-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow">Borrar</button>`;
+                // Botones de control para Admin o para el propio autor que acaba de subir el aviso
+                let actionControlsHtml = '';
+                const canManageCustom = p.isCustomUserProduct && (isAdminAuthenticated || isMyOwnUpload(p));
+                if (isAdminAuthenticated && p.adminOfferId) {
+                    actionControlsHtml = `
+                        <div class="absolute bottom-2 right-2 flex items-center gap-1">
+                            <button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> Borrar global
+                            </button>
+                        </div>`;
+                } else if (canManageCustom) {
+                    actionControlsHtml = `
+                        <div class="absolute bottom-2 right-2 flex items-center gap-1">
+                            <button onclick="openEditCustomProductModal('${p.id}')" class="bg-slate-900/90 hover:bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button onclick="deleteCustomUserProduct('${p.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> Borrar
+                            </button>
+                        </div>`;
                 }
 
                 return `
@@ -1520,7 +1672,7 @@
                                 ${newBadgeHtml}
                             </div>
                             <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
-                            ${adminDel}
+                            ${actionControlsHtml}
                         </div>
                         <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
                             <div>
@@ -1573,12 +1725,12 @@
             applyFilters();
         }
 
-        function handleFileSelect(e) {
+        async function handleFileSelect(e) {
             const f = e.target.files[0];
             if (!f) return;
-            const r = new FileReader();
-            r.onload = ev => { uploadedImageDataUrl = ev.target.result; document.getElementById('fileUploadLabel').textContent = '✅ Foto lista'; };
-            r.readAsDataURL(f);
+            document.getElementById('fileUploadLabel').textContent = '⏳ Procesando foto...';
+            uploadedImageDataUrl = await compressImageFile(f, 800, 0.72);
+            document.getElementById('fileUploadLabel').textContent = '✅ Foto lista';
         }
 
         function syncSearch(v) {
@@ -1587,7 +1739,15 @@
             applyFilters();
         }
         function clearHeroSearch() { syncSearch(''); }
+
         function openModal() {
+            document.getElementById('editingProductId').value = '';
+            document.getElementById('productModalTitle').textContent = 'Avisar de una novedad en mi tienda';
+            document.getElementById('submitProductBtn').textContent = 'Publicar aviso';
+            document.getElementById('addProductForm').reset();
+            uploadedImageDataUrl = '';
+            document.getElementById('fileUploadLabel').textContent = 'Subir foto';
+
             document.getElementById('productModal').classList.remove('hidden');
             document.getElementById('formCity').value = currentCity;
             if (selectedChain) document.getElementById('formSupermarket').value = selectedChain;
@@ -1604,46 +1764,73 @@
             storeSel.innerHTML = stores.length > 0 ? stores.map(s => `<option value="${s.id}">${s.name}</option>`).join('') : `<option value="gen_${city}_${sup}">${sup} - General</option>`;
         }
 
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
-            const city = document.getElementById('formCity').value;
-            const sup = document.getElementById('formSupermarket').value;
-            const storeSel = document.getElementById('formStore');
-            const storeName = storeSel.options[storeSel.selectedIndex].text;
-            const status = document.getElementById('formStockStatus').value;
-            const now = Date.now();
-            const newId = 'custom_' + now;
-            const payload = { status: status, updatedAt: now };
+            const submitBtn = document.getElementById('submitProductBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Guardando...';
 
-            userInteractions.votes[newId] = payload;
-            const newP = {
-                id: newId, title: document.getElementById('formTitle').value,
-                price: parseFloat(document.getElementById('formPrice').value),
-                supermarket: sup, category: document.getElementById('formCategory').value,
-                city: city, storeId: storeSel.value, storeName: storeName,
-                imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-                fallbackImg: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
-                viralContext: 'Aviso de usuario', description: document.getElementById('formDesc').value || 'Reportado en tienda',
-                createdAt: now, isRecentUpload: true,
-                userVote: status, updatedAt: now, seenCount: status === 'seen' ? 1 : 0, missingCount: status === 'missing' ? 1 : 0,
-                stockStatus: computeStockStatusFromVote(status)
-            };
+            try {
+                const editingId = document.getElementById('editingProductId').value;
+                const city = document.getElementById('formCity').value;
+                const sup = document.getElementById('formSupermarket').value;
+                const storeSel = document.getElementById('formStore');
+                const storeName = storeSel.options[storeSel.selectedIndex].text;
+                const status = document.getElementById('formStockStatus').value;
+                const now = Date.now();
+                const prodId = editingId || ('custom_' + now);
+                const payload = { status: status, updatedAt: now };
 
-            userInteractions.customProducts.unshift(newP);
-            if (window.syncCustomProductToCloud) window.syncCustomProductToCloud(newP);
-            if (window.syncVoteToCloud) window.syncVoteToCloud(newId, payload);
-            saveUserInteractions();
+                userInteractions.votes[prodId] = payload;
+                const newP = {
+                    id: prodId,
+                    title: document.getElementById('formTitle').value.trim(),
+                    price: parseFloat(document.getElementById('formPrice').value),
+                    supermarket: sup,
+                    category: document.getElementById('formCategory').value,
+                    city: city,
+                    storeId: storeSel.value,
+                    storeName: storeName,
+                    imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                    fallbackImg: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
+                    viralContext: 'Aviso de la comunidad',
+                    description: document.getElementById('formDesc').value.trim() || 'Reportado en tienda',
+                    createdAt: now,
+                    isRecentUpload: true,
+                    authorDeviceId: DEVICE_AUTHOR_ID,
+                    userVote: status,
+                    updatedAt: now,
+                    seenCount: status === 'seen' ? 1 : 0,
+                    missingCount: status === 'missing' ? 1 : 0,
+                    stockStatus: computeStockStatusFromVote(status)
+                };
 
-            uploadedImageDataUrl = '';
-            document.getElementById('addProductForm').reset();
-            closeModal();
-            currentCity = city;
-            document.getElementById('citySelect').value = city;
-            selectedChain = sup;
-            renderSupermarketChainPills();
-            updateStoreSelectDropdown();
-            rebuildCatalogFromCurrentState();
-            showToast('¡Aviso publicado con éxito!');
+                markIdAsMyOwnUpload(prodId);
+                userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== prodId);
+                userInteractions.customProducts.unshift(newP);
+                saveUserInteractions();
+
+                if (window.syncCustomProductToCloud) await window.syncCustomProductToCloud(newP);
+                if (window.syncVoteToCloud) await window.syncVoteToCloud(prodId, payload);
+
+                uploadedImageDataUrl = '';
+                document.getElementById('editingProductId').value = '';
+                document.getElementById('addProductForm').reset();
+                closeModal();
+
+                // Mostrar todas las tiendas de la ciudad para que el producto recién subido se vea en primera fila
+                currentCity = city;
+                document.getElementById('citySelect').value = city;
+                selectedChain = '';
+                renderSupermarketChainPills();
+                updateStoreSelectDropdown();
+                rebuildCatalogFromCurrentState();
+                showToast(editingId ? '✅ ¡Aviso corregido con éxito!' : '🚀 ¡Aviso publicado para todos!');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
         }
 
         function showToast(msg) {
@@ -1668,7 +1855,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const EXTERNAL_FIREBASE_CONFIG = {
             apiKey: "AIzaSyCniLR1E7SkHo2jlDkglX6_sjNGsgFKB3w",
@@ -1680,11 +1867,22 @@
             measurementId: "G-C9ZV48DCB3"
         };
 
-        let db = null, auth = null, currentUser = null, isCloudActive = false;
+        let db = null, auth = null, currentUser = null, isCloudActive = false, listenersStarted = false;
+        let hasLoadedCustomSnap = false, hasLoadedOfficialSnap = false;
         let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
 
         window.getCloudState = function() {
-            return { isCloudActive, currentUser, cloudVotes, cloudCustomProducts, cloudOfficialOffers, cloudCityRequests, totalVisits };
+            return {
+                isCloudActive,
+                currentUser,
+                hasLoadedCustomSnap,
+                hasLoadedOfficialSnap,
+                cloudVotes,
+                cloudCustomProducts,
+                cloudOfficialOffers,
+                cloudCityRequests,
+                totalVisits
+            };
         };
 
         function updateCloudIndicator(conn) {
@@ -1700,7 +1898,7 @@
         }
 
         async function registerVisitInFirebase() {
-            if (!db || !currentUser) return;
+            if (!db) return;
             try {
                 if (!sessionStorage.getItem('sr_visit_counted')) {
                     sessionStorage.setItem('sr_visit_counted', 'true');
@@ -1715,7 +1913,9 @@
         }
 
         function setupRealtimeListeners() {
-            if (!currentUser || !db) return;
+            if (!db || listenersStarted) return;
+            listenersStarted = true;
+
             onSnapshot(doc(db, 'site_stats', 'general'), docSnap => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
@@ -1725,56 +1925,90 @@
                     }
                     if (window.renderAdminLists) window.renderAdminLists();
                 }
-            });
+            }, err => console.warn("stats listener:", err));
+
             onSnapshot(collection(db, 'stock_votes'), snap => {
-                cloudVotes = {}; snap.forEach(d => cloudVotes[d.id] = d.data());
+                cloudVotes = {};
+                snap.forEach(d => cloudVotes[d.id] = d.data());
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            });
+            }, err => console.warn("votes listener:", err));
+
             onSnapshot(collection(db, 'official_catalog_offers'), snap => {
-                const l = []; snap.forEach(d => l.push(d.data()));
+                const l = [];
+                snap.forEach(d => l.push(d.data()));
                 cloudOfficialOffers = l;
+                hasLoadedOfficialSnap = true;
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            });
+            }, err => console.warn("official listener:", err));
+
             onSnapshot(collection(db, 'custom_products'), snap => {
-                const l = []; snap.forEach(d => l.push(d.data()));
+                const l = [];
+                snap.forEach(d => l.push(d.data()));
                 cloudCustomProducts = l;
+                hasLoadedCustomSnap = true;
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            });
+            }, err => console.warn("custom_products listener:", err));
+
             onSnapshot(collection(db, 'city_requests'), snap => {
-                const l = []; snap.forEach(d => l.push(d.data()));
+                const l = [];
+                snap.forEach(d => l.push(d.data()));
                 cloudCityRequests = l;
                 if (window.renderRequestedCitiesSummary) window.renderRequestedCitiesSummary();
-            });
+            }, err => console.warn("city_requests listener:", err));
         }
 
         window.syncVoteToCloud = async function(id, data) {
-            if (!isCloudActive || !currentUser || !db) return;
-            const ref = doc(db, 'stock_votes', id);
-            if (data === null) await deleteDoc(ref); else await setDoc(ref, { ...data, updatedBy: currentUser.uid });
+            if (!db) return;
+            try {
+                const ref = doc(db, 'stock_votes', id);
+                if (data === null) {
+                    await deleteDoc(ref);
+                } else {
+                    await setDoc(ref, { ...data, updatedBy: currentUser ? currentUser.uid : 'anon' });
+                }
+            } catch (e) { console.warn("Error syncVoteToCloud:", e); }
         };
+
         window.syncOfficialOfferToCloud = async function(o) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser.uid });
+            if (!db) return;
+            try {
+                await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser ? currentUser.uid : 'admin' });
+            } catch (e) { console.warn("Error syncOfficialOfferToCloud:", e); }
         };
+
         window.deleteOfficialOfferFromCloud = async function(id) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await deleteDoc(doc(db, 'official_catalog_offers', id));
+            if (!db) return;
+            try {
+                await deleteDoc(doc(db, 'official_catalog_offers', id));
+            } catch (e) { console.warn("Error deleteOfficialOfferFromCloud:", e); }
         };
+
         window.syncCustomProductToCloud = async function(p) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'custom_products', p.id), { ...p, createdBy: currentUser.uid });
+            if (!db) return;
+            try {
+                await setDoc(doc(db, 'custom_products', p.id), { ...p, createdBy: currentUser ? currentUser.uid : 'anon' });
+            } catch (e) { console.warn("Error syncCustomProductToCloud:", e); }
         };
+
         window.deleteCustomProductFromCloud = async function(id) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await deleteDoc(doc(db, 'custom_products', id));
+            if (!db) return;
+            try {
+                await deleteDoc(doc(db, 'custom_products', id));
+            } catch (e) { console.warn("Error deleteCustomProductFromCloud:", e); }
         };
+
         window.syncCityRequestToCloud = async function(req) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser.uid });
+            if (!db) return;
+            try {
+                await setDoc(doc(db, 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser ? currentUser.uid : 'anon' });
+            } catch (e) { console.warn("Error syncCityRequestToCloud:", e); }
         };
+
         window.syncThemeToCloud = async function(themeMode) {
-            if (!isCloudActive || !currentUser || !db) return;
-            await setDoc(doc(db, 'site_stats', 'general'), { seasonalTheme: themeMode }, { merge: true });
+            if (!db) return;
+            try {
+                await setDoc(doc(db, 'site_stats', 'general'), { seasonalTheme: themeMode }, { merge: true });
+            } catch (e) { console.warn("Error syncThemeToCloud:", e); }
         };
 
         async function initCloudSync() {
@@ -1782,22 +2016,22 @@
                 let cfg = EXTERNAL_FIREBASE_CONFIG;
                 if (!cfg || !cfg.apiKey) { updateCloudIndicator(false); return; }
                 const app = initializeApp(cfg);
-                db = getFirestore(app); 
+                db = getFirestore(app);
                 auth = getAuth(app);
-                
-                await signInAnonymously(auth);
-                onAuthStateChanged(auth, u => { 
-                    currentUser = u; 
-                    if (u) { 
-                        isCloudActive = true; 
-                        updateCloudIndicator(true); 
-                        setupRealtimeListeners(); 
-                        registerVisitInFirebase();
-                    } 
+
+                // Conectamos los listeners en tiempo real de inmediato sin depender de que signInAnonymously tarde en móviles
+                isCloudActive = true;
+                updateCloudIndicator(true);
+                setupRealtimeListeners();
+                registerVisitInFirebase();
+
+                onAuthStateChanged(auth, u => {
+                    if (u) currentUser = u;
                 });
-            } catch (e) { 
-                console.warn("Firebase Auth / Sync:", e);
-                updateCloudIndicator(false); 
+                await signInAnonymously(auth).catch(err => console.warn("Anon auth info:", err));
+            } catch (e) {
+                console.warn("Firebase Sync:", e);
+                updateCloudIndicator(false);
             }
         }
         initCloudSync();
