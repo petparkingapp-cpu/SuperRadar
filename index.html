@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="es" class="min-h-screen bg-slate-50">
 <head>
-    <meta name="google-site-verification" content="OI2vaYVaJbbFQoqaUMPg7QTEtCrxCm_inoQrHRZsKp0" />
+    <meta name="google-site-verification" content="AeBz666_Toeq5Sa-AxvYqpdq80GiivVo4WtrIm8OAD0" />
     <meta name="description" content="SuperRadar: Comprueba en tiempo real si hay stock o están agotadas las novedades virales de Mercadona, Lidl, Carrefour, DIA y Aldi en tu tienda exacta sin dar paseos en balde." />
     <meta name="keywords" content="SuperRadar, stock mercadona, novedades mercadona, novedades lidl, novedades dia, productos virales supermercado, malaga, bilbao, sevilla, madrid" />
     <meta property="og:title" content="SuperRadar · Radar de Stock de Novedades de Supermercado" />
     <meta property="og:description" content="Consulta y avisa en directo si quedan unidades de los productos virales en tu supermercado antes de salir de casa." />
-    <meta property="og:url" content="https://superradar.es/" />
-<link rel="canonical" href="https://superradar.es/" />
+    <meta property="og:url" content="https://www.superradar.es/" />
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -217,33 +216,50 @@
             </div>
         </div>
 
-        <!-- Contador resultados y botón de orden por Novedades -->
-        <div class="flex items-center justify-between mb-3 px-1 text-xs gap-2">
-            <span id="resultsCount" class="font-bold text-slate-700">Cargando...</span>
+        <!-- Selector Principal de 2 Pestañas (Opción B: Catálogo Viral vs Avisos de la Comunidad) -->
+        <div class="bg-slate-200/80 p-1 rounded-2xl grid grid-cols-2 gap-1 mb-3.5 shadow-inner">
+            <button id="tabBtnCatalog" onclick="switchMainViewTab('catalog')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 bg-white text-slate-900 shadow-sm">
+                <i class="fa-solid fa-fire text-amber-500"></i>
+                <span>Catálogo Viral</span>
+                <span id="tabCatalogBadge" class="bg-slate-100 text-slate-700 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">0</span>
+            </button>
+            <button id="tabBtnCommunity" onclick="switchMainViewTab('community')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900">
+                <i class="fa-solid fa-location-dot text-emerald-600"></i>
+                <span>Avisos en Tiendas</span>
+                <span id="tabCommunityBadge" class="bg-emerald-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded-full">0</span>
+            </button>
+        </div>
+
+        <!-- Contador resultados y explicación de la pestaña activa -->
+        <div class="flex flex-wrap items-center justify-between mb-3 px-1 text-xs gap-2">
+            <div>
+                <span id="resultsCount" class="font-bold text-slate-800">Cargando...</span>
+                <span id="activeTabSubtitle" class="text-[11px] text-slate-500 block sm:inline sm:ml-1.5">· Novedades únicas por cadena (sin repeticiones)</span>
+            </div>
             <div class="flex items-center gap-2">
                 <button id="filterLatestInlineBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition">
                     <i class="fa-solid fa-fire text-amber-500"></i>
-                    <span>Ver solo recién subidos</span>
+                    <span>Solo recién salidos</span>
                 </button>
             </div>
         </div>
 
         <!-- Grid productos -->
-        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5"></div>
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 items-start"></div>
 
         <!-- Estado vacío -->
         <div id="emptyState" class="hidden text-center py-12 px-4 bg-white rounded-2xl border border-slate-200">
             <div class="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-2 text-sm">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
-            <h3 class="text-xs font-bold text-slate-800 mb-1">No hay novedades con este filtro</h3>
-            <p class="text-slate-400 text-[11px] max-w-xs mx-auto mb-3">Prueba a pulsar en "Limpiar filtros" para ver todas las tiendas o sube un aviso tú mismo.</p>
+            <h3 id="emptyStateTitle" class="text-xs font-bold text-slate-800 mb-1">No hay novedades con este filtro</h3>
+            <p id="emptyStateDesc" class="text-slate-400 text-[11px] max-w-xs mx-auto mb-3">Prueba a pulsar en "Limpiar filtros" para ver todas las tiendas o sube un aviso tú mismo.</p>
             <div class="flex items-center justify-center gap-2">
                 <button onclick="resetAllFilters()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3 py-2 rounded-xl">
-                    Ver todas las tiendas
+                    Ver todo
                 </button>
                 <button onclick="openModal()" class="bg-emerald-600 text-white font-semibold text-xs px-3 py-2 rounded-xl">
-                    + Subir aviso
+                    + Subir aviso de tienda
                 </button>
             </div>
         </div>
@@ -358,7 +374,7 @@
                 <!-- Publicar Novedad Global -->
                 <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5">
                     <h4 class="font-bold text-slate-900 text-xs mb-1">🚀 Publicar Novedad Oficial (Toda una Cadena)</h4>
-                    <p class="text-[11px] text-slate-600 mb-3">Aparecerá automáticamente en primera posición en todas las sucursales de la cadena elegida.</p>
+                    <p class="text-[11px] text-slate-600 mb-3">Aparecerá agrupada en una tarjeta única con todas las tiendas de la cadena elegida.</p>
 
                     <form id="adminCatalogForm" onsubmit="handleAdminPublishCatalogOffer(event)" class="space-y-2.5">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -584,8 +600,12 @@
         const ADMIN_SECRET_PIN = 'malaga2025';
         let isAdminAuthenticated = false;
         let adminUploadedImageDataUrl = '';
+        // Controla qué tarjetas agrupadas tienen el desplegable de tiendas abierto
+        const expandedProductGroups = new Set();
+        // Filtro rápido de texto dentro del desplegable de tiendas de una tarjeta
+        const groupStoreSearchTerms = {};
 
-        // Identificador persistente del dispositivo para permitir al autor editar o borrar su propio aviso si se equivoca
+        // Identificador persistente del dispositivo para permitir al autor editar o borrar su propio aviso
         function getDeviceAuthorId() {
             let devId = localStorage.getItem('sr_device_author_id');
             if (!devId) {
@@ -624,7 +644,7 @@
             return false;
         }
 
-        // Compresor automático de fotos de cámara móvil (evita superar el límite de 1MB de Firebase)
+        // Compresor automático de fotos de cámara móvil
         function compressImageFile(file, maxDimension = 800, quality = 0.72) {
             return new Promise((resolve) => {
                 if (!file) { resolve(''); return; }
@@ -825,106 +845,98 @@
                 if (city === 'Málaga') {
                     storesList.push(
                         // Mercadona Málaga
-                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 36 (El Torcal)' },
-                        { id: 'merca_mlg_velazquez_91', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 91 (Puerta Blanca)' },
-                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina, 5 (Parque Litoral)' },
-                        { id: 'merca_mlg_moliere', chain: 'Mercadona', name: 'Mercadona - Av. de Molière, 29 (Parque Litoral)' },
-                        { id: 'merca_mlg_pacifico', chain: 'Mercadona', name: 'Mercadona - C. Pacífico, 74 (Paseo Marítimo)' },
-                        { id: 'merca_mlg_teatinos', chain: 'Mercadona', name: 'Mercadona - Av. Plutarco, 51 (Teatinos / El Cónsul)' },
-                        { id: 'merca_mlg_pasteur', chain: 'Mercadona', name: 'Mercadona - Bulevar Louis Pasteur, 21 (Teatinos)' },
-                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - Paseo de los Tilos, 41 (Huelin / Estación)' },
-                        { id: 'merca_mlg_sostoa', chain: 'Mercadona', name: 'Mercadona - C. Héroe de Sostoa, 140 (Huelin)' },
-                        { id: 'merca_mlg_teresa_prat', chain: 'Mercadona', name: 'Mercadona - Av. Sor Teresa Prat, 70 (Tabacalera)' },
-                        { id: 'merca_mlg_hilera', chain: 'Mercadona', name: 'Mercadona - C. Hilera, 8 (Centro)' },
+                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 43 (El Torcal)' },
+                        { id: 'merca_mlg_velazquez_91', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 95 (Puerta Blanca)' },
+                        { id: 'merca_mlg_la_luz', chain: 'Mercadona', name: 'Mercadona - Ctra. Carril del Conde, 8 (La Luz)' },
+                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina, 1 (Parque Litoral)' },
+                        { id: 'merca_mlg_pasteur', chain: 'Mercadona', name: 'Mercadona - Bulevar Louis Pasteur, 17 (Teatinos)' },
+                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - C. Eduardo Marquina, 10 (Huelin / Estación)' },
+                        { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 6 (Distrito Centro)' },
+                        { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Albéniz, 35 (Distrito Centro)' },
                         { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - C. Explanada de la Estación s/n (Vialia)' },
-                        { id: 'merca_mlg_salitre', chain: 'Mercadona', name: 'Mercadona - C. Salitre, 43 (Perchel Sur)' },
-                        { id: 'merca_mlg_aurora', chain: 'Mercadona', name: 'Mercadona - Av. de la Aurora, 25 (Málaga 2000)' },
+                        { id: 'merca_mlg_palma_palmilla', chain: 'Mercadona', name: 'Mercadona - Av. del Dr. Marañón, 8 (Palma-Palmilla)' },
+                        { id: 'merca_mlg_cruz_humilladero', chain: 'Mercadona', name: 'Mercadona - Av. Santa Rosa de Lima, 20 (Cruz de Humilladero)' },
                         { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - C. Gaucín, 15 (La Luz)' },
                         { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. de la Estación, 3 (El Palo)' },
-                        { id: 'merca_mlg_palo_almeria', chain: 'Mercadona', name: 'Mercadona - C. Almería, 45 (El Palo)' },
+                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. Juan Sebastián Elcano, 147 (Málaga-Este/ El Palo)' },
                         { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - Av. del Mayorazgo, 20 (El Limonar)' },
                         { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Av. Jacinto Benavente, 21 (Ciudad Jardín)' },
-                        { id: 'merca_mlg_thuillier', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Ciudad Jardín)' },
-                        { id: 'merca_mlg_rosaleda', chain: 'Mercadona', name: 'Mercadona - Av. Simón Bolívar s/n (C.C. La Rosaleda)' },
-                        { id: 'merca_mlg_valle_inclan', chain: 'Mercadona', name: 'Mercadona - Av. Valle Inclán, 26 (La Roca)' },
+                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Cmo de Casabermeja, 64 (Cdad. Jardín)' },
+                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Cdad. Jardín)' },
                         { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suárez, 22 (Miraflores)' },
-                        { id: 'merca_mlg_pelayo', chain: 'Mercadona', name: 'Mercadona - C. Pelayo, 13 (La Trinidad)' },
-                        { id: 'merca_mlg_frailes', chain: 'Mercadona', name: 'Mercadona - C. Frailes, 26 (La Merced / Victoria)' },
-                        { id: 'merca_mlg_jorge_silvela', chain: 'Mercadona', name: 'Mercadona - C. Jorge Silvela, 1 (Capuchinos)' },
-                        { id: 'merca_mlg_martinez_maldonado', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 62 (Las Chapas)' },
+                        { id: 'merca_mlg_plazamayor', chain: 'Mercadona', name: 'Mercadona - Calle Alfonso Ponce de León, s/n (C C Plaza Mayor)' },
+                        { id: 'merca_mlg_torremolinos', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)' },
+                        { id: 'merca_mlg_torremolinos', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)' },
+                        { id: 'merca_mlg_martinez_maldonado', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 62 (Distrito Centro)' },
                         { id: 'merca_mlg_barcelona', chain: 'Mercadona', name: 'Mercadona - Av. de Barcelona, 18 (Bailén)' },
                         { id: 'merca_mlg_san_rafael', chain: 'Mercadona', name: 'Mercadona - Camino de San Rafael, 55 (Cruz de Humilladero)' },
                         { id: 'merca_mlg_diaz_zafra', chain: 'Mercadona', name: 'Mercadona - C. Alcalde Díaz Zafra, 32 (Tiro de Pichón)' },
-                        { id: 'merca_mlg_ortega_gasset', chain: 'Mercadona', name: 'Mercadona - Av. José Ortega y Gasset, 126' },
-                        { id: 'merca_mlg_lope_rueda', chain: 'Mercadona', name: 'Mercadona - C. Lope de Rueda, 130 (Puerto de la Torre)' },
+                        { id: 'merca_mlg_ortega_gasset', chain: 'Mercadona', name: 'Mercadona - Av. José Ortega y Gasset, s/n (Cruz de Humilladero)' },
+                        { id: 'merca_mlg_lope_rueda', chain: 'Mercadona', name: 'Mercadona - Av. Arquitecto Luis Bono, 17 (Puerto de la Torre)' },
                         { id: 'merca_mlg_navarro_ledesma', chain: 'Mercadona', name: 'Mercadona - C. Navarro Ledesma, 175 (El Atabal)' },
-                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Ctra. de Coín, 45 (Churriana)' },
-                        { id: 'merca_mlg_campanillas', chain: 'Mercadona', name: 'Mercadona - C. José Calderón, 150 (Campanillas)' },
+                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104, (Churriana)' },
 
                         // Carrefour Málaga
                         { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241, 29004 (C.C. Los Patios)' },
                         { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - Av. Simón Bolívar, s/n (C.C. La Rosaleda)' },
-                        { id: 'car_mlg_teatinos', chain: 'Carrefour', name: 'Carrefour Market - C. Kandinsky, 26 (Teatinos)' },
-                        { id: 'car_mlg_sostoa', chain: 'Carrefour', name: 'Carrefour Market - C. Héroe de Sostoa, 118 (Huelin)' },
-                        { id: 'car_mlg_aurora', chain: 'Carrefour', name: 'Carrefour Market - Av. de la Aurora, 4 (Perchel Norte)' },
                         { id: 'car_mlg_torremolinos', chain: 'Carrefour', name: 'Carrefour - Avenida Circunvalación, s/n, Centro Comercial Costasol (Torremolinos)' },
                         { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, S/N, Cruz de Humilladero, Málaga' },
 
                         // Lidl Málaga
-                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Av. de Velázquez, 224 (Puerta Blanca / El Torcal)' },
-                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - C. Pacífico, 19 (Huelin)' },
-                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Av. Editor Ángel Caffarena, 5 (Teatinos)' },
-                        { id: 'lidl_mlg_portada', chain: 'Lidl', name: 'Lidl - C. Corregidor Nicolás Isidro, s/n (Portada Alta)' },
-                        { id: 'lidl_mlg_cuarteles', chain: 'Lidl', name: 'Lidl - C. Cuarteles, 2 (Perchel Norte / Estación)' },
-                        { id: 'lidl_mlg_martiricos', chain: 'Lidl', name: 'Lidl - Paseo de Martiricos, 17 (La Rosaleda)' },
-                        { id: 'lidl_mlg_suarez', chain: 'Lidl', name: 'Lidl - Camino de Suárez, 33 (Suárez / Miraflores)' },
-                        { id: 'lidl_mlg_valle_inclan', chain: 'Lidl', name: 'Lidl - Av. Valle Inclán, 40 (La Roca)' },
-                        { id: 'lidl_mlg_ortega_gasset', chain: 'Lidl', name: 'Lidl - Av. José Ortega y Gasset, 210 (El Viso)' },
-                        { id: 'lidl_mlg_nostrum', chain: 'Lidl', name: 'Lidl - C. Hermanos Lumière, 2 (Málaga Nostrum)' },
-                        { id: 'lidl_mlg_limonar', chain: 'Lidl', name: 'Lidl - Camino de los Almendrales, 22 (El Mayorazgo / Limonar)' },
-                        { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 98 (Churriana)' },
+                        { id: 'lidl_mlg_carretera_cadiz', chain: 'Lidl', name: 'C. Villanueva de Algaidas, 6, (Carretera de Cádiz)' },
+                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Avenida de Velázquez, 60' },
+                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: '• C/ Héroes de Sostoa, 126 (Huelin)' },
+                        { id: 'lidl_mlg_ciudad_jardin', chain: 'Lidl', name: '• Av. de los Pascueros, 3, (Cdad. Jardín)' },
+                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Calle Navarro Ledesma, s/n (Teatinos)' },
+                        { id: 'lidl_mlg_ortega_gasset', chain: 'Lidl', name: 'Lidl - Av. José Ortega y Gasset, 224 (El Viso)' },
+                        { id: 'lidl_mlg_cruz_humilladero', chain: 'Lidl', name: 'Lidl - Camino San Rafael, 63' },
+                        { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 47 (Churriana)' },
+                        { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - C. de la Cruz, 69 (Torremolinos)' },
+                        { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - Av. Carlota Alessandri, 288 (Torremolinos)' },
+                        { id: 'lidl_mlg_alhaurin_torre', chain: 'Lidl', name: 'Lidl - Av. Finca Taralpe, s/n, (Alhaurín de la Torre)' },
 
                         // Aldi Málaga
-                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Parque Litoral / Pacífico)' },
-                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Mesonero Romanos, 12 (Teatinos / Fuentenueva)' },
-                        { id: 'aldi_mlg_elconsul', chain: 'Aldi', name: 'Aldi - C. Pintor Sandro Botticelli, 6 (Teatinos / El Cónsul)' },
-                        { id: 'aldi_mlg_martiricos', chain: 'Aldi', name: 'Aldi - Av. de Fátima, 2 (Martiricos / La Trinidad)' },
+                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Carretera de Cádiz / Pacífico)' },
+                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Giordano Bruno, 6 (Teatinos-Universidad)' },
+                        { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Av. de José Ortega y Gasset, 291 (Cruz de Humilladero)' },
+                        { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Pl. Cruz del Humilladero, 1 (Cruz de Humilladero)' },
+                        { id: 'aldi_mlg_dsitrito_centro', chain: 'Aldi', name: 'Aldi - C. Montes de Oca, 15, (Distrito Centro)' },
                         { id: 'aldi_mlg_sanjulian', chain: 'Aldi', name: 'Aldi - C. Escritor Julio Balbín, s/n (Bahía Azul / San Julián)' },
-                        { id: 'aldi_mlg_alameda', chain: 'Aldi', name: 'Aldi - Alameda Principal, 6 (Centro)' },
-                        { id: 'aldi_mlg_suarez', chain: 'Aldi', name: 'Aldi - Camino de Suárez, 40 (Suárez / Carlos Haya)' },
-                        { id: 'aldi_mlg_valle_inclan', chain: 'Aldi', name: 'Aldi - Av. Valle Inclán, 14 (La Roca / Miraflores)' },
+                        { id: 'aldi_mlg_churriana', chain: 'Aldi', name: 'Aldi - C. Emilio Hurtado, 19, (Churriana)' },
+                        { id: 'aldi_mlg_alhaurin_de_la_torre', chain: 'Aldi', name: 'Aldi - Av. Sta. Clara, S/N, Churriana (Alhaurín de la Torre)' },
+                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - C. de la Cruz, 73, (Torremolinos)' },
+                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - Av. Carlota Alessandri, 200 (Torremolinos)' },
+                        { id: 'aldi_mlg_puerto_de_la_torre', chain: 'Aldi', name: 'Aldi - Calle Lope de Rueda, esquina, Cam. Soliva del Cañaveral, 161 (Puerto de la Torre)' },
+                        { id: 'aldi_mlg_cartama', chain: 'Aldi', name: 'Aldi - Av. de los Juegos OlÍmpicos, 1 (Cártama)' },
 
                         // DIA Málaga
                         { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA - Calle Carretería, 105' },
-                        { id: 'dia_mlg_moliere', chain: 'DIA', name: 'DIA - Av. de Molière' },
-                        { id: 'dia_mlg_lujan', chain: 'DIA', name: 'DIA - C. Corregidor Francisco de Luján' },
-                        { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA - Av. de Velázquez' },
-                        { id: 'dia_mlg_ninogloria', chain: 'DIA', name: 'DIA - C. Niño de Gloria' },
-                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34' },
-                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6' },
-                        { id: 'dia_mlg_reboul', chain: 'DIA', name: 'DIA - C. Reboul s/n (Ctra. de Cádiz)' },
-                        { id: 'dia_mlg_ayala', chain: 'DIA', name: 'DIA - C. Ayala, 82' },
-                        { id: 'dia_mlg_cuarteles', chain: 'DIA', name: 'DIA - C. Cuarteles, 35' },
-                        { id: 'dia_mlg_juanaustria', chain: 'DIA', name: 'DIA - C. Juan de Austria, 32' },
-                        { id: 'dia_mlg_salamanca', chain: 'DIA', name: 'DIA - C. Salamanca, 7' },
-                        { id: 'dia_mlg_capuchinos', chain: 'DIA', name: 'DIA - Alameda de Capuchinos, 14' },
-                        { id: 'dia_mlg_cristoepidemia', chain: 'DIA', name: 'DIA - C. Cristo de la Epidemia, 47' },
-                        { id: 'dia_mlg_macabeos', chain: 'DIA', name: 'DIA - C. Macabeos, 5' },
-                        { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA - C. Victoria, 64' },
-                        { id: 'dia_mlg_almendrales', chain: 'DIA', name: 'DIA - Camino de los Almendrales s/n' },
-                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30' },
-                        { id: 'dia_mlg_joaquinquiles', chain: 'DIA', name: 'DIA - C. Alcalde Joaquín Quiles, 19' },
-                        { id: 'dia_mlg_miguelmoya', chain: 'DIA', name: 'DIA - C. Miguel Moya, 14' },
-                        { id: 'dia_mlg_manuelalcantara', chain: 'DIA', name: 'DIA - C. Poeta Manuel Alcántara, 1' },
-                        { id: 'dia_mlg_carriltoros', chain: 'DIA', name: 'DIA - Carril de los Toros s/n' },
-                        { id: 'dia_mlg_calledelrio', chain: 'DIA', name: 'DIA - C. del Río, 32' },
-                        { id: 'dia_mlg_drfleming', chain: 'DIA', name: 'DIA - C. Dr. Fleming, 77' },
-                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n' },
-                        { id: 'dia_mlg_avandalucia', chain: 'DIA', name: 'DIA - Av. de Andalucía, 35 (Edif. Mala)' },
-                        { id: 'dia_mlg_castillobajo', chain: 'DIA', name: 'DIA - C. Castillo Bajo, 50' },
-                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n' },
-                        { id: 'dia_mlg_huelin', chain: 'DIA', name: 'DIA - Huelin' },
-                        { id: 'dia_mlg_teatinos', chain: 'DIA', name: 'DIA - Teatinos' }
+                        { id: 'dia_mlg_moliere', chain: 'DIA', name: 'DIA - Av. de Molière s/n' },
+                        { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA - Av. de Velázquez, 9' },
+                        { id: 'dia_mlg_ninogloria', chain: 'DIA', name: 'DIA - C. Niño de Gloria, 10 (El Torcal)' },
+                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34 (Giron/ Las Delicias)' },
+                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6 (Santa Cristina/ San Rafael)' },
+                        { id: 'dia_mlg_reboul', chain: 'DIA', name: 'DIA - C. Reboul s/n (La Unión)' },
+                        { id: 'dia_mlg_ayala', chain: 'DIA', name: 'DIA - C. Ayala, 82 (Parque Ayala)' },
+                        { id: 'dia_mlg_cuarteles', chain: 'DIA', name: 'DIA - C. Cuarteles, 35 (El Perchel)' },
+                        { id: 'dia_mlg_juanaustria', chain: 'DIA', name: 'DIA - C. Juan de Austria, 32 (La Trinidad)' },
+                        { id: 'dia_mlg_salamanca', chain: 'DIA', name: 'DIA - C. Salamanca, 7 (Distrito Centro)' },
+                        { id: 'dia_mlg_capuchinos', chain: 'DIA', name: 'DIA - Alameda de Capuchinos, 14 (Distrito Centro)' },
+                        { id: 'dia_mlg_cristoepidemia', chain: 'DIA', name: 'DIA - C. Cristo de la Epidemia, 47 (Distrito Centro)' },
+                        { id: 'dia_mlg_macabeos', chain: 'DIA', name: 'DIA - C. Macabeos, 5 (Distrito Centro)' },
+                        { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA - C. Victoria, 64 (Distrito Centro)' },
+                        { id: 'dia_mlg_almendrales', chain: 'DIA', name: 'DIA - Camino de los Almendrales s/n (Fuente Olletas)' },
+                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30 (Ciudad Jardón/ Cortijo Bazán)' },
+                        { id: 'dia_mlg_joaquinquiles', chain: 'DIA', name: 'DIA - C. Alcalde Joaquín Quiles, 19 (Ciudad Jardín)' },
+                        { id: 'dia_mlg_miguelmoya', chain: 'DIA', name: 'DIA - C. Miguel Moya, 14 (El Palo)' },
+                        { id: 'dia_mlg_manuelalcantara', chain: 'DIA', name: 'DIA - C. Poeta Manuel Alcántara, 1 (Rincón de la Victoria)' },
+                        { id: 'dia_mlg_carriltoros', chain: 'DIA', name: 'DIA - Carril de los Toros s/n (Rincón de la Victoria)' },
+                        { id: 'dia_mlg_calledelrio', chain: 'DIA', name: 'DIA - C. del Río, 32 (Torre del Mar)' },
+                        { id: 'dia_mlg_drfleming', chain: 'DIA', name: 'DIA - C. Dr. Fleming, 77 (Torre del Mar)' },
+                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n (Vélez Málaga)' },
+                        { id: 'dia_mlg_avandalucia', chain: 'DIA', name: 'DIA - Av. de Andalucía, 35 (Algarrobo)' },
+                        { id: 'dia_mlg_castillobajo', chain: 'DIA', name: 'DIA - C. Castillo Bajo, 50 (Torrox)' },
+                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n (Torrox)' },
                     );
                 } else if (city === 'Bilbao') {
                     storesList.push(
@@ -980,8 +992,31 @@
         let selectedChain = '';
         let showOnlyFavorites = false;
         let showOnlyLatest = false;
+        // Pestaña activa: 'catalog' (Catálogo Viral único) o 'community' (Avisos en directo por tienda)
+        let activeMainTab = 'catalog';
         let uploadedImageDataUrl = '';
         let currentThemeSelection = localStorage.getItem('super_radar_theme') || 'auto';
+
+        function switchMainViewTab(tabName) {
+            activeMainTab = tabName;
+            const btnCatalog = document.getElementById('tabBtnCatalog');
+            const btnCommunity = document.getElementById('tabBtnCommunity');
+            const subtitle = document.getElementById('activeTabSubtitle');
+            const latestInlineBtn = document.getElementById('filterLatestInlineBtn');
+
+            if (tabName === 'catalog') {
+                btnCatalog.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 bg-white text-slate-900 shadow-sm";
+                btnCommunity.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                if (subtitle) subtitle.textContent = "· Novedades únicas de cada cadena (pulsa en un producto para ver sus tiendas)";
+                if (latestInlineBtn) latestInlineBtn.classList.remove('hidden');
+            } else {
+                btnCommunity.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 bg-white text-slate-900 shadow-sm";
+                btnCatalog.className = "py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 text-slate-600 hover:text-slate-900";
+                if (subtitle) subtitle.textContent = "· Avistamientos y confirmaciones subidas en tiendas concretas";
+                if (latestInlineBtn) latestInlineBtn.classList.add('hidden');
+            }
+            applyFilters();
+        }
 
         function resolveActiveSeason(selection) {
             if (selection && selection !== 'auto') return selection;
@@ -1106,7 +1141,7 @@
                     userInteractions.officialCatalogOffers = parsed.officialCatalogOffers || [];
                     userInteractions.cityRequests = parsed.cityRequests || [];
                 }
-                if (sessionStorage.getItem('super_radar_admin_auth') === 'true') {
+                if (sessionStorage.getItem('super_radar_admin_auth') === 'true' || localStorage.getItem('super_radar_admin_auth_persist') === 'true') {
                     isAdminAuthenticated = true;
                     document.getElementById('adminActiveBadge').classList.remove('hidden');
                 }
@@ -1167,7 +1202,6 @@
 
         function getMergedCustomProducts() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            // Si Firebase ya cargó la lista en vivo, mandan los datos en la nube para que los borrados se sincronicen en todos los móviles
             if (cloudState.isCloudActive && cloudState.hasLoadedCustomSnap) {
                 return [...(cloudState.cloudCustomProducts || [])].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             }
@@ -1177,6 +1211,14 @@
                 cloudState.cloudCustomProducts.forEach(p => m.set(p.id, p));
             }
             return Array.from(m.values()).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
+
+        // Genera una clave única por producto para agrupar todas las tiendas de un mismo artículo sin repeticiones
+        function getProductGroupKey(p) {
+            if (p.adminOfferId) return `off_${p.city}_${p.adminOfferId}`;
+            if (p.baseOfferKey) return `base_${p.city}_${p.baseOfferKey}`;
+            const normTitle = (p.title || '').trim().toLowerCase();
+            return `cust_${p.city}_${p.supermarket}_${normTitle}`;
         }
 
         function rebuildCatalogFromCurrentState() {
@@ -1221,7 +1263,7 @@
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
                         baseCatalogGenerated.push({
-                            id: prodId, title: offer.title, price: offer.price, supermarket: store.chain,
+                            id: prodId, baseOfferKey: `${store.chain}_${offerIdx}`, title: offer.title, price: offer.price, supermarket: store.chain,
                             category: offer.category, city: city, storeId: store.id, storeName: store.name,
                             imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
                             description: offer.description, userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
@@ -1240,7 +1282,6 @@
                 const vote = vRec ? vRec.status : (p.userVote || 'seen');
                 const updatedTime = vRec ? vRec.updatedAt : (p.updatedAt || p.createdAt || Date.now());
                 const cityVal = p.city || 'Málaga';
-                // Asegurar que el nombre de tienda se muestre actualizado (ej. Camino de Suárez, 22)
                 let resolvedStoreName = p.storeName || `${p.supermarket || 'Tienda'} - ${cityVal}`;
                 if (CITIES_AND_STORES[cityVal] && p.storeId) {
                     const matchedStore = CITIES_AND_STORES[cityVal].stores.find(s => s.id === p.storeId);
@@ -1314,6 +1355,7 @@
             if (pin === ADMIN_SECRET_PIN) {
                 isAdminAuthenticated = true;
                 sessionStorage.setItem('super_radar_admin_auth', 'true');
+                try { localStorage.setItem('super_radar_admin_auth_persist', 'true'); } catch (err) {}
                 document.getElementById('adminPinInput').value = '';
                 document.getElementById('adminLoginSection').classList.add('hidden');
                 document.getElementById('adminDashboardSection').classList.remove('hidden');
@@ -1329,6 +1371,7 @@
         function handleAdminLogout() {
             isAdminAuthenticated = false;
             sessionStorage.removeItem('super_radar_admin_auth');
+            try { localStorage.removeItem('super_radar_admin_auth_persist'); } catch (err) {}
             document.getElementById('adminActiveBadge').classList.add('hidden');
             closeAdminModal();
             rebuildCatalogFromCurrentState();
@@ -1525,19 +1568,24 @@
 
         function toggleOnlyFavoritesFilter() {
             showOnlyFavorites = !showOnlyFavorites;
-            if (showOnlyFavorites) showOnlyLatest = false;
+            if (showOnlyFavorites) {
+                showOnlyLatest = false;
+                switchMainViewTab('community');
+                showToast('📍 Mostrando tiendas con stock votado');
+            }
             updateTopFilterButtonsUI();
             applyFilters();
         }
 
         function toggleOnlyLatestFilter() {
             showOnlyLatest = !showOnlyLatest;
-            if (showOnlyLatest) showOnlyFavorites = false;
+            if (showOnlyLatest) {
+                showOnlyFavorites = false;
+                switchMainViewTab('catalog');
+                showToast('🔥 Mostrando los últimos lanzamientos virales');
+            }
             updateTopFilterButtonsUI();
             applyFilters();
-            if (showOnlyLatest) {
-                showToast('🔥 Mostrando las últimas novedades subidas');
-            }
         }
 
         function updateTopFilterButtonsUI() {
@@ -1557,8 +1605,8 @@
                 inlineBtn.classList.toggle('bg-amber-50', !showOnlyLatest);
                 inlineBtn.classList.toggle('text-amber-800', !showOnlyLatest);
                 inlineBtn.innerHTML = showOnlyLatest
-                    ? `<i class="fa-solid fa-xmark"></i><span>Quitar filtro de recién subidos</span>`
-                    : `<i class="fa-solid fa-fire text-amber-500"></i><span>Ver solo recién subidos</span>`;
+                    ? `<i class="fa-solid fa-xmark"></i><span>Ver todo el catálogo</span>`
+                    : `<i class="fa-solid fa-fire text-amber-500"></i><span>Solo recién salidos</span>`;
             }
         }
 
@@ -1579,15 +1627,35 @@
             applyFilters();
         }
 
+        function toggleProductStoresAccordion(groupKey) {
+            if (expandedProductGroups.has(groupKey)) {
+                expandedProductGroups.delete(groupKey);
+            } else {
+                expandedProductGroups.add(groupKey);
+            }
+            applyFilters();
+        }
+
+        function filterGroupStoresInput(groupKey, val) {
+            groupStoreSearchTerms[groupKey] = val;
+            const listContainer = document.getElementById(`stores_list_${groupKey}`);
+            if (!listContainer) return;
+            const rows = listContainer.querySelectorAll('[data-store-row]');
+            const q = (val || '').toLowerCase().trim();
+            rows.forEach(r => {
+                const name = (r.getAttribute('data-store-name') || '').toLowerCase();
+                r.style.display = (!q || name.includes(q)) ? '' : 'none';
+            });
+        }
+
         function applyFilters() {
             const storeId = document.getElementById('storeSelect').value;
             const query = (document.getElementById('heroSearchInput').value || document.getElementById('desktopSearchInput').value || '').toLowerCase().trim();
             const cat = document.getElementById('categoryFilter').value;
             const stock = document.getElementById('stockFilter').value;
 
-            const filtered = products.filter(p => {
-                if (showOnlyFavorites && !p.userVote) return false;
-                if (showOnlyLatest && !p.isRecentUpload) return false;
+            // Filtrado base común (ciudad, supermercado, tienda, sección, búsqueda)
+            const baseMatching = products.filter(p => {
                 if ((p.city || 'Málaga') !== currentCity) return false;
                 if (selectedChain && p.supermarket !== selectedChain) return false;
                 if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
@@ -1602,57 +1670,270 @@
                 }
                 return true;
             });
-            renderProducts(filtered);
+
+            // 1. Elementos del Catálogo Oficial (Novedades de cadena: subidas por Admin o base)
+            const catalogItems = baseMatching.filter(p => !p.isCustomUserProduct && (!showOnlyLatest || p.isRecentUpload) && (!showOnlyFavorites || !!p.userVote));
+            const catalogGroups = groupProductsForDisplay(catalogItems);
+
+            // 2. Elementos del Muro de Avisos en Tiendas (Productos subidos por vecinos + votos activos en tiendas concretas)
+            const communityItems = baseMatching.filter(p => p.isCustomUserProduct || !!p.userVote).sort((a, b) => {
+                const timeA = a.updatedAt || a.createdAt || 0;
+                const timeB = b.updatedAt || b.createdAt || 0;
+                return timeB - timeA;
+            });
+
+            // Actualizamos los contadores de ambas pestañas
+            const tabCatBadge = document.getElementById('tabCatalogBadge');
+            const tabComBadge = document.getElementById('tabCommunityBadge');
+            if (tabCatBadge) tabCatBadge.textContent = catalogGroups.length;
+            if (tabComBadge) tabComBadge.textContent = communityItems.length;
+
+            const isSingleStoreSelected = storeId && !storeId.startsWith('all_');
+
+            if (activeMainTab === 'catalog') {
+                renderCatalogTab(catalogGroups, isSingleStoreSelected);
+            } else {
+                renderCommunityTab(communityItems);
+            }
         }
 
-        function renderProducts(items) {
+        function groupProductsForDisplay(items) {
+            const map = new Map();
+            items.forEach(p => {
+                const gKey = getProductGroupKey(p);
+                if (!map.has(gKey)) {
+                    map.set(gKey, {
+                        groupKey: gKey,
+                        representative: p,
+                        items: []
+                    });
+                }
+                map.get(gKey).items.push(p);
+            });
+            return Array.from(map.values());
+        }
+
+        // PESTAÑA 1: Renderiza el Catálogo Viral (1 tarjeta única por producto, sin repeticiones)
+        function renderCatalogTab(groups, isSingleStoreSelected) {
             const grid = document.getElementById('productsGrid');
             const empty = document.getElementById('emptyState');
             const count = document.getElementById('resultsCount');
             if (!grid) return;
 
             count.textContent = showOnlyLatest
-                ? `🔥 ${items.length} ${items.length === 1 ? 'novedad recién subida' : 'novedades recién subidas'} en ${currentCity}`
-                : `${items.length} ${items.length === 1 ? 'novedad' : 'novedades'} en ${currentCity}`;
+                ? `🔥 ${groups.length} ${groups.length === 1 ? 'lanzamiento reciente' : 'lanzamientos recientes'} en ${currentCity}`
+                : `🔥 ${groups.length} ${groups.length === 1 ? 'producto viral' : 'productos virales'} en el catálogo de ${currentCity}`;
 
-            if (items.length === 0) { grid.innerHTML = ''; empty.classList.remove('hidden'); return; }
+            if (groups.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('emptyStateTitle').textContent = 'No hay productos en el catálogo con este filtro';
+                document.getElementById('emptyStateDesc').textContent = 'Prueba a limpiar los filtros o cambia a la pestaña de "Avisos en Tiendas".';
+                empty.classList.remove('hidden');
+                return;
+            }
             empty.classList.add('hidden');
 
-            grid.innerHTML = items.map(p => {
+            grid.innerHTML = groups.map(group => {
+                const p = group.representative;
+                const storeItems = group.items;
                 const badge = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
-                const timeStr = formatVoteTime(p.updatedAt);
+
+                const seenStores = storeItems.filter(item => item.userVote === 'seen');
+                const missingStores = storeItems.filter(item => item.userVote === 'missing');
+
                 let stockText = '⚪ Sin confirmar hoy';
                 let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
                 let bannerText = p.viralContext || 'Novedad viral';
                 let bannerColor = 'text-slate-400';
 
-                if (p.userVote === 'seen') {
-                    stockText = '🟢 ¡Sí hay!';
-                    stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
-                    bannerText = `✅ Último aviso (${timeStr}): SÍ ESTÁ`;
-                    bannerColor = 'text-emerald-700 font-semibold';
-                } else if (p.userVote === 'missing') {
-                    stockText = '🔴 Agotado';
-                    stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
-                    bannerText = `⚠️ Último aviso (${timeStr}): AGOTADO`;
-                    bannerColor = 'text-rose-600 font-semibold';
+                if (isSingleStoreSelected && storeItems.length === 1) {
+                    const single = storeItems[0];
+                    const timeStr = formatVoteTime(single.updatedAt);
+                    if (single.userVote === 'seen') {
+                        stockText = '🟢 ¡Sí hay!';
+                        stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                        bannerText = `✅ Confirmado (${timeStr}): SÍ ESTÁ`;
+                        bannerColor = 'text-emerald-700 font-semibold';
+                    } else if (single.userVote === 'missing') {
+                        stockText = '🔴 Agotado';
+                        stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
+                        bannerText = `⚠️ Confirmado (${timeStr}): AGOTADO`;
+                        bannerColor = 'text-rose-600 font-semibold';
+                    }
+                } else {
+                    if (seenStores.length > 0) {
+                        stockText = `🟢 ¡Sí hay! (${seenStores.length})`;
+                        stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                        bannerText = `✅ Visto hoy en ${seenStores.length} ${seenStores.length === 1 ? 'tienda' : 'tiendas'}`;
+                        bannerColor = 'text-emerald-700 font-semibold';
+                    } else if (missingStores.length > 0) {
+                        stockText = `🔴 Agotado (${missingStores.length})`;
+                        stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
+                        bannerText = `⚠️ Agotado en ${missingStores.length} ${missingStores.length === 1 ? 'tienda' : 'tiendas'}`;
+                        bannerColor = 'text-rose-600 font-semibold';
+                    }
                 }
 
-                let newBadgeHtml = p.isRecentUpload
+                const newBadgeHtml = p.isRecentUpload
                     ? `<span class="bg-amber-500 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-fire"></i> NUEVO</span>`
                     : '';
 
-                // Botones de control para Admin o para el propio autor que acaba de subir el aviso
                 let actionControlsHtml = '';
-                const canManageCustom = p.isCustomUserProduct && (isAdminAuthenticated || isMyOwnUpload(p));
                 if (isAdminAuthenticated && p.adminOfferId) {
                     actionControlsHtml = `
                         <div class="absolute bottom-2 right-2 flex items-center gap-1">
                             <button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
-                                <i class="fa-solid fa-trash-can"></i> Borrar global
+                                <i class="fa-solid fa-trash-can"></i> Borrar del catálogo
                             </button>
                         </div>`;
-                } else if (canManageCustom) {
+                }
+
+                let bottomSectionHtml = '';
+
+                if (isSingleStoreSelected && storeItems.length === 1) {
+                    const single = storeItems[0];
+                    bottomSectionHtml = `
+                        <div class="space-y-2 pt-2 border-t border-slate-100">
+                            <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
+                                <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
+                                <span class="truncate" title="${single.storeName}">${single.storeName}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <button onclick="handleStoreVote('${single.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                    <span>🟢 Sí (${single.seenCount})</span>
+                                </button>
+                                <button onclick="handleStoreVote('${single.id}', 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                    <span>🔴 No (${single.missingCount})</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const isExpanded = expandedProductGroups.has(group.groupKey);
+                    const sortedStores = [...storeItems].sort((a, b) => {
+                        const scoreA = a.userVote === 'seen' ? 2 : (a.userVote === 'missing' ? 1 : 0);
+                        const scoreB = b.userVote === 'seen' ? 2 : (b.userVote === 'missing' ? 1 : 0);
+                        return scoreB - scoreA;
+                    });
+
+                    const savedSearch = groupStoreSearchTerms[group.groupKey] || '';
+                    const searchInputHtml = sortedStores.length > 5 ? `
+                        <div class="relative mb-2">
+                            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-[10px]"></i>
+                            <input type="text" value="${savedSearch}" oninput="filterGroupStoresInput('${group.groupKey}', this.value)" placeholder="Buscar calle o barrio (${sortedStores.length} tiendas)..." class="w-full pl-7 pr-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:border-emerald-500">
+                        </div>
+                    ` : '';
+
+                    const storesRowsHtml = sortedStores.map(st => {
+                        const shortName = st.storeName.replace(new RegExp(`^${st.supermarket}\\s*(Market|Express)?\\s*-\\s*`, 'i'), '');
+                        const q = savedSearch.toLowerCase().trim();
+                        const hideRow = q && !st.storeName.toLowerCase().includes(q);
+                        return `
+                            <div data-store-row data-store-name="${st.storeName}" style="${hideRow ? 'display:none' : ''}" class="bg-white border ${st.userVote === 'seen' ? 'border-emerald-300 bg-emerald-50/30' : (st.userVote === 'missing' ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200')} rounded-xl p-2 flex flex-col gap-1.5">
+                                <div class="flex items-start justify-between gap-1">
+                                    <span class="text-[11px] font-semibold text-slate-800 leading-tight">📍 ${shortName}</span>
+                                    ${st.updatedAt ? `<span class="text-[9px] text-slate-400 shrink-0">${formatVoteTime(st.updatedAt)}</span>` : ''}
+                                </div>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <button onclick="handleStoreVote('${st.id}', 'seen')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                        <span>🟢 Sí (${st.seenCount})</span>
+                                    </button>
+                                    <button onclick="handleStoreVote('${st.id}', 'missing')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-slate-50 text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                        <span>🔴 No (${st.missingCount})</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    bottomSectionHtml = `
+                        <div class="pt-2 border-t border-slate-100">
+                            <button onclick="toggleProductStoresAccordion('${group.groupKey}')" class="w-full py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-between gap-2 ${isExpanded ? 'bg-slate-900 text-white shadow-sm' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200'}">
+                                <span class="flex items-center gap-1.5 truncate">
+                                    <i class="fa-solid fa-store ${isExpanded ? 'text-emerald-400' : 'text-emerald-600'}"></i>
+                                    <span>Ver stock por tienda (${storeItems.length})</span>
+                                </span>
+                                <i class="fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px] shrink-0"></i>
+                            </button>
+
+                            <div class="${isExpanded ? 'block' : 'hidden'} mt-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                                ${searchInputHtml}
+                                <div id="stores_list_${group.groupKey}" class="space-y-1.5 max-h-56 overflow-y-auto pr-0.5">
+                                    ${storesRowsHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl border ${p.isRecentUpload ? 'border-amber-300 ring-1 ring-amber-200/60' : 'border-slate-200'} overflow-hidden shadow-sm flex flex-col">
+                        <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
+                            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <div class="absolute top-2 left-2 flex items-center gap-1">
+                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                                ${newBadgeHtml}
+                            </div>
+                            <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
+                            ${actionControlsHtml}
+                        </div>
+                        <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
+                            <div>
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="font-extrabold text-slate-900 shrink-0">${Number(p.price).toFixed(2)} €</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
+                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
+                            </div>
+                            ${bottomSectionHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // PESTAÑA 2: Renderiza los Avisos de la Comunidad en Tiendas Exactas (Muro en directo)
+        function renderCommunityTab(items) {
+            const grid = document.getElementById('productsGrid');
+            const empty = document.getElementById('emptyState');
+            const count = document.getElementById('resultsCount');
+            if (!grid) return;
+
+            count.textContent = `📍 ${items.length} ${items.length === 1 ? 'aviso en directo' : 'avisos en directo'} en tiendas de ${currentCity}`;
+
+            if (items.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('emptyStateTitle').textContent = 'Aún no hay avisos en directo para esta selección';
+                document.getElementById('emptyStateDesc').textContent = 'Sé la primera persona en subir una foto desde tu supermercado o confirmar si queda stock.';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden');
+
+            grid.innerHTML = items.map(p => {
+                const badge = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
+                const timeStr = formatVoteTime(p.updatedAt || p.createdAt);
+
+                let stockText = '🟢 ¡Sí hay!';
+                let stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+                let bannerText = `✅ Aviso en tienda (${timeStr})`;
+                let bannerColor = 'text-emerald-700 font-semibold';
+
+                if (p.userVote === 'missing') {
+                    stockText = '🔴 Agotado';
+                    stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
+                    bannerText = `⚠️ Reportado agotado (${timeStr})`;
+                    bannerColor = 'text-rose-600 font-semibold';
+                }
+
+                const originBadgeHtml = p.isCustomUserProduct
+                    ? `<span class="bg-emerald-600 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-camera"></i> VECINOS</span>`
+                    : `<span class="bg-amber-500 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded shadow-sm flex items-center gap-1"><i class="fa-solid fa-check"></i> VOTO</span>`;
+
+                let actionControlsHtml = '';
+                const canManageCustom = p.isCustomUserProduct && (isAdminAuthenticated || isMyOwnUpload(p));
+                if (canManageCustom) {
                     actionControlsHtml = `
                         <div class="absolute bottom-2 right-2 flex items-center gap-1">
                             <button onclick="openEditCustomProductModal('${p.id}')" class="bg-slate-900/90 hover:bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
@@ -1665,12 +1946,12 @@
                 }
 
                 return `
-                    <div class="bg-white rounded-2xl border ${p.isRecentUpload ? 'border-amber-300 ring-1 ring-amber-200/60' : 'border-slate-200'} overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-white rounded-2xl border border-emerald-200 ring-1 ring-emerald-100 overflow-hidden shadow-sm flex flex-col">
                         <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
-                            <img src="${p.imageUrl}" alt="${p.title}" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
                             <div class="absolute top-2 left-2 flex items-center gap-1">
                                 <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
-                                ${newBadgeHtml}
+                                ${originBadgeHtml}
                             </div>
                             <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
                             ${actionControlsHtml}
@@ -1679,15 +1960,15 @@
                             <div>
                                 <div class="flex items-center justify-between gap-1 mb-1">
                                     <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
-                                    <span class="font-extrabold text-slate-900">${Number(p.price).toFixed(2)} €</span>
+                                    <span class="font-extrabold text-slate-900 shrink-0">${Number(p.price).toFixed(2)} €</span>
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
                                 <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
                             </div>
                             <div class="space-y-2 pt-2 border-t border-slate-100">
-                                <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
+                                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl">
                                     <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
-                                    <span class="truncate">${p.storeName}</span>
+                                    <span class="truncate" title="${p.storeName}">${p.storeName}</span>
                                 </div>
                                 <div class="grid grid-cols-2 gap-1.5">
                                     <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
@@ -1820,14 +2101,16 @@
                 document.getElementById('addProductForm').reset();
                 closeModal();
 
-                // Mostrar todas las tiendas de la ciudad para que el producto recién subido se vea en primera fila
                 currentCity = city;
                 document.getElementById('citySelect').value = city;
                 selectedChain = '';
                 renderSupermarketChainPills();
                 updateStoreSelectDropdown();
+                // Al subir un aviso de tienda concreta, llevamos al usuario directamente a la pestaña de "Avisos en Tiendas"
+                activeMainTab = 'community';
                 rebuildCatalogFromCurrentState();
-                showToast(editingId ? '✅ ¡Aviso corregido con éxito!' : '🚀 ¡Aviso publicado para todos!');
+                switchMainViewTab('community');
+                showToast(editingId ? '✅ ¡Aviso corregido con éxito!' : '🚀 ¡Aviso publicado en directo!');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
@@ -1852,7 +2135,7 @@
         });
     </script>
 
-    <!-- Sincronización en la nube directa con Firebase de SuperRadar -->
+    <!-- Sincronización en la nube directa con Firebase de SuperRadar + Caché Instantánea -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1871,6 +2154,29 @@
         let db = null, auth = null, currentUser = null, isCloudActive = false, listenersStarted = false;
         let hasLoadedCustomSnap = false, hasLoadedOfficialSnap = false;
         let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
+
+        // Cargar caché instantánea de la nube para evitar el retraso de 2 segundos al abrir la web
+        try {
+            const cachedCloud = JSON.parse(localStorage.getItem('sr_cloud_fast_cache_v1') || 'null');
+            if (cachedCloud) {
+                cloudVotes = cachedCloud.cloudVotes || {};
+                cloudCustomProducts = cachedCloud.cloudCustomProducts || [];
+                cloudOfficialOffers = cachedCloud.cloudOfficialOffers || [];
+                hasLoadedCustomSnap = true;
+                hasLoadedOfficialSnap = true;
+                isCloudActive = true;
+            }
+        } catch (e) {}
+
+        function saveCloudFastCache() {
+            try {
+                localStorage.setItem('sr_cloud_fast_cache_v1', JSON.stringify({
+                    cloudVotes,
+                    cloudCustomProducts,
+                    cloudOfficialOffers
+                }));
+            } catch (e) {}
+        }
 
         window.getCloudState = function() {
             return {
@@ -1931,6 +2237,7 @@
             onSnapshot(collection(db, 'stock_votes'), snap => {
                 cloudVotes = {};
                 snap.forEach(d => cloudVotes[d.id] = d.data());
+                saveCloudFastCache();
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             }, err => console.warn("votes listener:", err));
 
@@ -1939,6 +2246,7 @@
                 snap.forEach(d => l.push(d.data()));
                 cloudOfficialOffers = l;
                 hasLoadedOfficialSnap = true;
+                saveCloudFastCache();
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             }, err => console.warn("official listener:", err));
 
@@ -1947,6 +2255,7 @@
                 snap.forEach(d => l.push(d.data()));
                 cloudCustomProducts = l;
                 hasLoadedCustomSnap = true;
+                saveCloudFastCache();
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
             }, err => console.warn("custom_products listener:", err));
 
@@ -2020,9 +2329,9 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Conectamos los listeners en tiempo real de inmediato sin depender de que signInAnonymously tarde en móviles
                 isCloudActive = true;
                 updateCloudIndicator(true);
+                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
                 setupRealtimeListeners();
                 registerVisitInFirebase();
 
