@@ -1168,10 +1168,24 @@
             if (!timestamp) return '';
             const date = new Date(timestamp);
             const now = new Date();
+            
             const isToday = date.toDateString() === now.toDateString();
+            
+            // Comprobamos si fue ayer
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            const isYesterday = date.toDateString() === yesterday.toDateString();
+
             const timeStr = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-            return isToday ? `Hoy a las ${timeStr}` : `Reciente (${timeStr})`;
+
+            if (isToday) return `Hoy a las ${timeStr}`;
+            if (isYesterday) return `Ayer a las ${timeStr}`;
+            
+            // Si es de hace varios días, mostramos la fecha corta (ej. 24 oct. a las 15:20)
+            const dateStr = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+            return `${dateStr} a las ${timeStr}`;
         }
+
 
         function getValidVoteRecord(rawRecord) {
             if (!rawRecord) return null;
