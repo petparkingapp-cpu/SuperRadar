@@ -103,20 +103,13 @@
                 </div>
 
                 <!-- Botones de acción cabecera adaptados -->
-                <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                    <button id="latestNavBtn" onclick="toggleOnlyLatestFilter()" class="inline-flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition shadow-sm" title="Ver lo último subido">
-                        <i class="fa-solid fa-fire text-amber-500 text-[11px] sm:text-xs"></i>
-                        <span>Últimas</span>
-                        <span id="latestBadge" class="bg-amber-500 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
+                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <button onclick="shareSuperRadar()" class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition shadow-sm" title="Compartir SuperRadar">
+                        <i class="fa-solid fa-share-nodes text-emerald-600 text-[11px] sm:text-xs"></i>
+                        <span>Compartir</span>
                     </button>
 
-                    <button id="favoritesNavBtn" onclick="toggleOnlyFavoritesFilter()" class="inline-flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] sm:text-xs px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition" title="Mis avisos">
-                        <i class="fa-solid fa-check-double text-emerald-600 text-[11px] sm:text-xs"></i>
-                        <span class="hidden sm:inline">Avisos</span>
-                        <span id="favoritesBadge" class="bg-emerald-600 text-white text-[9px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded-full">0</span>
-                    </button>
-
-                    <button onclick="openModal()" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl transition shadow-sm shrink-0">
+                    <button onclick="openModal()" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition shadow-sm shrink-0">
                         <i class="fa-solid fa-plus text-[10px]"></i>
                         <span>Subir</span>
                     </button>
@@ -852,21 +845,21 @@
                         { id: 'merca_mlg_pasteur', chain: 'Mercadona', name: 'Mercadona - Bulevar Louis Pasteur, 17 (Teatinos)' },
                         { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - C. Eduardo Marquina, 10 (Huelin / Estación)' },
                         { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 6 (Distrito Centro)' },
-                        { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Albéniz, 35 (Distrito Centro)' },
+                        { id: 'merca_mlg_albeniz', chain: 'Mercadona', name: 'Mercadona - C. Albéniz, 35 (Distrito Centro)' },
                         { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - C. Explanada de la Estación s/n (Vialia)' },
                         { id: 'merca_mlg_palma_palmilla', chain: 'Mercadona', name: 'Mercadona - Av. del Dr. Marañón, 8 (Palma-Palmilla)' },
                         { id: 'merca_mlg_cruz_humilladero', chain: 'Mercadona', name: 'Mercadona - Av. Santa Rosa de Lima, 20 (Cruz de Humilladero)' },
                         { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - C. Gaucín, 15 (La Luz)' },
                         { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. de la Estación, 3 (El Palo)' },
-                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. Juan Sebastián Elcano, 147 (Málaga-Este/ El Palo)' },
+                        { id: 'merca_mlg_palo_elcano', chain: 'Mercadona', name: 'Mercadona - Av. Juan Sebastián Elcano, 147 (Málaga-Este / El Palo)' },
                         { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - Av. del Mayorazgo, 20 (El Limonar)' },
                         { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Av. Jacinto Benavente, 21 (Ciudad Jardín)' },
-                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Cmo de Casabermeja, 64 (Cdad. Jardín)' },
-                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Cdad. Jardín)' },
+                        { id: 'merca_mlg_casabermeja', chain: 'Mercadona', name: 'Mercadona - Cmo. de Casabermeja, 64 (Cdad. Jardín)' },
+                        { id: 'merca_mlg_thuillier', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Cdad. Jardín)' },
                         { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suárez, 22 (Miraflores)' },
-                        { id: 'merca_mlg_plazamayor', chain: 'Mercadona', name: 'Mercadona - Calle Alfonso Ponce de León, s/n (C C Plaza Mayor)' },
-                        { id: 'merca_mlg_torremolinos', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)' },
-                        { id: 'merca_mlg_torremolinos', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)' },
+                        { id: 'merca_mlg_plazamayor', chain: 'Mercadona', name: 'Mercadona - Calle Alfonso Ponce de León, s/n (C.C. Plaza Mayor)' },
+                        { id: 'merca_mlg_torremolinos_playamar', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)' },
+                        { id: 'merca_mlg_torremolinos_centro', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)' },
                         { id: 'merca_mlg_martinez_maldonado', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 62 (Distrito Centro)' },
                         { id: 'merca_mlg_barcelona', chain: 'Mercadona', name: 'Mercadona - Av. de Barcelona, 18 (Bailén)' },
                         { id: 'merca_mlg_san_rafael', chain: 'Mercadona', name: 'Mercadona - Camino de San Rafael, 55 (Cruz de Humilladero)' },
@@ -874,48 +867,48 @@
                         { id: 'merca_mlg_ortega_gasset', chain: 'Mercadona', name: 'Mercadona - Av. José Ortega y Gasset, s/n (Cruz de Humilladero)' },
                         { id: 'merca_mlg_lope_rueda', chain: 'Mercadona', name: 'Mercadona - Av. Arquitecto Luis Bono, 17 (Puerto de la Torre)' },
                         { id: 'merca_mlg_navarro_ledesma', chain: 'Mercadona', name: 'Mercadona - C. Navarro Ledesma, 175 (El Atabal)' },
-                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104, (Churriana)' },
+                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104 (Churriana)' },
 
                         // Carrefour Málaga
                         { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241, 29004 (C.C. Los Patios)' },
                         { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - Av. Simón Bolívar, s/n (C.C. La Rosaleda)' },
                         { id: 'car_mlg_torremolinos', chain: 'Carrefour', name: 'Carrefour - Avenida Circunvalación, s/n, Centro Comercial Costasol (Torremolinos)' },
-                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, S/N, Cruz de Humilladero, Málaga' },
+                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, s/n (Cruz de Humilladero)' },
 
                         // Lidl Málaga
-                        { id: 'lidl_mlg_carretera_cadiz', chain: 'Lidl', name: 'C. Villanueva de Algaidas, 6, (Carretera de Cádiz)' },
+                        { id: 'lidl_mlg_carretera_cadiz', chain: 'Lidl', name: 'Lidl - C. Villanueva de Algaidas, 6 (Carretera de Cádiz)' },
                         { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Avenida de Velázquez, 60' },
-                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: '• C/ Héroes de Sostoa, 126 (Huelin)' },
-                        { id: 'lidl_mlg_ciudad_jardin', chain: 'Lidl', name: '• Av. de los Pascueros, 3, (Cdad. Jardín)' },
-                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Calle Navarro Ledesma, s/n (Teatinos)' },
+                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - C/ Héroes de Sostoa, 126 (Huelin)' },
+                        { id: 'lidl_mlg_ciudad_jardin', chain: 'Lidl', name: 'Lidl - Av. de los Pascueros, 3 (Cdad. Jardín)' },
+                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Calle Navarro Ledesma, s/n (Teatinos)' },
                         { id: 'lidl_mlg_ortega_gasset', chain: 'Lidl', name: 'Lidl - Av. José Ortega y Gasset, 224 (El Viso)' },
                         { id: 'lidl_mlg_cruz_humilladero', chain: 'Lidl', name: 'Lidl - Camino San Rafael, 63' },
                         { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 47 (Churriana)' },
                         { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - C. de la Cruz, 69 (Torremolinos)' },
-                        { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - Av. Carlota Alessandri, 288 (Torremolinos)' },
-                        { id: 'lidl_mlg_alhaurin_torre', chain: 'Lidl', name: 'Lidl - Av. Finca Taralpe, s/n, (Alhaurín de la Torre)' },
+                        { id: 'lidl_mlg_torremolinos_alessandri', chain: 'Lidl', name: 'Lidl - Av. Carlota Alessandri, 288 (Torremolinos)' },
+                        { id: 'lidl_mlg_alhaurin_torre', chain: 'Lidl', name: 'Lidl - Av. Finca Taralpe, s/n (Alhaurín de la Torre)' },
 
                         // Aldi Málaga
                         { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Carretera de Cádiz / Pacífico)' },
                         { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Giordano Bruno, 6 (Teatinos-Universidad)' },
-                        { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Av. de José Ortega y Gasset, 291 (Cruz de Humilladero)' },
+                        { id: 'aldi_mlg_ortega_gasset', chain: 'Aldi', name: 'Aldi - Av. de José Ortega y Gasset, 291 (Cruz de Humilladero)' },
                         { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Pl. Cruz del Humilladero, 1 (Cruz de Humilladero)' },
-                        { id: 'aldi_mlg_dsitrito_centro', chain: 'Aldi', name: 'Aldi - C. Montes de Oca, 15, (Distrito Centro)' },
+                        { id: 'aldi_mlg_distrito_centro', chain: 'Aldi', name: 'Aldi - C. Montes de Oca, 15 (Distrito Centro)' },
                         { id: 'aldi_mlg_sanjulian', chain: 'Aldi', name: 'Aldi - C. Escritor Julio Balbín, s/n (Bahía Azul / San Julián)' },
-                        { id: 'aldi_mlg_churriana', chain: 'Aldi', name: 'Aldi - C. Emilio Hurtado, 19, (Churriana)' },
-                        { id: 'aldi_mlg_alhaurin_de_la_torre', chain: 'Aldi', name: 'Aldi - Av. Sta. Clara, S/N, Churriana (Alhaurín de la Torre)' },
-                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - C. de la Cruz, 73, (Torremolinos)' },
-                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - Av. Carlota Alessandri, 200 (Torremolinos)' },
-                        { id: 'aldi_mlg_puerto_de_la_torre', chain: 'Aldi', name: 'Aldi - Calle Lope de Rueda, esquina, Cam. Soliva del Cañaveral, 161 (Puerto de la Torre)' },
-                        { id: 'aldi_mlg_cartama', chain: 'Aldi', name: 'Aldi - Av. de los Juegos OlÍmpicos, 1 (Cártama)' },
+                        { id: 'aldi_mlg_churriana', chain: 'Aldi', name: 'Aldi - C. Emilio Hurtado, 19 (Churriana)' },
+                        { id: 'aldi_mlg_alhaurin_de_la_torre', chain: 'Aldi', name: 'Aldi - Av. Sta. Clara, s/n, Churriana (Alhaurín de la Torre)' },
+                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - C. de la Cruz, 73 (Torremolinos)' },
+                        { id: 'aldi_mlg_torremolinos_alessandri', chain: 'Aldi', name: 'Aldi - Av. Carlota Alessandri, 200 (Torremolinos)' },
+                        { id: 'aldi_mlg_puerto_de_la_torre', chain: 'Aldi', name: 'Aldi - Calle Lope de Rueda, esq. Cam. Soliva del Cañaveral, 161 (Puerto de la Torre)' },
+                        { id: 'aldi_mlg_cartama', chain: 'Aldi', name: 'Aldi - Av. de los Juegos Olímpicos, 1 (Cártama)' },
 
                         // DIA Málaga
                         { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA - Calle Carretería, 105' },
                         { id: 'dia_mlg_moliere', chain: 'DIA', name: 'DIA - Av. de Molière s/n' },
                         { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA - Av. de Velázquez, 9' },
                         { id: 'dia_mlg_ninogloria', chain: 'DIA', name: 'DIA - C. Niño de Gloria, 10 (El Torcal)' },
-                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34 (Giron/ Las Delicias)' },
-                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6 (Santa Cristina/ San Rafael)' },
+                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34 (Girón / Las Delicias)' },
+                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6 (Santa Cristina / San Rafael)' },
                         { id: 'dia_mlg_reboul', chain: 'DIA', name: 'DIA - C. Reboul s/n (La Unión)' },
                         { id: 'dia_mlg_ayala', chain: 'DIA', name: 'DIA - C. Ayala, 82 (Parque Ayala)' },
                         { id: 'dia_mlg_cuarteles', chain: 'DIA', name: 'DIA - C. Cuarteles, 35 (El Perchel)' },
@@ -926,17 +919,17 @@
                         { id: 'dia_mlg_macabeos', chain: 'DIA', name: 'DIA - C. Macabeos, 5 (Distrito Centro)' },
                         { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA - C. Victoria, 64 (Distrito Centro)' },
                         { id: 'dia_mlg_almendrales', chain: 'DIA', name: 'DIA - Camino de los Almendrales s/n (Fuente Olletas)' },
-                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30 (Ciudad Jardón/ Cortijo Bazán)' },
+                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30 (Ciudad Jardín / Cortijo Bazán)' },
                         { id: 'dia_mlg_joaquinquiles', chain: 'DIA', name: 'DIA - C. Alcalde Joaquín Quiles, 19 (Ciudad Jardín)' },
                         { id: 'dia_mlg_miguelmoya', chain: 'DIA', name: 'DIA - C. Miguel Moya, 14 (El Palo)' },
                         { id: 'dia_mlg_manuelalcantara', chain: 'DIA', name: 'DIA - C. Poeta Manuel Alcántara, 1 (Rincón de la Victoria)' },
                         { id: 'dia_mlg_carriltoros', chain: 'DIA', name: 'DIA - Carril de los Toros s/n (Rincón de la Victoria)' },
                         { id: 'dia_mlg_calledelrio', chain: 'DIA', name: 'DIA - C. del Río, 32 (Torre del Mar)' },
                         { id: 'dia_mlg_drfleming', chain: 'DIA', name: 'DIA - C. Dr. Fleming, 77 (Torre del Mar)' },
-                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n (Vélez Málaga)' },
+                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n (Vélez-Málaga)' },
                         { id: 'dia_mlg_avandalucia', chain: 'DIA', name: 'DIA - Av. de Andalucía, 35 (Algarrobo)' },
                         { id: 'dia_mlg_castillobajo', chain: 'DIA', name: 'DIA - C. Castillo Bajo, 50 (Torrox)' },
-                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n (Torrox)' },
+                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n (Torrox)' }
                     );
                 } else if (city === 'Bilbao') {
                     storesList.push(
@@ -2115,6 +2108,29 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             }
+        }
+
+        async function shareSuperRadar() {
+            const shareData = {
+                title: 'SuperRadar · Stock de Novedades de Supermercado',
+                text: '¡Mira esta web! Puedes comprobar y avisar en directo si quedan novedades virales en tu supermercado antes de salir de casa 🛒🟢',
+                url: 'https://www.superradar.es/'
+            };
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    return;
+                } catch (err) {
+                    if (err.name === 'AbortError') return;
+                }
+            }
+            const tempInput = document.createElement('input');
+            tempInput.value = shareData.url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('🔗 ¡Enlace copiado! Ya puedes pasarlo por WhatsApp');
         }
 
         function showToast(msg) {
