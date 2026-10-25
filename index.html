@@ -936,37 +936,299 @@
                     );
                 } else if (city === 'Bilbao') {
                     storesList.push(
-                        { id: 'merca_Bilbao', chain: 'Mercadona', name: 'Mercadona - C. Rodríguez Arias, 17 (Abando / Indautxu)' },
-                        { id: 'merca_bio_urquijo', chain: 'Mercadona', name: 'Mercadona - Alameda de Urquijo, 85 (San Mamés)' },
-                        { id: 'merca_bio_deusto', chain: 'Mercadona', name: 'Mercadona - C. Jon Arrospide, 20 (Deusto)' },
-                        { id: 'merca_bio_miribilla', chain: 'Mercadona', name: 'Mercadona - C. Espinosa Orive, 2 (Miribilla)' },
-                        { id: 'merca_bio_rekalde', chain: 'Mercadona', name: 'Mercadona - C. Xalbador, s/n (Rekalde)' },
-                        { id: 'merca_bio_bolueta', chain: 'Mercadona', name: 'Mercadona - Ctra. Bilbao-Galdakao, 8 (Bolueta)' },
-                        { id: 'car_Bilbao', chain: 'Carrefour', name: 'Carrefour Express - C.C. Zubiarte / Gran Vía' },
-                        { id: 'car_bio_market', chain: 'Carrefour', name: 'Carrefour Market - C. Doctor Achúcarro' },
-                        { id: 'lidl_Bilbao', chain: 'Lidl', name: 'Lidl - C. Autonomía, 1' },
-                        { id: 'lidl_bio_haro', chain: 'Lidl', name: 'Lidl - C. María Díaz de Haro, 14' },
-                        { id: 'aldi_Bilbao', chain: 'Aldi', name: 'Aldi - Plaza Emilio Campuzano, 3 (Indautxu)' },
-                        { id: 'aldi_bio_deusto', chain: 'Aldi', name: 'Aldi - Av. Madariaga, 47 (Deusto)' },
-                        { id: 'dia_Bilbao', chain: 'DIA', name: 'Supermercados DIA - C. Luis Briñas, 37' },
-                        { id: 'dia_bio_bidebarrieta', chain: 'DIA', name: 'Supermercados DIA - Casco Viejo (C. Bidebarrieta)' }
+                        // Mercadona Bilbao
+                        { id: 'merca_bio_indautxu_rodriguez_arias', chain: 'Mercadona', name: 'Mercadona - C. Rodríguez Arias, 66 (Indautxu)' },
+                        { id: 'merca_bio_miribilla_santiago', chain: 'Mercadona', name: 'Mercadona - C. Santiago de Compostela, 12 (Miribilla)' },
+                        { id: 'merca_bio_bolueta_telleria', chain: 'Mercadona', name: 'Mercadona - C. Tellería, 9 (Bolueta)' },
+                        { id: 'merca_bio_abando_recalde', chain: 'Mercadona', name: 'Mercadona - Alameda de Recalde, 52 (Abando)' },
+
+                        // Lidl Bilbao
+                        { id: 'lidl_bio_errekalde_gordoniz', chain: 'Lidl', name: 'Lidl - C. Gordóniz, 44 (Errekalde)' },
+                        { id: 'lidl_bio_deusto_lehendakari', chain: 'Lidl', name: 'Lidl - Av. Lehendakari Aguirre, 179 (Deusto)' },
+                        { id: 'lidl_bio_santutxu_zabalbide', chain: 'Lidl', name: 'Lidl - C. Zabalbide, 41 (Santutxu)' },
+
+                        // Carrefour Bilbao
+                        { id: 'car_bio_abando_gral_concha', chain: 'Carrefour', name: 'Carrefour Market - C. del General Concha, 26 (Abando)' },
+                        { id: 'car_bio_indautxu_rodriguez_arias', chain: 'Carrefour', name: 'Carrefour Market - C. Rodríguez Arias, 20 (Indautxu)' },
+
+                        // Aldi Bilbao
+                        { id: 'aldi_bio_basurto_luis_brinas', chain: 'Aldi', name: 'Aldi - C. Luis Briñas, 17 (Basurto)' },
+                        { id: 'aldi_bio_deusto_madariaga', chain: 'Aldi', name: 'Aldi - Av. de Madariaga, 21 (Deusto)' },
+
+                        // DIA Bilbao
+                        { id: 'dia_bio_abando_hurtado_amezaga', chain: 'DIA', name: 'DIA - C. Hurtado de Amézaga, 14 (Abando)' },
+                        { id: 'dia_bio_indautxu_iparraguirre', chain: 'DIA', name: 'DIA - C. Iparraguirre, 54 (Indautxu)' },
+                        { id: 'dia_bio_autonomia_basurto', chain: 'DIA', name: 'DIA - C. Autonomía, 26 (Basurto)' },
+                        { id: 'dia_bio_santutxu_calle', chain: 'DIA', name: 'DIA - C. Santutxu, 24 (Santutxu)' }
                     );
-                } else if (city === 'Madrid') {
+               } else if (city === 'Madrid') {
                     storesList.push(
-                        { id: 'merca_mad_centro', chain: 'Mercadona', name: 'Mercadona - Fuencarral / Centro' },
-                        { id: 'merca_mad_salamanca', chain: 'Mercadona', name: 'Mercadona - Barrio de Salamanca' },
-                        { id: 'car_mad_hortaleza', chain: 'Carrefour', name: 'Carrefour - Gran Vía de Hortaleza' },
-                        { id: 'lidl_mad_tetuan', chain: 'Lidl', name: 'Lidl - Tetuán / Bravo Murillo' },
-                        { id: 'aldi_mad_chamberi', chain: 'Aldi', name: 'Aldi - Chamberí' },
-                        { id: 'dia_mad_malasana', chain: 'DIA', name: 'DIA Market - Malasaña' }
+                        // Mercadona Madrid
+                        { id: 'merca_mad_atocha', chain: 'Mercadona', name: 'Mercadona - Rda. de Atocha, 26' },
+                        { id: 'merca_mad_salamanca_ayala', chain: 'Mercadona', name: 'Mercadona - Cl. de Ayala, 89 (Barrio de Salamanca)' },
+                        { id: 'merca_mad_centro_fuencarral', chain: 'Mercadona', name: 'Mercadona - Cl. de Fuencarral, 77 (Centro)' },
+                        { id: 'merca_mad_fuencarral_sinesio', chain: 'Mercadona', name: 'Mercadona - C. de Sinesio Delgado, 44 (Fuencarral-El Pardo)' },
+                        { id: 'merca_mad_moncloa_vascos', chain: 'Mercadona', name: 'Mercadona - Cl. de los Vascos, 29 (Moncloa-Aravaca)' },
+                        { id: 'merca_mad_salamanca_serrano', chain: 'Mercadona', name: 'Mercadona - C. de Serrano, 61 (Barrio de Salamanca)' },
+                        { id: 'merca_mad_chamberi_bravo_murillo_5', chain: 'Mercadona', name: 'Mercadona - C. de Bravo Murillo, 5 (Chamberí)' },
+                        { id: 'merca_mad_chamberi_joaquin_maria', chain: 'Mercadona', name: 'Mercadona - C. de Joaquín María López, 7 (Chamberí)' },
+                        { id: 'merca_mad_moncloa_florida', chain: 'Mercadona', name: 'Mercadona - P.º de la Florida, 2 (Moncloa-Aravaca)' },
+                        { id: 'merca_mad_arganzuela_arbancon', chain: 'Mercadona', name: 'Mercadona - C. Villa de Arbancón, 4 (Arganzuela)' },
+                        { id: 'merca_mad_chamartin_vasconcelos', chain: 'Mercadona', name: 'Mercadona - C. de José Vasconcelos, 4 (Chamartín)' },
+                        { id: 'merca_mad_san_blas_butron', chain: 'Mercadona', name: 'Mercadona - C. Butrón, 31 (San Blas-Canillejas)' },
+                        { id: 'merca_mad_retiro_adelfas', chain: 'Mercadona', name: 'Mercadona - C. de las Adelfas, 38 (Retiro)' },
+                        { id: 'merca_mad_arganzuela_yeserias', chain: 'Mercadona', name: 'Mercadona - P.º de las Yeserías, 3 (Arganzuela)' },
+                        { id: 'merca_mad_retiro_reyes_magos', chain: 'Mercadona', name: 'Mercadona - Pl. de los Reyes Magos, s/n (Retiro)' },
+                        { id: 'merca_mad_san_blas_camarillo', chain: 'Mercadona', name: 'Mercadona - C. de Julián Camarillo, 15 (San Blas-Canillejas)' },
+                        { id: 'merca_mad_chamartin_guatemala', chain: 'Mercadona', name: 'Mercadona - C. de Guatemala, 13 (Chamartín)' },
+                        { id: 'merca_mad_tetuan_lope_haro', chain: 'Mercadona', name: 'Mercadona - C. de Lope de Haro, 14 (Tetuán)' },
+                        { id: 'merca_mad_tetuan_lerida', chain: 'Mercadona', name: 'Mercadona - C. de Lérida, 56 (Tetuán)' },
+                        { id: 'merca_mad_latina_calle', chain: 'Mercadona', name: 'Mercadona - C. de Latina, 18 (Latina)' },
+                        { id: 'merca_mad_usera_antonio_lopez', chain: 'Mercadona', name: 'Mercadona - Calle de Antonio López, 117 (Usera)' },
+                        { id: 'merca_mad_usera_andalucia', chain: 'Mercadona', name: 'Mercadona - Av. de Andalucía, 20 (Usera)' },
+                        { id: 'merca_mad_arganzuela_melancolicos', chain: 'Mercadona', name: 'Mercadona - P.º de los Melancólicos, 30 (Arganzuela)' },
+                        { id: 'merca_mad_vallecas_martinez_riva', chain: 'Mercadona', name: 'Mercadona - C. de Martínez de la Riva, 4 (Puente de Vallecas)' },
+                        { id: 'merca_mad_vallecas_democracia', chain: 'Mercadona', name: 'Mercadona - Av. de la Democracia, 3 (Puente de Vallecas)' },
+                        { id: 'merca_mad_chamberi_martinez_campos', chain: 'Mercadona', name: 'Mercadona - P.º del Gral. Martínez Campos, 39 (Chamberí)' },
+                        { id: 'merca_mad_arganzuela_sta_maria_cabeza', chain: 'Mercadona', name: 'Mercadona - P.º de Sta. María de la Cabeza, 41 (Arganzuela)' },
+                        { id: 'merca_mad_arganzuela_norena', chain: 'Mercadona', name: 'Mercadona - C. del Teniente Cnel. Noreña, 69 (Arganzuela)' },
+                        { id: 'merca_mad_latina_olivillo', chain: 'Mercadona', name: 'Mercadona - C. Olivillo, 16 (Latina)' },
+                        { id: 'merca_mad_usera_rosales', chain: 'Mercadona', name: 'Mercadona - Av. de los Rosales, 26 (Usera)' },
+                        { id: 'merca_mad_hortaleza_virgen_carmen', chain: 'Mercadona', name: 'Mercadona - Av. de la Virgen del Carmen, 84 (Hortaleza)' },
+                        { id: 'merca_mad_ciudad_lineal_madariaga', chain: 'Mercadona', name: 'Mercadona - C. de Francisco Madariaga, 3 (Ciudad Lineal)' },
+                        { id: 'merca_mad_chamartin_habana', chain: 'Mercadona', name: 'Mercadona - P.º de La Habana, 10 (Chamartín)' },
+                        { id: 'merca_mad_chamartin_corazon_maria', chain: 'Mercadona', name: 'Mercadona - C. del Corazón de María, 17 (Chamartín)' },
+                        { id: 'merca_mad_carabanchel_gral_ricardos', chain: 'Mercadona', name: 'Mercadona - Calle del Gral. Ricardos, 188 (Carabanchel)' },
+                        { id: 'merca_mad_carabanchel_zaida', chain: 'Mercadona', name: 'Mercadona - C. de Zaida, 95 (Carabanchel)' },
+                        { id: 'merca_mad_carabanchel_juan_mieg', chain: 'Mercadona', name: 'Mercadona - C. Juan Mieg, 7 (Carabanchel)' },
+                        { id: 'merca_mad_carabanchel_secoya', chain: 'Mercadona', name: 'Mercadona - Polígono Industrial Aguacate, C. Secoya, 6 (Carabanchel)' },
+                        { id: 'merca_mad_arganzuela_delicias', chain: 'Mercadona', name: 'Mercadona - Paseo de las Delicias, 74 (Arganzuela)' },
+                        { id: 'merca_mad_tetuan_bravo_murillo_327', chain: 'Mercadona', name: 'Mercadona - C. de Bravo Murillo, 327 (Tetuán)' },
+                        { id: 'merca_mad_ciudad_lineal_virgen_paz', chain: 'Mercadona', name: 'Mercadona - C. Virgen de la Paz, 16 (Ciudad Lineal)' },
+                        { id: 'merca_mad_fuencarral_orduna', chain: 'Mercadona', name: 'Mercadona - C. de Orduña, 6 (Fuencarral-El Pardo)' },
+                        { id: 'merca_mad_latina_sinfonia', chain: 'Mercadona', name: 'Mercadona - C. Sinfonía, 20 (Latina)' },
+                        { id: 'merca_mad_villaverde_augustobriga', chain: 'Mercadona', name: 'Mercadona - C. Augustóbriga, s/n (Villaverde)' },
+                        { id: 'merca_mad_fuencarral_marquerie', chain: 'Mercadona', name: 'Mercadona - C. de Alfredo Marqueríe, 14 (Fuencarral-El Pardo)' },
+                        { id: 'merca_mad_salamanca_belluga', chain: 'Mercadona', name: 'Mercadona - C. Cardenal Belluga, 10 (Barrio de Salamanca)' },
+                        { id: 'merca_mad_barajas_alcaniz', chain: 'Mercadona', name: 'Mercadona - C. Alcañiz, 5 (Barajas)' },
+                        { id: 'merca_mad_alcorcon_fraguas', chain: 'Mercadona', name: 'Mercadona - C. las Fraguas, 5 (Alcorcón)' },
+                
+                        // Lidl Madrid
+                        { id: 'lidl_mad_centro_tirso', chain: 'Lidl', name: 'Lidl - Pl. de Tirso de Molina, 16 (Centro)' },
+                        { id: 'lidl_mad_chamberi_rodriguez_sp', chain: 'Lidl', name: 'Lidl - Calle de Rodríguez San Pedro, 22 (Chamberí)' },
+                        { id: 'lidl_mad_villaverde_petronila', chain: 'Lidl', name: 'Lidl - Calle de Sta. Petronila, 1 (Villaverde)' },
+                        { id: 'lidl_mad_arganzuela_valencia', chain: 'Lidl', name: 'Lidl - Rda. de Valencia, 1 (Arganzuela)' },
+                        { id: 'lidl_mad_usera_andalucia', chain: 'Lidl', name: 'Lidl - Av. de Andalucía, 7 (Usera)' },
+                        { id: 'lidl_mad_centro_fuencarral', chain: 'Lidl', name: 'Lidl - Calle de Fuencarral, 101 (Centro)' },
+                        { id: 'lidl_mad_moratalaz_pavones', chain: 'Lidl', name: 'Lidl - Cl. de la Hacienda de Pavones, 342 (Moratalaz)' },
+                        { id: 'lidl_mad_san_blas_noblejas', chain: 'Lidl', name: 'Lidl - C. de los Hermanos García Noblejas, 23C (San Blas-Canillejas)' },
+                        { id: 'lidl_mad_retiro_mediterraneo', chain: 'Lidl', name: 'Lidl - Av. del Mediterráneo, 33 (Retiro)' },
+                        { id: 'lidl_mad_arganzuela_ancora', chain: 'Lidl', name: 'Lidl - C/ del Áncora, 3 (Arganzuela)' },
+                        { id: 'lidl_mad_san_blas_campezo', chain: 'Lidl', name: 'Lidl - C/ de Campezo, 10 (San Blas-Canillejas)' },
+                        { id: 'lidl_mad_san_blas_soria', chain: 'Lidl', name: 'Lidl - C. de Soria, 2 (San Blas-Canillejas)' },
+                        { id: 'lidl_mad_carabanchel_carpetana', chain: 'Lidl', name: 'Lidl - C. Vía Carpetana, 145 (Carabanchel)' },
+                        { id: 'lidl_mad_carabanchel_antonio_lopez', chain: 'Lidl', name: 'Lidl - Calle de Antonio López, 78 (Carabanchel)' },
+                        { id: 'lidl_mad_carabanchel_calderilla', chain: 'Lidl', name: 'Lidl - C. de la Calderilla, 19 (Carabanchel)' },
+                        { id: 'lidl_mad_chamberi_guzman_bueno', chain: 'Lidl', name: 'Lidl - C. de Guzmán el Bueno, 70 (Chamberí)' },
+                        { id: 'lidl_mad_carabanchel_sacristan', chain: 'Lidl', name: 'Lidl - C. de Antonia Rodríguez Sacristán, 12 (Carabanchel)' },
+                        { id: 'lidl_mad_usera_marcelo_usera', chain: 'Lidl', name: 'Lidl - C. de Marcelo Usera, 26 (Usera)' },
+                        { id: 'lidl_mad_tetuan_bravo_murillo_291', chain: 'Lidl', name: 'Lidl - C. de Bravo Murillo, 291 (Tetuán)' },
+                
+                        // Carrefour Madrid
+                        { id: 'car_mad_hortaleza_gran_via', chain: 'Carrefour', name: 'Carrefour - Gran Vía de Hortaleza, s/n (Hortaleza)' },
+                        { id: 'car_mad_san_blas_guadalajara', chain: 'Carrefour', name: 'Carrefour - Av. de Guadalajara, 2 (San Blas-Canillejas)' },
+                        { id: 'car_mad_a2_km16', chain: 'Carrefour', name: 'Carrefour - A-2, 16' },
+                        { id: 'car_mad_vallecas_neruda', chain: 'Carrefour', name: 'Carrefour - Av. de Pablo Neruda, 91-97 (Puente de Vallecas)' },
+                        { id: 'car_mad_villaverde_andalucia', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, Km. 7, 1 (Villaverde)' },
+                        { id: 'car_mad_latina_poblados', chain: 'Carrefour', name: 'Carrefour - Av. de los Poblados, 58 (Latina)' },
+                        { id: 'car_mad_alcobendas_cc', chain: 'Carrefour', name: 'Carrefour - Centro Comercial Carrefour Alcobendas' },
+                        { id: 'car_mad_vallecas_suertes', chain: 'Carrefour', name: 'Carrefour - Av de las Suertes, s/n (Villa de Vallecas)' },
+                        { id: 'car_mad_alcobendas_a1', chain: 'Carrefour', name: 'Carrefour - Carr. de Madrid a Burgos, A1, Km. 14, 500 (Alcobendas)' },
+                        { id: 'car_mad_san_sebas_megapark', chain: 'Carrefour', name: 'Carrefour - Polígono Comercial Megapark, Pl. del Comercio, 11-13 (San Sebastián de los Reyes)' },
+                        { id: 'car_mad_boadilla_km1', chain: 'Carrefour', name: 'Carrefour - Carr. de Boadilla del Monte, km. 1' },
+                        { id: 'car_mad_leganes_plaza_nueva', chain: 'Carrefour', name: 'Carrefour - Parque Comercial Plaza Nueva, Av. Puerta del Sol, 2 (Leganés)' },
+                        { id: 'car_mad_rivas_tecnica', chain: 'Carrefour', name: 'Carrefour - Av. de la Técnica, s/n (Rivas-Vaciamadrid)' },
+                        { id: 'car_mad_getafe_bulevar', chain: 'Carrefour', name: 'Carrefour - El Bulevar, Ctra. de Villaverde, s/n, Centro Comercial (Getafe)' },
+                        { id: 'car_mad_el_pinar_las_rozas', chain: 'Carrefour', name: 'Carrefour - Ctra. de La Coruña, km. 22 (El Pinar de Las Rozas)' },
+                        { id: 'car_mad_alcala_complutense', chain: 'Carrefour', name: 'Carrefour - Vía Complutense, 49 (Alcalá de Henares)' },
+                
+                        // Aldi Madrid
+                        { id: 'aldi_mad_salamanca_goya', chain: 'Aldi', name: 'Aldi - C. de Goya, 118 (Barrio de Salamanca)' },
+                        { id: 'aldi_mad_chamberi_bravo_murillo', chain: 'Aldi', name: 'Aldi - C. de Bravo Murillo, 60 (Chamberí)' },
+                        { id: 'aldi_mad_chamberi_sta_engracia', chain: 'Aldi', name: 'Aldi - C. de Sta. Engracia, 132 (Chamberí)' },
+                        { id: 'aldi_mad_chamberi_san_bernardo', chain: 'Aldi', name: 'Aldi - C. de San Bernardo, 89 (Chamberí)' },
+                        { id: 'aldi_mad_moncloa_princesa', chain: 'Aldi', name: 'Aldi - C. de la Princesa, 29 (Moncloa-Aravaca)' },
+                        { id: 'aldi_mad_arganzuela_delicias', chain: 'Aldi', name: 'Aldi - P.º de las Delicias, 89 (Arganzuela)' },
+                        { id: 'aldi_mad_arganzuela_embajadores', chain: 'Aldi', name: 'Aldi - C. de Embajadores, 187 (Arganzuela)' },
+                        { id: 'aldi_mad_retiro_mediterraneo', chain: 'Aldi', name: 'Aldi - Av. del Mediterráneo, 24 (Retiro)' },
+                        { id: 'aldi_mad_retiro_dr_esquerdo', chain: 'Aldi', name: 'Aldi - C. del Dr. Esquerdo, 105 (Retiro)' },
+                        { id: 'aldi_mad_chamartin_lopez_hoyos', chain: 'Aldi', name: 'Aldi - C. de López de Hoyos, 129 (Chamartín)' },
+                        { id: 'aldi_mad_ciudad_lineal_alcala', chain: 'Aldi', name: 'Aldi - C. de Alcalá, 369 (Ciudad Lineal)' },
+                        { id: 'aldi_mad_ciudad_lineal_ricardo_ortiz', chain: 'Aldi', name: 'Aldi - C. de Ricardo Ortiz, 44 (Ciudad Lineal)' },
+                        { id: 'aldi_mad_carabanchel_gral_ricardos', chain: 'Aldi', name: 'Aldi - C. del Gral. Ricardos, 127 (Carabanchel)' },
+                        { id: 'aldi_mad_usera_plaza_rio', chain: 'Aldi', name: 'Aldi - Av. del Manzanares, 210, CC Plaza Río 2 (Usera)' },
+                        { id: 'aldi_mad_hortaleza_gran_via', chain: 'Aldi', name: 'Aldi - Gran Vía de Hortaleza, 51 (Hortaleza)' },
+
+                         // Dia Madrid
+                        { id: 'dia_mad_centro_toledo', chain: 'DIA', name: 'DIA - C. de Toledo, 106 (Centro)' },
+                        { id: 'dia_mad_centro_atocha', chain: 'DIA', name: 'DIA - C. de Atocha, 83 (Centro)' },
+                        { id: 'dia_mad_centro_san_bernardo', chain: 'DIA', name: 'DIA - C. de San Bernardo, 36 (Centro)' },
+                        { id: 'dia_mad_salamanca_alcala', chain: 'DIA', name: 'DIA - C. de Alcalá, 196 (Barrio de Salamanca)' },
+                        { id: 'dia_mad_chamberi_gaztambide', chain: 'DIA', name: 'DIA - C. de Gaztambide, 38 (Chamberí)' },
+                        { id: 'dia_mad_chamberi_blasco_garay', chain: 'DIA', name: 'DIA - C. de Blasco de Garay, 49 (Chamberí)' },
+                        { id: 'dia_mad_retiro_narvaez', chain: 'DIA', name: 'DIA - C. de Narváez, 59 (Retiro)' },
+                        { id: 'dia_mad_arganzuela_delicias', chain: 'DIA', name: 'DIA - P.º de las Delicias, 61 (Arganzuela)' },
+                        { id: 'dia_mad_arganzuela_sta_maria_cabeza', chain: 'DIA', name: 'DIA - P.º de Sta. María de la Cabeza, 29 (Arganzuela)' },
+                        { id: 'dia_mad_arganzuela_embajadores', chain: 'DIA', name: 'DIA - C. de Embajadores, 108 (Arganzuela)' },
+                        { id: 'dia_mad_tetuan_bravo_murillo_136', chain: 'DIA', name: 'DIA - C. de Bravo Murillo, 136 (Tetuán)' },
+                        { id: 'dia_mad_tetuan_bravo_murillo_218', chain: 'DIA', name: 'DIA - C. de Bravo Murillo, 218 (Tetuán)' },
+                        { id: 'dia_mad_tetuan_francos_rodriguez', chain: 'DIA', name: 'DIA - C. de Francos Rodríguez, 48 (Tetuán)' },
+                        { id: 'dia_mad_chamartin_lopez_hoyos', chain: 'DIA', name: 'DIA - C. de López de Hoyos, 149 (Chamartín)' },
+                        { id: 'dia_mad_chamartin_cartagena', chain: 'DIA', name: 'DIA - C. de Cartagena, 82 (Chamartín)' },
+                        { id: 'dia_mad_ciudad_lineal_alcala', chain: 'DIA', name: 'DIA - C. de Alcalá, 309 (Ciudad Lineal)' },
+                        { id: 'dia_mad_carabanchel_gral_ricardos', chain: 'DIA', name: 'DIA - C. del Gral. Ricardos, 81 (Carabanchel)' },
+                        { id: 'dia_mad_usera_marcelo_usera', chain: 'DIA', name: 'DIA - C. de Marcelo Usera, 91 (Usera)' },
+                        { id: 'dia_mad_vallecas_albufera', chain: 'DIA', name: 'DIA - Av. de la Albufera, 105 (Puente de Vallecas)' }
                     );
                 } else if (city === 'Barcelona') {
                     storesList.push(
-                        { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - Eixample' },
-                        { id: 'car_bcn_glories', chain: 'Carrefour', name: 'Carrefour - Glòries' },
-                        { id: 'lidl_bcn_sagrada', chain: 'Lidl', name: 'Lidl - Sagrada Família' },
-                        { id: 'aldi_bcn_poblenou', chain: 'Aldi', name: 'Aldi - Poblenou' },
-                        { id: 'dia_bcn_born', chain: 'DIA', name: 'DIA Market - El Born' }
+                        // Mercadona Barcelona
+                        { id: 'merca_bcn_eixample', chain: 'Mercadona', name: 'Mercadona - C/ de Mallorca, 133 (Eixample)' },
+                        { id: 'merca_bcn_eixample_provenca', chain: 'Mercadona', name: 'Mercadona - C/ de Provença, 381 (Eixample)' },
+                        { id: 'merca_bcn_eixample_urgell', chain: 'Mercadona', name: 'Mercadona - C/ del Comte d\'Urgell, 97 (Eixample)' },
+                        { id: 'merca_bcn_sants_creu_coberta', chain: 'Mercadona', name: 'Mercadona - C/ de la Creu Coberta, 104 (Sants-Montjuïc)' },
+                        { id: 'merca_bcn_sants_carrer', chain: 'Mercadona', name: 'Mercadona - C/ de Sants, 232 (Sants-Montjuïc)' },
+                        { id: 'merca_bcn_les_corts_berlin', chain: 'Mercadona', name: 'Mercadona - C/ de Berlín, 69 (Les Corts)' },
+                        { id: 'merca_bcn_sarria_bonanova', chain: 'Mercadona', name: 'Mercadona - Pg. de la Bonanova, 14 (Sarrià-Sant Gervasi)' },
+                        { id: 'merca_bcn_gracia_travessera', chain: 'Mercadona', name: 'Mercadona - Travessera de Gràcia, 186 (Gràcia)' },
+                        { id: 'merca_bcn_gracia_pi_margall', chain: 'Mercadona', name: 'Mercadona - C/ de Pi i Margall, 94 (Gràcia)' },
+                        { id: 'merca_bcn_sant_andreu_meridiana', chain: 'Mercadona', name: 'Mercadona - Av. Meridiana, 350, CC SOM Multiespai (Sant Andreu)' },
+                        { id: 'merca_bcn_sant_marti_glories', chain: 'Mercadona', name: 'Mercadona - Av. Diagonal, 208, CC Glòries (Sant Martí)' },
+                        { id: 'merca_bcn_poblenou_bilbao', chain: 'Mercadona', name: 'Mercadona - C/ de Bilbao, 60 (Sant Martí)' },
+
+                        // Lidl Barcelona
+                        { id: 'lidl_bcn_eixample_casanova', chain: 'Lidl', name: 'Lidl - C/ de Casanova, 86 (Eixample)' },
+                        { id: 'lidl_bcn_les_corts_travessera', chain: 'Lidl', name: 'Lidl - Travessera de les Corts, 240 (Les Corts)' },
+                        { id: 'lidl_bcn_sants_carrer', chain: 'Lidl', name: 'Lidl - C/ de Sants, 135 (Sants-Montjuïc)' },
+                        { id: 'lidl_bcn_sant_marti_gran_via', chain: 'Lidl', name: 'Lidl - Gran Via de les Corts Catalanes, 940 (Sant Martí)' },
+                        { id: 'lidl_bcn_sant_marti_independencia', chain: 'Lidl', name: 'Lidl - C/ de la Independència, 333 (Sant Martí)' },
+                        { id: 'lidl_bcn_nou_barris_fabra_puig', chain: 'Lidl', name: 'Lidl - Pg. de Fabra i Puig, 250 (Nou Barris)' },
+                        { id: 'lidl_bcn_horta_jorda', chain: 'Lidl', name: 'Lidl - Av. del Jordà, 18 (Horta-Guinardó)' },
+
+                        // Carrefour Barcelona
+                        { id: 'car_bcn_glories', chain: 'Carrefour', name: 'Carrefour - Av. Diagonal, 208, CC Glòries (Sant Martí)' },
+                        { id: 'car_bcn_ciutat_vella_rambla', chain: 'Carrefour', name: 'Carrefour - La Rambla, 113 (Ciutat Vella)' },
+                        { id: 'car_bcn_sant_andreu_maquinista', chain: 'Carrefour', name: 'Carrefour - Pg. de Potosí, 2, CC La Maquinista (Sant Andreu)' },
+                        { id: 'car_bcn_sants_carrer', chain: 'Carrefour', name: 'Carrefour Market - C/ de Sants, 59 (Sants-Montjuïc)' },
+                        { id: 'car_bcn_eixample_urgell', chain: 'Carrefour', name: 'Carrefour Market - C/ del Comte d\'Urgell, 210 (Eixample)' },
+                        { id: 'car_bcn_sarria_aribau', chain: 'Carrefour', name: 'Carrefour Market - C/ d\'Aribau, 210 (Sarrià-Sant Gervasi)' },
+
+                        // Aldi Barcelona
+                        { id: 'aldi_bcn_eixample_gran_via', chain: 'Aldi', name: 'Aldi - Gran Via de les Corts Catalanes, 704 (Eixample)' },
+                        { id: 'aldi_bcn_eixample_urgell', chain: 'Aldi', name: 'Aldi - C/ del Comte d\'Urgell, 1 (Eixample)' },
+                        { id: 'aldi_bcn_eixample_sardenya', chain: 'Aldi', name: 'Aldi - C/ de Sardenya, 333 (Eixample)' },
+                        { id: 'aldi_bcn_sants_numancia', chain: 'Aldi', name: 'Aldi - C/ de Numància, 59 (Sants-Montjuïc)' },
+                        { id: 'aldi_bcn_sant_andreu_fabra_puig', chain: 'Aldi', name: 'Aldi - Pg. de Fabra i Puig, 194 (Sant Andreu)' },
+                        { id: 'aldi_bcn_nou_barris_artesania', chain: 'Aldi', name: 'Aldi - C/ d\'Artesania, 45 (Nou Barris)' },
+
+                        // DIA Barcelona
+                        { id: 'dia_bcn_eixample_valencia', chain: 'DIA', name: 'DIA - C/ de València, 439 (Eixample)' },
+                        { id: 'dia_bcn_eixample_corsega', chain: 'DIA', name: 'DIA - C/ de Còrsega, 515 (Eixample)' },
+                        { id: 'dia_bcn_eixample_muntaner', chain: 'DIA', name: 'DIA - C/ de Muntaner, 140 (Eixample)' },
+                        { id: 'dia_bcn_eixample_marina', chain: 'DIA', name: 'DIA - C/ de la Marina, 281 (Eixample)' },
+                        { id: 'dia_bcn_sants_carrer', chain: 'DIA', name: 'DIA - C/ de Sants, 271 (Sants-Montjuïc)' },
+                        { id: 'dia_bcn_sant_marti_rogent', chain: 'DIA', name: 'DIA - C/ de Rogent, 52 (Sant Martí)' }
+                    );
+                } else if (city === 'Sevilla') {
+                    storesList.push(
+                        // Mercadona Sevilla
+                        { id: 'merca_sev_centro_plaza_armas', chain: 'Mercadona', name: 'Mercadona - Pl. de Armas, s/n, CC Plaza de Armas (Casco Antiguo)' },
+                        { id: 'merca_sev_centro_san_luis', chain: 'Mercadona', name: 'Mercadona - C. San Luis, 26 (Casco Antiguo)' },
+                        { id: 'merca_sev_nervion_plaza', chain: 'Mercadona', name: 'Mercadona - Av. de Eduardo Dato, 69, CC Nervión Plaza (Nervión)' },
+                        { id: 'merca_sev_nervion_luis_montoto', chain: 'Mercadona', name: 'Mercadona - C. Luis Montoto, 122 (Nervión)' },
+                        { id: 'merca_sev_triana_san_jacinto', chain: 'Mercadona', name: 'Mercadona - C. San Jacinto, 68 (Triana)' },
+                        { id: 'merca_sev_triana_esperanza', chain: 'Mercadona', name: 'Mercadona - C. Esperanza de Triana, 42 (Triana)' },
+                        { id: 'merca_sev_remedios_asuncion', chain: 'Mercadona', name: 'Mercadona - C. Asunción, 53 (Los Remedios)' },
+                        { id: 'merca_sev_sur_borbolla', chain: 'Mercadona', name: 'Mercadona - Av. de la Borbolla, 55 (Sur)' },
+                        { id: 'merca_sev_san_pablo_kansas_city', chain: 'Mercadona', name: 'Mercadona - Av. de Kansas City, 42 (San Pablo-Santa Justa)' },
+                        { id: 'merca_sev_este_ciencias', chain: 'Mercadona', name: 'Mercadona - Av. de las Ciencias, 16 (Sevilla Este)' },
+                        { id: 'merca_sev_bermejales_jerez', chain: 'Mercadona', name: 'Mercadona - Av. de Jerez, 47, CC Los Bermejales (Bellavista-La Palmera)' },
+
+                        // Lidl Sevilla
+                        { id: 'lidl_sev_macarena_capuchinos', chain: 'Lidl', name: 'Lidl - Ronda de Capuchinos, 2 (Macarena)' },
+                        { id: 'lidl_sev_centro_torneo', chain: 'Lidl', name: 'Lidl - C. Torneo, 51 (Casco Antiguo)' },
+                        { id: 'lidl_sev_san_pablo_kansas_city', chain: 'Lidl', name: 'Lidl - Av. de Kansas City, 96 (San Pablo-Santa Justa)' },
+                        { id: 'lidl_sev_amate_andalucia', chain: 'Lidl', name: 'Lidl - Av. de Andalucía, s/n (Cerro-Amate)' },
+                        { id: 'lidl_sev_este_ciencias', chain: 'Lidl', name: 'Lidl - Av. de las Ciencias, s/n (Sevilla Este)' },
+                        { id: 'lidl_sev_bellavista_jerez', chain: 'Lidl', name: 'Lidl - Av. de Jerez, s/n (Bellavista-La Palmera)' },
+
+                        // Carrefour Sevilla
+                        { id: 'car_sev_macarena_norte', chain: 'Carrefour', name: 'Carrefour - Ronda Urbana Norte, Km. 1,5 (Macarena)' },
+                        { id: 'car_sev_san_pablo_a4', chain: 'Carrefour', name: 'Carrefour - Autovía Madrid-Cádiz, Km. 535 (San Pablo-Santa Justa)' },
+                        { id: 'car_sev_remedios_rep_argentina', chain: 'Carrefour', name: 'Carrefour Market - Av. República Argentina, 21 (Los Remedios)' },
+                        { id: 'car_sev_centro_feria', chain: 'Carrefour', name: 'Carrefour Market - C. Feria, 98 (Casco Antiguo)' },
+                        { id: 'car_sev_aljarafe_san_juan', chain: 'Carrefour', name: 'Carrefour - Av. del Aljarafe, s/n (San Juan de Aznalfarache)' },
+
+                        // Aldi Sevilla
+                        { id: 'aldi_sev_centro_torneo', chain: 'Aldi', name: 'Aldi - Av. de Torneo, 69 (Casco Antiguo)' },
+                        { id: 'aldi_sev_sta_justa_laguillo', chain: 'Aldi', name: 'Aldi - C. José Laguillo, 29 (San Pablo-Santa Justa)' },
+                        { id: 'aldi_sev_nervion_cruz_campo', chain: 'Aldi', name: 'Aldi - Av. de la Cruz del Campo, 41 (Nervión)' },
+                        { id: 'aldi_sev_sur_reina_mercedes', chain: 'Aldi', name: 'Aldi - Av. de la Reina Mercedes, 25 (Sur)' },
+                        { id: 'aldi_sev_este_montes_sierra', chain: 'Aldi', name: 'Aldi - Av. de Montes Sierra, 13 (Sevilla Este)' },
+
+                        // DIA Sevilla
+                        { id: 'dia_sev_centro_feria', chain: 'DIA', name: 'DIA - C. Feria, 37 (Casco Antiguo)' },
+                        { id: 'dia_sev_triana_pages_corro', chain: 'DIA', name: 'DIA - C. Pagés del Corro, 131 (Triana)' },
+                        { id: 'dia_sev_remedios_virgen_lujan', chain: 'DIA', name: 'DIA - C. Virgen de Luján, 42 (Los Remedios)' },
+                        { id: 'dia_sev_macarena_cruz_roja', chain: 'DIA', name: 'DIA - Av. de la Cruz Roja, 38 (Macarena)' },
+                        { id: 'dia_sev_nervion_eduardo_dato', chain: 'DIA', name: 'DIA - Av. de Eduardo Dato, 38 (Nervión)' },
+                        { id: 'dia_sev_sta_justa_arroyo', chain: 'DIA', name: 'DIA - C. Arroyo, 52 (San Pablo-Santa Justa)' }
+                    );
+                } else if (city === 'Valencia') {
+                    storesList.push(
+                        // Mercadona Valencia
+                        { id: 'merca_val_centro_roger_lauria', chain: 'Mercadona', name: 'Mercadona - C/ de Roger de Lauria, 19 (Ciutat Vella)' },
+                        { id: 'merca_val_eixample_marques_turia', chain: 'Mercadona', name: 'Mercadona - Gran Via del Marqués del Túria, 52 (Eixample)' },
+                        { id: 'merca_val_algiros_blasco_ibanez', chain: 'Mercadona', name: 'Mercadona - Av. de Blasco Ibáñez, 81 (Algirós)' },
+                        { id: 'merca_val_benimaclet_primat_reig', chain: 'Mercadona', name: 'Mercadona - Av. del Primat Reig, 118 (Benimaclet)' },
+                        { id: 'merca_val_campanar_nuevo_centro', chain: 'Mercadona', name: 'Mercadona - Av. de Pius XII, 2, CC Nuevo Centro (Campanar)' },
+                        { id: 'merca_val_benicalap_corts', chain: 'Mercadona', name: 'Mercadona - Av. de les Corts Valencianes, 41 (Benicalap)' },
+                        { id: 'merca_val_extramurs_sant_vicent', chain: 'Mercadona', name: 'Mercadona - C/ de Sant Vicent Màrtir, 172 (Extramurs)' },
+                        { id: 'merca_val_grau_av_port', chain: 'Mercadona', name: 'Mercadona - Av. del Port, 173 (Camins al Grau)' },
+                        { id: 'merca_val_grau_aqua', chain: 'Mercadona', name: 'Mercadona - C/ de Menorca, 19, CC Aqua (Camins al Grau)' },
+                        { id: 'merca_val_cabanyal_reina', chain: 'Mercadona', name: 'Mercadona - C/ de la Reina, 95 (Poblats Marítims)' },
+                        { id: 'merca_val_patraix_arxiduc_carlos', chain: 'Mercadona', name: 'Mercadona - C/ de l\'Arxiduc Carlos, 45 (Patraix)' },
+
+                        // Lidl Valencia
+                        { id: 'lidl_val_extramurs_perez_galdos', chain: 'Lidl', name: 'Lidl - Av. de Pérez Galdós, 65 (Extramurs)' },
+                        { id: 'lidl_val_olivereta_av_cid', chain: 'Lidl', name: 'Lidl - Av. del Cid, 102 (L\'Olivereta)' },
+                        { id: 'lidl_val_algiros_manuel_candela', chain: 'Lidl', name: 'Lidl - C/ del Doctor Manuel Candela, 19 (Algirós)' },
+                        { id: 'lidl_val_rascanya_constitucio', chain: 'Lidl', name: 'Lidl - Av. de la Constitució, 226 (Rascanya)' },
+                        { id: 'lidl_val_jesus_sant_vicent', chain: 'Lidl', name: 'Lidl - C/ de Sant Vicent Màrtir, 285 (Jesús)' },
+                        { id: 'lidl_val_patraix_tres_creus', chain: 'Lidl', name: 'Lidl - Av. de les Tres Creus, 65 (Patraix)' },
+
+                        // Carrefour Valencia
+                        { id: 'car_val_quatre_carreres_saler', chain: 'Carrefour', name: 'Carrefour - C/ del Pintor Maella, 37, CC El Saler (Quatre Carreres)' },
+                        { id: 'car_val_campanar_pius_xii', chain: 'Carrefour', name: 'Carrefour - Av. de Pius XII, s/n, CC Campanar (Campanar)' },
+                        { id: 'car_val_extramurs_sant_vicent', chain: 'Carrefour', name: 'Carrefour Market - C/ de Sant Vicent Màrtir, 118 (Extramurs)' },
+                        { id: 'car_val_extramurs_ferran_catolic', chain: 'Carrefour', name: 'Carrefour Market - Gran Via de Ferran el Catòlic, 53 (Extramurs)' },
+                        { id: 'car_val_aldaia_bonaire', chain: 'Carrefour', name: 'Carrefour - Autovía del Este, Km. 345, CC Bonaire (Área Metropolitana)' },
+
+                        // Aldi Valencia
+                        { id: 'aldi_val_saidia_sagunt', chain: 'Aldi', name: 'Aldi - C/ de Sagunt, 160 (La Saïdia)' },
+                        { id: 'aldi_val_grau_av_port', chain: 'Aldi', name: 'Aldi - Av. del Port, 119 (Camins al Grau)' },
+                        { id: 'aldi_val_extramurs_cuenca', chain: 'Aldi', name: 'Aldi - C/ de Cuenca, 47 (Extramurs)' },
+                        { id: 'aldi_val_campanar_mestre_rodrigo', chain: 'Aldi', name: 'Aldi - Av. del Mestre Rodrigo, 99 (Campanar)' },
+                        { id: 'aldi_val_jesus_sant_vicent', chain: 'Aldi', name: 'Aldi - C/ de Sant Vicent Màrtir, 219 (Jesús)' },
+                        { id: 'aldi_val_algiros_sants_just', chain: 'Aldi', name: 'Aldi - C/ dels Sants Just i Pastor, 146 (Algirós)' },
+
+                        // DIA Valencia
+                        { id: 'dia_val_eixample_sueca', chain: 'DIA', name: 'DIA - C/ de Sueca, 52 (Eixample - Russafa)' },
+                        { id: 'dia_val_eixample_peris_valero', chain: 'DIA', name: 'DIA - Av. de Peris i Valero, 129 (Eixample)' },
+                        { id: 'dia_val_extramurs_conca', chain: 'DIA', name: 'DIA - C/ de Conca, 23 (Extramurs)' },
+                        { id: 'dia_val_benimaclet_emili_baro', chain: 'DIA', name: 'DIA - C/ d\'Emili Baró, 43 (Benimaclet)' },
+                        { id: 'dia_val_algiros_blasco_ibanez', chain: 'DIA', name: 'DIA - Av. de Blasco Ibáñez, 125 (Algirós)' },
+                        { id: 'dia_val_jesus_carteros', chain: 'DIA', name: 'DIA - C/ de Carteros, 48 (Jesús)' }
                     );
                 } else {
                     storesList.push(
