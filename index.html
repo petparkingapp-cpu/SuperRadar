@@ -693,7 +693,8 @@
             "Barcelona",
             "Valencia",
             "Sevilla",
-            "Bilbao"
+            "Bilbao",
+            "Alicante"
         ];
 
         const CHAIN_OFFERS_CATALOG = {
@@ -871,7 +872,7 @@
                         { id: 'merca_mlg_navarro_ledesma', chain: 'Mercadona', name: 'Mercadona - C. Navarro Ledesma, 175 (El Atabal)' },
                         { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104 (Churriana)' },
                         { id: 'merca_mlg_alhaurin_de_la_torre', chain: 'Mercadona', name: 'Mercadona - Calle de los Registradores, s/n (Alhaurín de la Torre)' },
-                        { id: 'merca_mlg_alhaurin_de_la_torre', chain: 'Mercadona', name: 'Mercadona - Av. de los Cortijos, S/N (Alhaurín de la Torre)' },
+                        { id: 'merca_mlg_alhaurin_cortijos', chain: 'Mercadona', name: 'Mercadona - Av. de los Cortijos, S/N (Alhaurín de la Torre)' },
 
                         // Carrefour Málaga
                         { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241, 29004 (C.C. Los Patios)' },
@@ -1106,6 +1107,8 @@
                         { id: 'merca_bcn_sant_andreu_meridiana', chain: 'Mercadona', name: 'Mercadona - Av. Meridiana, 350, CC SOM Multiespai (Sant Andreu)' },
                         { id: 'merca_bcn_sant_marti_glories', chain: 'Mercadona', name: 'Mercadona - Av. Diagonal, 208, CC Glòries (Sant Martí)' },
                         { id: 'merca_bcn_poblenou_bilbao', chain: 'Mercadona', name: 'Mercadona - C/ de Bilbao, 60 (Sant Martí)' },
+                        { id: 'merca_bcn_sant_feliu_pla', chain: 'Mercadona', name: 'Mercadona - C/ del Pla, 2 (Sant Feliu de Llobregat - 08980)' },
+                        { id: 'merca_bcn_sant_feliu_manso', chain: 'Mercadona', name: 'Mercadona - C/ General Manso, 39 (Sant Feliu de Llobregat - 08980)' },
 
                         // Lidl Barcelona
                         { id: 'lidl_bcn_eixample_casanova', chain: 'Lidl', name: 'Lidl - C/ de Casanova, 86 (Eixample)' },
@@ -1154,6 +1157,7 @@
                         { id: 'merca_sev_san_pablo_kansas_city', chain: 'Mercadona', name: 'Mercadona - Av. de Kansas City, 42 (San Pablo-Santa Justa)' },
                         { id: 'merca_sev_este_ciencias', chain: 'Mercadona', name: 'Mercadona - Av. de las Ciencias, 16 (Sevilla Este)' },
                         { id: 'merca_sev_bermejales_jerez', chain: 'Mercadona', name: 'Mercadona - Av. de Jerez, 47, CC Los Bermejales (Bellavista-La Palmera)' },
+                        { id: 'merca_sev_osuna', chain: 'Mercadona', name: 'Mercadona - C. Sor Ángela de la Cruz, 87 (Osuna - 41640)' },
 
                         // Lidl Sevilla
                         { id: 'lidl_sev_macarena_capuchinos', chain: 'Lidl', name: 'Lidl - Ronda de Capuchinos, 2 (Macarena)' },
@@ -1230,6 +1234,37 @@
                         { id: 'dia_val_benimaclet_emili_baro', chain: 'DIA', name: 'DIA - C/ d\'Emili Baró, 43 (Benimaclet)' },
                         { id: 'dia_val_algiros_blasco_ibanez', chain: 'DIA', name: 'DIA - Av. de Blasco Ibáñez, 125 (Algirós)' },
                         { id: 'dia_val_jesus_carteros', chain: 'DIA', name: 'DIA - C/ de Carteros, 48 (Jesús)' }
+                        );
+                } else if (city === 'Alicante') {
+                    storesList.push(
+                        // Mercadona Alicante
+                        { id: 'merca_alc_centro_calderon', chain: 'Mercadona', name: 'Mercadona - C/ Calderón de la Barca, 39 (Centro - 03004)' },
+                        { id: 'merca_alc_sanjuan_naciones', chain: 'Mercadona', name: 'Mercadona - Av. de las Naciones, 4 (Playa de San Juan - 03540)' },
+                        { id: 'merca_alc_sanjuan_vicente_ramos', chain: 'Mercadona', name: 'Mercadona - Av. Historiador Vicente Ramos, s/n (Playa de San Juan - 03540)' },
+                        { id: 'merca_alc_benalua_aguilera', chain: 'Mercadona', name: 'Mercadona - Av. de Aguilera, 55 (Benalúa)' },
+                        { id: 'merca_alc_babel_rojo', chain: 'Mercadona', name: 'Mercadona - C/ Periodista Rafael González Aguilar, 19 (Babel)' },
+                        { id: 'merca_alc_carolinas_garbinet', chain: 'Mercadona', name: 'Mercadona - C/ Médico Vicente Reyes, 14 (Carolinas / Garbinet)' },
+                        { id: 'merca_alc_vistahermosa_denia', chain: 'Mercadona', name: 'Mercadona - Av. de Denia, 149 (Vistahermosa / La Condomina)' },
+
+                        // Lidl Alicante
+                        { id: 'lidl_alc_sanjuan_naciones', chain: 'Lidl', name: 'Lidl - Av. de las Naciones, 1 (Playa de San Juan - 03540)' },
+                        { id: 'lidl_alc_granvia_alonso_cano', chain: 'Lidl', name: 'Lidl - C/ Alonso Cano, 61 (Gran Vía / Garbinet)' },
+                        { id: 'lidl_alc_babel_elche', chain: 'Lidl', name: 'Lidl - Av. de Elche, 21 (Babel)' },
+
+                        // Carrefour Alicante
+                        { id: 'car_alc_sanjuan_denia', chain: 'Carrefour', name: 'Carrefour - Av. de Denia, s/n (San Juan / Vistahermosa)' },
+                        { id: 'car_alc_granvia', chain: 'Carrefour', name: 'Carrefour - C/ José García Sellés, 2, CC Gran Vía (Gran Vía)' },
+                        { id: 'car_alc_puerta_alicante', chain: 'Carrefour', name: 'Carrefour - Av. Alcalde Lorenzo Carbonell, s/n, CC Puerta de Alicante' },
+
+                        // Aldi Alicante
+                        { id: 'aldi_alc_sanjuan_mostoles', chain: 'Aldi', name: 'Aldi - C/ Móstoles, 2 (Playa de San Juan / Sant Joan)' },
+                        { id: 'aldi_alc_vistahermosa_denia', chain: 'Aldi', name: 'Aldi - Av. de Denia, 155 (Vistahermosa)' },
+                        { id: 'aldi_alc_babel_serpis', chain: 'Aldi', name: 'Aldi - C/ Río Serpis, 2 (Babel)' },
+
+                        // DIA Alicante
+                        { id: 'dia_alc_centro_segarra', chain: 'DIA', name: 'DIA - C/ Capitán Segarra, 15 (Centro / Mercado)' },
+                        { id: 'dia_alc_carolinas_pio_xii', chain: 'DIA', name: 'DIA - C/ Pío XII, 25 (Carolinas)' },
+                        { id: 'dia_alc_benalua_foglietti', chain: 'DIA', name: 'DIA - C/ Foglietti, 22 (Benalúa)' }
                     );
                 } else {
                     storesList.push(
