@@ -2287,10 +2287,15 @@
                                 <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
                             </div>
                             <div class="space-y-2 pt-2 border-t border-slate-100">
-                                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl">
-                                    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
-                                    <span class="truncate" title="${p.storeName}">${p.storeName}</span>
-                                </div>
+                            <div class="flex items-start gap-1.5 text-[11px] font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl">
+    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0 mt-0.5"></i>
+    <div class="leading-tight">
+        <span class="inline-block bg-emerald-200/80 text-emerald-900 font-extrabold text-[9px] uppercase px-1 py-0.5 rounded mr-1">
+            ${p.city || currentCity}
+        </span>
+        <span class="text-slate-800">${p.storeName}</span>
+    </div>
+</div>
                                 <div class="grid grid-cols-2 gap-1.5">
                                     <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                         <span>🟢 Sí (${p.seenCount})</span>
