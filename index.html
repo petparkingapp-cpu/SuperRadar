@@ -516,15 +516,15 @@
             </div>
             <form onsubmit="handleCityRequestSubmit(event)" class="p-4 space-y-3">
                 <p class="text-slate-600 leading-snug">
-                    Indícanos tu localidad y tu <b>código postal o barrio</b> para saber qué tiendas añadir en la próxima actualización.
+                    ¿Falta tu zona? Dinos tu localidad y el <b>barrio o calle</b> de tu supermercado habitual.
                 </p>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">Ciudad o Municipio *</label>
-                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Madrid, Terrassa, Marbella..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Sevilla, Madrid, Zaragoza..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Código Postal, Barrio o Tienda concreta *</label>
-                    <input type="text" id="reqStoreName" required placeholder="Ej. CP 03540, Barrio del Pilar, Mercadona Calle Mayor..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+                    <label class="block font-bold text-slate-700 mb-1">Barrio, Calle o Zona exacta *</label>
+                    <input type="text" id="reqStoreName" required placeholder="Ej. Teatinos, Triana, Nervión, Gran Vía, Chamberí..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
                 </div>
                 <div id="requestedCitiesCounterBox" class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-600 hidden"></div>
                 <div class="flex justify-end gap-2 pt-1">
@@ -1948,15 +1948,41 @@
 
             if (!cityName || !storeDetails) return;
 
-            // Comprobamos si la ciudad ya está activa en la plataforma
-            const isAlreadyActive = ACTIVE_CITIES.some(c => c.toLowerCase() === cityName.toLowerCase());
+            const cityLower = cityName.toLowerCase();
+            const detailLower = storeDetails.toLowerCase();
 
-            // Si pone una ciudad que ya existe pero con menos de 4 letras de detalle (ej. "centro" o nada útil)
-            if (isAlreadyActive && storeDetails.length < 4) {
-                showToast('⚠️ Esa ciudad ya está activa. Indica tu código postal o calle.');
-                return;
+            // 1. Comprobamos si la ciudad ya está en la web
+            const matchedCityKey = Object.keys(CITIES_AND_STORES).find(c => c.toLowerCase() === cityLower);
+
+            if (matchedCityKey) {
+                const cityStores = CITIES_AND_STORES[matchedCityKey]?.stores || [];
+
+                // 2. Extraemos palabras clave útiles de más de 3 letras (evita "de", "el", "la", "calle", etc.)
+                const palabrasIgnoradas = new Set(['calle', 'avenida', 'avda', 'paseo', 'plaza', 'cno', 'zona', 'centro', 'mercadona', 'carrefour', 'lidl', 'aldi', 'dia']);
+                const palabrasUsuario = detailLower
+                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                    .split(/\s+/)
+                    .filter(w => w.length >= 4 && !palabrasIgnoradas.has(w));
+
+                // 3. Revisamos si alguna de esas palabras clave ya coincide con una tienda activa
+                const yaExiste = cityStores.some(s => {
+                    const storeNameLower = s.name.toLowerCase();
+                    return palabrasUsuario.some(palabra => storeNameLower.includes(palabra));
+                });
+
+                if (yaExiste) {
+                    showToast('📍 ¡Ese barrio o calle ya está en SuperRadar! Búscalo en el desplegable de tiendas.');
+                    return;
+                }
+
+                // Si la ciudad existe pero lo que escribió es muy genérico o demasiado corto
+                if (detailLower.length < 4) {
+                    showToast('⚠️ Esa ciudad ya está activa. Indica el barrio o la calle concreta.');
+                    return;
+                }
             }
 
+            // 4. Si es una ciudad nueva o un barrio que de verdad falta, guardamos la petición
             const req = { 
                 city: cityName, 
                 store: storeDetails, 
@@ -1972,7 +1998,7 @@
             document.getElementById('reqCityName').value = '';
             document.getElementById('reqStoreName').value = '';
             closeCityRequestModal();
-            showToast('¡Petición enviada! Revisaremos tu zona');
+            showToast('¡Petición enviada! Revisaremos esa zona');
         }
 
         function renderSupermarketChainPills() {
