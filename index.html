@@ -2143,9 +2143,9 @@
                     const single = storeItems[0];
                     const timeStr = formatVoteTime(single.updatedAt);
                     if (single.isConflict) {
-                        stockText = '🟡 En duda / Stock bajo';
+                        stockText = '🟡 En duda';
                         stockClass = 'bg-amber-100 text-amber-900 border-amber-300';
-                        bannerText = `⚠️ Reportes contradictorios (${timeStr})`;
+                        bannerText = `⚠️ En duda (${timeStr})`;
                         bannerColor = 'text-amber-700 font-semibold';
                     } else if (single.userVote === 'seen') {
                         stockText = '🟢 ¡Sí hay!';
@@ -2340,9 +2340,9 @@
                 let bannerColor = 'text-emerald-700 font-semibold';
 
                 if (p.isConflict) {
-                    stockText = '🟡 En duda / Stock bajo';
+                    stockText = '🟡 En duda';
                     stockClass = 'bg-amber-100 text-amber-900 border-amber-300';
-                    bannerText = `⚠️ En duda · Último voto (${timeStr})`;
+                    bannerText = `⚠️ En duda (${timeStr})`;
                     bannerColor = 'text-amber-700 font-semibold';
                 } else if (p.userVote === 'missing') {
                     stockText = '🔴 Agotado';
