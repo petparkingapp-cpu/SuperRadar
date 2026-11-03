@@ -74,17 +74,17 @@
 <body class="min-h-screen font-sans text-slate-800 flex flex-col bg-slate-50 antialiased selection:bg-emerald-500 selection:text-white">
     
     <!-- Barra Superior de Prensa - El Español -->
-<a href="https://www.elespanol.com/malaga/vivir/20261102/natalia-sanchez-joven-anos-hecho-exitosa-web-superradar-localizar-productos-virales-super/1003744433731_0.html" 
-   target="_blank" 
-   rel="noopener noreferrer" 
-   class="w-full bg-blue-50 hover:bg-blue-100/90 text-blue-950 text-[11px] sm:text-xs py-2 px-3 sm:px-4 flex items-center justify-center gap-1.5 sm:gap-2 border-b border-blue-200 transition-colors text-center font-medium group shrink-0 shadow-xs">
-    <span class="text-sm leading-none">📰</span>
-    <span class="truncate sm:overflow-visible">
-        <strong class="font-bold text-blue-900">Destacados en El Español:</strong> 
-        <span class="text-blue-800">Lee el reportaje sobre cómo nació SuperRadar</span>
-    </span>
-    <span class="text-blue-600 font-bold group-hover:translate-x-0.5 transition-transform inline-block text-xs">→</span>
-</a>
+    <a href="https://www.elespanol.com/malaga/vivir/20261102/natalia-sanchez-joven-anos-hecho-exitosa-web-superradar-localizar-productos-virales-super/1003744433731_0.html" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="w-full bg-blue-50 hover:bg-blue-100/90 text-blue-950 text-[11px] sm:text-xs py-2 px-3 sm:px-4 flex items-center justify-center gap-1.5 sm:gap-2 border-b border-blue-200 transition-colors text-center font-medium group shrink-0 shadow-xs">
+        <span class="text-sm leading-none">📰</span>
+        <span class="truncate sm:overflow-visible">
+            <strong class="font-bold text-blue-900">Destacados en El Español:</strong> 
+            <span class="text-blue-800">Lee el reportaje sobre cómo nació SuperRadar</span>
+        </span>
+        <span class="text-blue-600 font-bold group-hover:translate-x-0.5 transition-transform inline-block text-xs">→</span>
+    </a>
 
     <!-- Cabecera principal optimizada para móvil -->
     <header id="mainHeader" class="bg-white border-b border-slate-200 sticky top-0 z-30 transition-colors duration-300 shrink-0">
@@ -215,6 +215,7 @@
                         <select id="stockFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
                             <option value="">Todos</option>
                             <option value="Sí está">🟢 Sí está</option>
+                            <option value="En duda">🟡 En duda / Stock bajo</option>
                             <option value="Agotado">🔴 Agotado</option>
                             <option value="Sin confirmar">⚪ Sin confirmar</option>
                         </select>
@@ -289,6 +290,33 @@
             </div>
         </div>
     </footer>
+
+    <!-- Modal de confirmación para voto "No hay" (Evita falsos agotados) -->
+    <div id="confirmMissingModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden text-xs border border-slate-200">
+            <div class="bg-amber-500 text-slate-950 px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass-location text-sm"></i>
+                    <h3 class="font-extrabold text-xs sm:text-sm">¿Seguro que está agotado?</h3>
+                </div>
+                <button onclick="closeConfirmMissingModal()" class="text-slate-900/70 hover:text-slate-950 p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            <div class="p-4 space-y-3 text-center">
+                <div id="confirmMissingModalStore" class="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-xl truncate"></div>
+                <p id="confirmMissingModalText" class="text-slate-600 leading-relaxed text-xs"></p>
+                <div class="flex flex-col gap-2 pt-1">
+                    <button type="button" onclick="closeConfirmMissingModal()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm">
+                        Voy a revisar otra vez
+                    </button>
+                    <button type="button" onclick="confirmMissingVoteFromModal()" class="w-full py-2 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] transition">
+                        He mirado bien, no queda nada
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Panel Admin -->
     <div id="adminModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
@@ -607,8 +635,10 @@
 
     <script>
         const ADMIN_SECRET_PIN = 'malaga2025';
+        const CONFLICT_WINDOW_MS = 6 * 60 * 60 * 1000; // Ventana de 6 horas para detectar votos contradictorios
         let isAdminAuthenticated = false;
         let adminUploadedImageDataUrl = '';
+        let pendingMissingVoteId = null;
         // Controla qué tarjetas agrupadas tienen el desplegable de tiendas abierto
         const expandedProductGroups = new Set();
         // Filtro rápido de texto dentro del desplegable de tiendas de una tarjeta
@@ -976,7 +1006,7 @@
                         { id: 'dia_bio_autonomia_basurto', chain: 'DIA', name: 'DIA - C. Autonomía, 26 (Basurto)' },
                         { id: 'dia_bio_santutxu_calle', chain: 'DIA', name: 'DIA - C. Santutxu, 24 (Santutxu)' }
                     );
-               } else if (city === 'Madrid') {
+                } else if (city === 'Madrid') {
                     storesList.push(
                         // Mercadona Madrid
                         { id: 'merca_mad_atocha', chain: 'Mercadona', name: 'Mercadona - Rda. de Atocha, 26' },
@@ -1084,7 +1114,7 @@
                         { id: 'aldi_mad_usera_plaza_rio', chain: 'Aldi', name: 'Aldi - Av. del Manzanares, 210, CC Plaza Río 2 (Usera)' },
                         { id: 'aldi_mad_hortaleza_gran_via', chain: 'Aldi', name: 'Aldi - Gran Vía de Hortaleza, 51 (Hortaleza)' },
 
-                         // Dia Madrid
+                        // Dia Madrid
                         { id: 'dia_mad_centro_toledo', chain: 'DIA', name: 'DIA - C. de Toledo, 106 (Centro)' },
                         { id: 'dia_mad_centro_atocha', chain: 'DIA', name: 'DIA - C. de Atocha, 83 (Centro)' },
                         { id: 'dia_mad_centro_san_bernardo', chain: 'DIA', name: 'DIA - C. de San Bernardo, 36 (Centro)' },
@@ -1247,7 +1277,7 @@
                         { id: 'dia_val_benimaclet_emili_baro', chain: 'DIA', name: 'DIA - C/ d\'Emili Baró, 43 (Benimaclet)' },
                         { id: 'dia_val_algiros_blasco_ibanez', chain: 'DIA', name: 'DIA - Av. de Blasco Ibáñez, 125 (Algirós)' },
                         { id: 'dia_val_jesus_carteros', chain: 'DIA', name: 'DIA - C/ de Carteros, 48 (Jesús)' }
-                        );
+                    );
                 } else if (city === 'Alicante') {
                     storesList.push(
                         // Mercadona Alicante
@@ -1472,7 +1502,17 @@
             if (formCity) formCity.innerHTML = opts;
         }
 
-        function computeStockStatusFromVote(vote) {
+        // Comprueba si existen votos opuestos ("Sí" y "No") en las últimas 6 horas
+        function isVoteConflictWithinWindow(vRec) {
+            if (!vRec) return false;
+            const now = Date.now();
+            const recentSeen = vRec.lastSeenAt && (now - vRec.lastSeenAt < CONFLICT_WINDOW_MS);
+            const recentMissing = vRec.lastMissingAt && (now - vRec.lastMissingAt < CONFLICT_WINDOW_MS);
+            return Boolean(recentSeen && recentMissing);
+        }
+
+        function computeStockStatusFromVote(vote, isConflict = false) {
+            if (isConflict) return 'En duda';
             if (vote === 'seen') return 'Sí está';
             if (vote === 'missing') return 'Agotado';
             return 'Sin confirmar';
@@ -1495,17 +1535,28 @@
             if (isToday) return `Hoy a las ${timeStr}`;
             if (isYesterday) return `Ayer a las ${timeStr}`;
             
-            // Si es de hace varios días, mostramos la fecha corta (ej. 24 oct. a las 15:20)
             const dateStr = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
             return `${dateStr} a las ${timeStr}`;
         }
 
-
         function getValidVoteRecord(rawRecord) {
             if (!rawRecord) return null;
-            if (typeof rawRecord === 'string') return { status: rawRecord, updatedAt: Date.now() };
-            if (Date.now() - rawRecord.updatedAt > 48 * 60 * 60 * 1000) return null;
-            return rawRecord;
+            const now = Date.now();
+            if (typeof rawRecord === 'string') {
+                return {
+                    status: rawRecord,
+                    updatedAt: now,
+                    lastSeenAt: rawRecord === 'seen' ? now : 0,
+                    lastMissingAt: rawRecord === 'missing' ? now : 0
+                };
+            }
+            if (now - rawRecord.updatedAt > 48 * 60 * 60 * 1000) return null;
+            return {
+                status: rawRecord.status || null,
+                updatedAt: rawRecord.updatedAt || now,
+                lastSeenAt: rawRecord.lastSeenAt || (rawRecord.status === 'seen' ? rawRecord.updatedAt : 0),
+                lastMissingAt: rawRecord.lastMissingAt || (rawRecord.status === 'missing' ? rawRecord.updatedAt : 0)
+            };
         }
 
         function getMergedOfficialOffers() {
@@ -1563,16 +1614,21 @@
                         const prodId = `admin_${offer.id}_${store.id}`;
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
+                        const isConflict = isVoteConflictWithinWindow(vRec);
                         newOfficialGenerated.push({
                             id: prodId, adminOfferId: offer.id, title: offer.title || 'Novedad', price: Number(offer.price || 0),
                             supermarket: store.chain, category: offer.category || 'Alimentación / Snacks', city: city, storeId: store.id,
                             storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                             viralContext: offer.viralContext || 'Novedad oficial', description: offer.description || '',
                             userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            lastSeenAt: vRec ? vRec.lastSeenAt : 0,
+                            lastMissingAt: vRec ? vRec.lastMissingAt : 0,
+                            isConflict: isConflict,
                             createdAt: offer.createdAt || Date.now(),
                             isRecentUpload: true,
-                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
-                            stockStatus: computeStockStatusFromVote(vote)
+                            seenCount: (isConflict || vote === 'seen') ? 1 : 0,
+                            missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote, isConflict)
                         });
                     });
                 });
@@ -1583,15 +1639,20 @@
                         const prodId = `offer_${store.id}_${offerIdx}`;
                         const vRec = getValidVoteRecord(mergedVotes[prodId]);
                         const vote = vRec ? vRec.status : null;
+                        const isConflict = isVoteConflictWithinWindow(vRec);
                         baseCatalogGenerated.push({
                             id: prodId, baseOfferKey: `${store.chain}_${offerIdx}`, title: offer.title, price: offer.price, supermarket: store.chain,
                             category: offer.category, city: city, storeId: store.id, storeName: store.name,
                             imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
                             description: offer.description, userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
+                            lastSeenAt: vRec ? vRec.lastSeenAt : 0,
+                            lastMissingAt: vRec ? vRec.lastMissingAt : 0,
+                            isConflict: isConflict,
                             createdAt: 0,
                             isRecentUpload: false,
-                            seenCount: vote === 'seen' ? 1 : 0, missingCount: vote === 'missing' ? 1 : 0,
-                            stockStatus: computeStockStatusFromVote(vote)
+                            seenCount: (isConflict || vote === 'seen') ? 1 : 0,
+                            missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                            stockStatus: computeStockStatusFromVote(vote, isConflict)
                         });
                     });
                 });
@@ -1600,8 +1661,15 @@
             // 3. Novedades subidas por usuarios desde el botón "Subir"
             const customs = activeCustom.map(p => {
                 const vRec = getValidVoteRecord(mergedVotes[p.id]);
-                const vote = vRec ? vRec.status : (p.userVote || 'seen');
-                const updatedTime = vRec ? vRec.updatedAt : (p.updatedAt || p.createdAt || Date.now());
+                const initialStatus = p.userVote || 'seen';
+                const initialTime = p.updatedAt || p.createdAt || Date.now();
+                const vote = vRec ? vRec.status : initialStatus;
+                const updatedTime = vRec ? vRec.updatedAt : initialTime;
+
+                const lastSeenAt = (vRec && vRec.lastSeenAt) ? vRec.lastSeenAt : (initialStatus === 'seen' ? initialTime : 0);
+                const lastMissingAt = (vRec && vRec.lastMissingAt) ? vRec.lastMissingAt : (initialStatus === 'missing' ? initialTime : 0);
+                const isConflict = isVoteConflictWithinWindow({ lastSeenAt, lastMissingAt });
+
                 const cityVal = p.city || 'Málaga';
                 let resolvedStoreName = p.storeName || `${p.supermarket || 'Tienda'} - ${cityVal}`;
                 if (CITIES_AND_STORES[cityVal] && p.storeId) {
@@ -1624,9 +1692,12 @@
                     viralContext: p.viralContext || 'Aviso de la comunidad',
                     userVote: vote,
                     updatedAt: updatedTime,
-                    seenCount: vote === 'seen' ? 1 : 0,
-                    missingCount: vote === 'missing' ? 1 : 0,
-                    stockStatus: computeStockStatusFromVote(vote)
+                    lastSeenAt: lastSeenAt,
+                    lastMissingAt: lastMissingAt,
+                    isConflict: isConflict,
+                    seenCount: (isConflict || vote === 'seen') ? 1 : 0,
+                    missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                    stockStatus: computeStockStatusFromVote(vote, isConflict)
                 };
             });
 
@@ -2059,8 +2130,9 @@
                 const storeItems = group.items;
                 const badge = SUPERMARKET_DATA[p.supermarket] || { badge: 'bg-slate-700 text-white' };
 
-                const seenStores = storeItems.filter(item => item.userVote === 'seen');
-                const missingStores = storeItems.filter(item => item.userVote === 'missing');
+                const seenStores = storeItems.filter(item => item.userVote === 'seen' && !item.isConflict);
+                const conflictStores = storeItems.filter(item => item.isConflict);
+                const missingStores = storeItems.filter(item => item.userVote === 'missing' && !item.isConflict);
 
                 let stockText = '⚪ Sin confirmar hoy';
                 let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
@@ -2070,7 +2142,12 @@
                 if (isSingleStoreSelected && storeItems.length === 1) {
                     const single = storeItems[0];
                     const timeStr = formatVoteTime(single.updatedAt);
-                    if (single.userVote === 'seen') {
+                    if (single.isConflict) {
+                        stockText = '🟡 En duda / Stock bajo';
+                        stockClass = 'bg-amber-100 text-amber-900 border-amber-300';
+                        bannerText = `⚠️ Reportes contradictorios (${timeStr})`;
+                        bannerColor = 'text-amber-700 font-semibold';
+                    } else if (single.userVote === 'seen') {
                         stockText = '🟢 ¡Sí hay!';
                         stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
                         bannerText = `✅ Confirmado (${timeStr}): SÍ ESTÁ`;
@@ -2085,8 +2162,15 @@
                     if (seenStores.length > 0) {
                         stockText = `🟢 ¡Sí hay! (${seenStores.length})`;
                         stockClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
-                        bannerText = `✅ Visto hoy en ${seenStores.length} ${seenStores.length === 1 ? 'tienda' : 'tiendas'}`;
+                        bannerText = conflictStores.length > 0
+                            ? `✅ En ${seenStores.length} ${seenStores.length === 1 ? 'tienda' : 'tiendas'} · 🟡 ${conflictStores.length} en duda`
+                            : `✅ Visto hoy en ${seenStores.length} ${seenStores.length === 1 ? 'tienda' : 'tiendas'}`;
                         bannerColor = 'text-emerald-700 font-semibold';
+                    } else if (conflictStores.length > 0) {
+                        stockText = `🟡 En duda (${conflictStores.length})`;
+                        stockClass = 'bg-amber-100 text-amber-900 border-amber-300';
+                        bannerText = `⚠️ En duda / posible reposición en ${conflictStores.length} ${conflictStores.length === 1 ? 'tienda' : 'tiendas'}`;
+                        bannerColor = 'text-amber-700 font-semibold';
                     } else if (missingStores.length > 0) {
                         stockText = `🔴 Agotado (${missingStores.length})`;
                         stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
@@ -2115,6 +2199,11 @@
                     const single = storeItems[0];
                     bottomSectionHtml = `
                         <div class="space-y-2 pt-2 border-t border-slate-100">
+                            ${single.isConflict ? `
+                                <div class="text-[11px] bg-amber-50 border border-amber-300 text-amber-900 px-2.5 py-1.5 rounded-xl font-medium leading-snug">
+                                    ⚠️ <b>Reportes contradictorios hoy:</b> podría quedar poco o estar en reposición.
+                                </div>
+                            ` : ''}
                             <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
                                 <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
                                 <span class="truncate" title="${single.storeName}">${single.storeName}</span>
@@ -2132,8 +2221,8 @@
                 } else {
                     const isExpanded = expandedProductGroups.has(group.groupKey);
                     const sortedStores = [...storeItems].sort((a, b) => {
-                        const scoreA = a.userVote === 'seen' ? 2 : (a.userVote === 'missing' ? 1 : 0);
-                        const scoreB = b.userVote === 'seen' ? 2 : (b.userVote === 'missing' ? 1 : 0);
+                        const scoreA = (a.userVote === 'seen' && !a.isConflict) ? 3 : (a.isConflict ? 2 : (a.userVote === 'missing' ? 1 : 0));
+                        const scoreB = (b.userVote === 'seen' && !b.isConflict) ? 3 : (b.isConflict ? 2 : (b.userVote === 'missing' ? 1 : 0));
                         return scoreB - scoreA;
                     });
 
@@ -2149,12 +2238,21 @@
                         const shortName = st.storeName.replace(new RegExp(`^${st.supermarket}\\s*(Market|Express)?\\s*-\\s*`, 'i'), '');
                         const q = savedSearch.toLowerCase().trim();
                         const hideRow = q && !st.storeName.toLowerCase().includes(q);
+                        const rowBorderClass = st.isConflict
+                            ? 'border-amber-300 bg-amber-50/40'
+                            : (st.userVote === 'seen' ? 'border-emerald-300 bg-emerald-50/30' : (st.userVote === 'missing' ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'));
+
                         return `
-                            <div data-store-row data-store-name="${st.storeName}" style="${hideRow ? 'display:none' : ''}" class="bg-white border ${st.userVote === 'seen' ? 'border-emerald-300 bg-emerald-50/30' : (st.userVote === 'missing' ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200')} rounded-xl p-2 flex flex-col gap-1.5">
+                            <div data-store-row data-store-name="${st.storeName}" style="${hideRow ? 'display:none' : ''}" class="bg-white border ${rowBorderClass} rounded-xl p-2 flex flex-col gap-1.5">
                                 <div class="flex items-start justify-between gap-1">
                                     <span class="text-[11px] font-semibold text-slate-800 leading-tight">📍 ${shortName}</span>
                                     ${st.updatedAt ? `<span class="text-[9px] text-slate-400 shrink-0">${formatVoteTime(st.updatedAt)}</span>` : ''}
                                 </div>
+                                ${st.isConflict ? `
+                                    <div class="text-[10px] bg-amber-100/80 border border-amber-300 text-amber-950 px-2 py-1 rounded-lg font-medium leading-tight">
+                                        🟡 <b>En duda / Stock bajo:</b> Reportes contradictorios hoy: podría quedar poco o estar en reposición.
+                                    </div>
+                                ` : ''}
                                 <div class="grid grid-cols-2 gap-1">
                                     <button onclick="handleStoreVote('${st.id}', 'seen')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                         <span>🟢 Sí (${st.seenCount})</span>
@@ -2241,7 +2339,12 @@
                 let bannerText = `✅ Aviso en tienda (${timeStr})`;
                 let bannerColor = 'text-emerald-700 font-semibold';
 
-                if (p.userVote === 'missing') {
+                if (p.isConflict) {
+                    stockText = '🟡 En duda / Stock bajo';
+                    stockClass = 'bg-amber-100 text-amber-900 border-amber-300';
+                    bannerText = `⚠️ En duda · Último voto (${timeStr})`;
+                    bannerColor = 'text-amber-700 font-semibold';
+                } else if (p.userVote === 'missing') {
                     stockText = '🔴 Agotado';
                     stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
                     bannerText = `⚠️ Reportado agotado (${timeStr})`;
@@ -2266,8 +2369,12 @@
                         </div>`;
                 }
 
+                const cardBorderClass = p.isConflict
+                    ? 'border-amber-300 ring-1 ring-amber-200/70'
+                    : 'border-emerald-200 ring-1 ring-emerald-100';
+
                 return `
-                    <div class="bg-white rounded-2xl border border-emerald-200 ring-1 ring-emerald-100 overflow-hidden shadow-sm flex flex-col">
+                    <div class="bg-white rounded-2xl border ${cardBorderClass} overflow-hidden shadow-sm flex flex-col">
                         <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
                             <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
                             <div class="absolute top-2 left-2 flex items-center gap-1">
@@ -2287,15 +2394,20 @@
                                 <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
                             </div>
                             <div class="space-y-2 pt-2 border-t border-slate-100">
-                            <div class="flex items-start gap-1.5 text-[11px] font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl">
-    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0 mt-0.5"></i>
-    <div class="leading-tight">
-        <span class="inline-block bg-emerald-200/80 text-emerald-900 font-extrabold text-[9px] uppercase px-1 py-0.5 rounded mr-1">
-            ${p.city || currentCity}
-        </span>
-        <span class="text-slate-800">${p.storeName}</span>
-    </div>
-</div>
+                                ${p.isConflict ? `
+                                    <div class="text-[11px] bg-amber-50 border border-amber-300 text-amber-900 px-2.5 py-1.5 rounded-xl font-medium leading-snug">
+                                        ⚠️ <b>Reportes contradictorios hoy:</b> podría quedar poco o estar en reposición.
+                                    </div>
+                                ` : ''}
+                                <div class="flex items-start gap-1.5 text-[11px] font-semibold text-emerald-950 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl">
+                                    <i class="fa-solid fa-location-dot text-emerald-600 shrink-0 mt-0.5"></i>
+                                    <div class="leading-tight">
+                                        <span class="inline-block bg-emerald-200/80 text-emerald-900 font-extrabold text-[9px] uppercase px-1 py-0.5 rounded mr-1">
+                                            ${p.city || currentCity}
+                                        </span>
+                                        <span class="text-slate-800">${p.storeName}</span>
+                                    </div>
+                                </div>
                                 <div class="grid grid-cols-2 gap-1.5">
                                     <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                         <span>🟢 Sí (${p.seenCount})</span>
@@ -2311,26 +2423,111 @@
             }).join('');
         }
 
+        // Intercepta el clic en los botones de voto ("Sí" / "No")
         function handleStoreVote(id, type) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
+
+            // Si el usuario pulsa "🔴 No" (y no está desmarcando un "No" ya activo), mostramos primero el modal de aviso
+            if (type === 'missing' && p.userVote !== 'missing') {
+                openConfirmMissingModal(p);
+                return;
+            }
+
+            executeStoreVote(id, type);
+        }
+
+        function openConfirmMissingModal(p) {
+            pendingMissingVoteId = p.id;
+            const modal = document.getElementById('confirmMissingModal');
+            const msgEl = document.getElementById('confirmMissingModalText');
+            const storeEl = document.getElementById('confirmMissingModalStore');
+            const now = Date.now();
+            const hasRecentSeen = p.lastSeenAt && (now - p.lastSeenAt < CONFLICT_WINDOW_MS);
+
+            if (storeEl) {
+                storeEl.textContent = `📍 ${p.storeName || p.supermarket || ''}`;
+            }
+
+            if (msgEl) {
+                if (hasRecentSeen) {
+                    const timeStr = formatVoteTime(p.lastSeenAt);
+                    msgEl.innerHTML = `Alguien confirmó que <b>sí había stock</b> en esta tienda (<b>${timeStr}</b>).<br><br>Los productos virales suelen colocarse en cabeceras de pasillo, islas promocionales o estar en reposición. ¿Seguro que no queda?`;
+                } else {
+                    msgEl.innerHTML = `Los productos virales a veces no están en su pasillo habitual, sino en cabeceras de góndola, neveras promocionales o islas centrales.<br><br>¿Has podido revisar bien o preguntar al personal?`;
+                }
+            }
+
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeConfirmMissingModal() {
+            pendingMissingVoteId = null;
+            const modal = document.getElementById('confirmMissingModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmMissingVoteFromModal() {
+            if (!pendingMissingVoteId) return;
+            const targetId = pendingMissingVoteId;
+            closeConfirmMissingModal();
+            executeStoreVote(targetId, 'missing');
+        }
+
+        function executeStoreVote(id, type) {
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            const now = Date.now();
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const prevRec = getValidVoteRecord(mergedVotes[id]);
+
+            // Si el usuario vuelve a pulsar sobre el estado que ya estaba marcado
             if (p.userVote === type) {
-                p.userVote = null; p.updatedAt = null; p.seenCount = 0; p.missingCount = 0; p.stockStatus = 'Sin confirmar';
-                delete userInteractions.votes[id];
-                if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
-                showToast('Aviso retirado');
+                if (p.isConflict && prevRec) {
+                    const remainingStatus = type === 'seen' ? 'missing' : 'seen';
+                    const remainingTime = type === 'seen' ? prevRec.lastMissingAt : prevRec.lastSeenAt;
+                    const payload = {
+                        status: remainingStatus,
+                        updatedAt: remainingTime || now,
+                        lastSeenAt: type === 'seen' ? 0 : prevRec.lastSeenAt,
+                        lastMissingAt: type === 'missing' ? 0 : prevRec.lastMissingAt
+                    };
+                    userInteractions.votes[id] = payload;
+                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
+                    showToast('Voto retirado · Se mantiene el aviso previo');
+                } else {
+                    delete userInteractions.votes[id];
+                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
+                    showToast('Aviso retirado');
+                }
             } else {
-                const now = Date.now();
-                const payload = { status: type, updatedAt: now };
-                p.userVote = type; p.updatedAt = now;
-                p.seenCount = type === 'seen' ? 1 : 0; p.missingCount = type === 'missing' ? 1 : 0;
-                p.stockStatus = computeStockStatusFromVote(type);
+                const prevSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
+                const prevMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
+
+                const newSeenAt = type === 'seen' ? now : prevSeenAt;
+                const newMissingAt = type === 'missing' ? now : prevMissingAt;
+
+                const payload = {
+                    status: type,
+                    updatedAt: now,
+                    lastSeenAt: newSeenAt,
+                    lastMissingAt: newMissingAt
+                };
+
                 userInteractions.votes[id] = payload;
                 if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
-                showToast(type === 'seen' ? '¡Actualizado: SÍ hay!' : '¡Actualizado: AGOTADO!');
+
+                const conflictNow = isVoteConflictWithinWindow(payload);
+                if (conflictNow) {
+                    showToast('🟡 Reportes contradictorios: marcado En duda / Stock bajo');
+                } else {
+                    showToast(type === 'seen' ? '¡Actualizado: SÍ hay!' : '¡Actualizado: AGOTADO!');
+                }
             }
             saveUserInteractions();
-            applyFilters();
+            rebuildCatalogFromCurrentState();
         }
 
         async function handleFileSelect(e) {
@@ -2388,7 +2585,12 @@
                 const status = document.getElementById('formStockStatus').value;
                 const now = Date.now();
                 const prodId = editingId || ('custom_' + now);
-                const payload = { status: status, updatedAt: now };
+                const payload = {
+                    status: status,
+                    updatedAt: now,
+                    lastSeenAt: status === 'seen' ? now : 0,
+                    lastMissingAt: status === 'missing' ? now : 0
+                };
 
                 userInteractions.votes[prodId] = payload;
                 const newP = {
@@ -2409,9 +2611,11 @@
                     authorDeviceId: DEVICE_AUTHOR_ID,
                     userVote: status,
                     updatedAt: now,
+                    lastSeenAt: payload.lastSeenAt,
+                    lastMissingAt: payload.lastMissingAt,
                     seenCount: status === 'seen' ? 1 : 0,
                     missingCount: status === 'missing' ? 1 : 0,
-                    stockStatus: computeStockStatusFromVote(status)
+                    stockStatus: computeStockStatusFromVote(status, false)
                 };
 
                 markIdAsMyOwnUpload(prodId);
