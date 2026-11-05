@@ -1581,7 +1581,7 @@
                     lastMissingAt: rawRecord === 'missing' ? now : 0
                 };
             }
-            if (now - rawRecord.updatedAt > 48 * 60 * 60 * 1000) return null;
+            if (now - rawRecord.updatedAt > 7 * 24 * 60 * 60 * 1000) return null;
             return {
                 status: rawRecord.status || null,
                 updatedAt: rawRecord.updatedAt || now,
