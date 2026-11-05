@@ -1660,7 +1660,7 @@
                         const isConflict = isVoteConflictWithinWindow(vRec);
                         newOfficialGenerated.push({
                             id: prodId, adminOfferId: offer.id, title: offer.title || 'Novedad', price: Number(offer.price || 0),
-                            supermarket: store.chain, category: offer.category || 'Alimentación / Snacks', city: city, storeId: store.id,
+                            supermarket: store.chain, category: offer.category || 'Alimentación / Snacks', city: city, zone: store.zone || 'Capital / Centro', storeId: store.id,
                             storeName: store.name, imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
                             viralContext: offer.viralContext || 'Novedad oficial', description: offer.description || '',
                             userVote: vote, updatedAt: vRec ? vRec.updatedAt : null,
@@ -1684,6 +1684,7 @@
                         const vote = vRec ? vRec.status : null;
                         const isConflict = isVoteConflictWithinWindow(vRec);
                         baseCatalogGenerated.push({
+                            supermarket: store.chain, category: offer.category || 'Alimentación / Snacks', city: city, zone: store.zone || 'Capital / Centro', storeId: store.id,
                             id: prodId, baseOfferKey: `${store.chain}_${offerIdx}`, title: offer.title, price: offer.price, supermarket: store.chain,
                             category: offer.category, city: city, storeId: store.id, storeName: store.name,
                             imageUrl: offer.imageUrl, fallbackImg: offer.fallbackImg, viralContext: offer.viralContext,
@@ -2094,22 +2095,28 @@ function updateZoneSelectDropdown() {
         }
 
         function updateStoreSelectDropdown() {
-            const sel = document.getElementById('storeSelect');
-            if (!sel) return;
-            const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
+    const sel = document.getElementById('storeSelect');
+    if (!sel) return;
+    const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
 
-            const filtered = cityData.stores.filter(s => {
-                if (s.chain === 'ALL') return true;
-                if (selectedChain && s.chain !== selectedChain) return false;
-                if (currentZone !== 'ALL' && (s.zone || 'Capital / Centro') !== currentZone) return false;
-                return true;
-            });
+    // Filtramos las tiendas físicas según cadena y municipio
+    const filtered = (cityData.stores || []).filter(s => {
+        if (s.chain === 'ALL') return false;
+        if (selectedChain && s.chain !== selectedChain) return false;
+        if (currentZone !== 'ALL' && (s.zone || 'Capital / Centro') !== currentZone) return false;
+        return true;
+    });
 
-            const indicator = document.getElementById('storeCountIndicator');
-            if (indicator) indicator.textContent = `${Math.max(0, filtered.length - 1)} tiendas`;
+    const indicator = document.getElementById('storeCountIndicator');
+    if (indicator) indicator.textContent = `${filtered.length} tiendas`;
 
-            sel.innerHTML = filtered.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-        }
+    // La primera opción se adapta dinámicamente al municipio elegido
+    const zoneTitle = currentZone === 'ALL' ? cityData.name : currentZone;
+    let optionsHtml = `<option value="all_${currentCity}">📍 Todas las tiendas (${zoneTitle})</option>`;
+    optionsHtml += filtered.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+    sel.innerHTML = optionsHtml;
+}
 
         function toggleOnlyFavoritesFilter() {
             showOnlyFavorites = !showOnlyFavorites;
@@ -2194,27 +2201,34 @@ function updateZoneSelectDropdown() {
         }
 
         function applyFilters() {
-            const storeId = document.getElementById('storeSelect').value;
-            const query = (document.getElementById('heroSearchInput').value || document.getElementById('desktopSearchInput').value || '').toLowerCase().trim();
-            const cat = document.getElementById('categoryFilter').value;
-            const stock = document.getElementById('stockFilter').value;
+    const storeId = document.getElementById('storeSelect').value;
+    const query = (document.getElementById('heroSearchInput')?.value || document.getElementById('desktopSearchInput')?.value || '').toLowerCase().trim();
+    const cat = document.getElementById('categoryFilter').value;
+    const stock = document.getElementById('stockFilter').value;
 
-            // Filtrado base común (ciudad, supermercado, tienda, sección, búsqueda)
-            const baseMatching = products.filter(p => {
-                if ((p.city || 'Málaga') !== currentCity) return false;
-                if (selectedChain && p.supermarket !== selectedChain) return false;
-                if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
-                if (cat && p.category !== cat) return false;
-                if (stock && p.stockStatus !== stock) return false;
-                if (query) {
-                    const t = (p.title || '').toLowerCase();
-                    const d = (p.description || '').toLowerCase();
-                    const s = (p.supermarket || '').toLowerCase();
-                    const st = (p.storeName || '').toLowerCase();
-                    if (!t.includes(query) && !d.includes(query) && !s.includes(query) && !st.includes(query)) return false;
-                }
-                return true;
-            });
+    // Filtrado base común (ciudad, municipio/zona, supermercado, tienda, sección, búsqueda)
+    const baseMatching = products.filter(p => {
+        if ((p.city || 'Málaga') !== currentCity) return false;
+        if (selectedChain && p.supermarket !== selectedChain) return false;
+        
+        // 👇 FILTRO POR MUNICIPIO / ZONA
+        if (currentZone !== 'ALL') {
+            const pZone = p.zone || 'Capital / Centro';
+            if (pZone !== currentZone) return false;
+        }
+
+        if (storeId && !storeId.startsWith('all_') && p.storeId !== storeId) return false;
+        if (cat && p.category !== cat) return false;
+        if (stock && p.stockStatus !== stock) return false;
+        if (query) {
+            const t = (p.title || '').toLowerCase();
+            const d = (p.description || '').toLowerCase();
+            const s = (p.supermarket || '').toLowerCase();
+            const st = (p.storeName || '').toLowerCase();
+            if (!t.includes(query) && !d.includes(query) && !s.includes(query) && !st.includes(query)) return false;
+        }
+        return true;
+    });
 
             // 1. Elementos del Catálogo Oficial (Novedades de cadena: subidas por Admin o base)
             const catalogItems = baseMatching.filter(p => !p.isCustomUserProduct && (!showOnlyLatest || p.isRecentUpload) && (!showOnlyFavorites || !!p.userVote));
