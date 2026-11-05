@@ -175,55 +175,65 @@
                 </div>
             </div>
 
-            <!-- Selectores Ciudad y Tienda -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 text-xs">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">1. Ciudad</label>
-                    <div class="relative">
-                        <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-slate-400 text-[10px] pointer-events-none"></i>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">2. Tienda Exacta</label>
-                        <span id="storeCountIndicator" class="text-[9px] text-slate-400"></span>
-                    </div>
-                    <div class="relative">
-                        <select id="storeSelect" onchange="applyFilters()" class="w-full bg-emerald-50/60 border border-emerald-300 text-slate-900 font-bold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-emerald-700 text-[10px] pointer-events-none"></i>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Sección</label>
-                        <select id="categoryFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
-                            <option value="">Todas</option>
-                            <option value="Cosmética & Cuidado">Perfumería</option>
-                            <option value="Alimentación / Snacks">Alimentación</option>
-                            <option value="Fit & Proteínas">Proteínas</option>
-                            <option value="Bazar / Semanales">Bazar</option>
-                            <option value="Hogar & Limpieza">Hogar</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Estado</label>
-                        <select id="stockFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
-                            <option value="">Todos</option>
-                            <option value="Sí está">🟢 Sí está</option>
-                            <option value="En duda">🟡 En duda / Stock bajo</option>
-                            <option value="Agotado">🔴 Agotado</option>
-                            <option value="Sin confirmar">⚪ Sin confirmar</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+            <!-- Fila 1: Selectores Provincia, Municipio y Tienda -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2 border-t border-slate-100 text-xs">
+    <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">1. Provincia / Área</label>
+        <div class="relative">
+            <select id="citySelect" onchange="handleCityChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-slate-400 text-[10px] pointer-events-none"></i>
         </div>
+    </div>
 
+    <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">2. Municipio / Zona</label>
+        <div class="relative">
+            <select id="zoneSelect" onchange="handleZoneChange()" class="w-full bg-slate-50 border border-slate-200 text-slate-800 font-semibold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-slate-400 text-[10px] pointer-events-none"></i>
+        </div>
+    </div>
+
+    <div>
+        <div class="flex items-center justify-between mb-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">3. Tienda Exacta</label>
+            <span id="storeCountIndicator" class="text-[9px] text-slate-400"></span>
+        </div>
+        <div class="relative">
+            <select id="storeSelect" onchange="applyFilters()" class="w-full bg-emerald-50/60 border border-emerald-300 text-slate-900 font-bold px-2.5 py-2 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer appearance-none text-xs">
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-2.5 top-3 text-emerald-700 text-[10px] pointer-events-none"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Fila 2: Filtros de Sección y Estado -->
+<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-xs">
+    <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Sección</label>
+        <select id="categoryFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
+            <option value="">Todas</option>
+            <option value="Cosmética & Cuidado">Perfumería</option>
+            <option value="Alimentación / Snacks">Alimentación</option>
+            <option value="Fit & Proteínas">Proteínas</option>
+            <option value="Bazar / Semanales">Bazar</option>
+            <option value="Hogar & Limpieza">Hogar</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Estado</label>
+        <select id="stockFilter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold px-2 py-2 rounded-xl focus:outline-none cursor-pointer text-xs">
+            <option value="">Todos</option>
+            <option value="Sí está">🟢 Sí está</option>
+            <option value="En duda">🟡 En duda / Stock bajo</option>
+            <option value="Agotado">🔴 Agotado</option>
+            <option value="Sin confirmar">⚪ Sin confirmar</option>
+        </select>
+    </div>
+</div>
+</div>
+        
         <!-- Selector Principal de 2 Pestañas (Opción B: Catálogo Viral vs Avisos de la Comunidad) -->
         <div class="bg-slate-200/80 p-1 rounded-2xl grid grid-cols-2 gap-1 mb-3.5 shadow-inner">
             <button id="tabBtnCatalog" onclick="switchMainViewTab('catalog')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 bg-white text-slate-900 shadow-sm">
@@ -886,101 +896,103 @@
 
                 if (city === 'Málaga') {
                     storesList.push(
-                        // Mercadona Málaga
-                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 43 (El Torcal)' },
-                        { id: 'merca_mlg_velazquez_91', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 95 (Puerta Blanca)' },
-                        { id: 'merca_mlg_la_luz', chain: 'Mercadona', name: 'Mercadona - Ctra. Carril del Conde, 8 (La Luz)' },
-                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina, 1 (Parque Litoral)' },
-                        { id: 'merca_mlg_pasteur', chain: 'Mercadona', name: 'Mercadona - Bulevar Louis Pasteur, 17 (Teatinos)' },
-                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - C. Eduardo Marquina, 10 (Huelin / Estación)' },
-                        { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 6 (Distrito Centro)' },
-                        { id: 'merca_mlg_albeniz', chain: 'Mercadona', name: 'Mercadona - C. Albéniz, 35 (Distrito Centro)' },
-                        { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - C. Explanada de la Estación s/n (Vialia)' },
-                        { id: 'merca_mlg_palma_palmilla', chain: 'Mercadona', name: 'Mercadona - Av. del Dr. Marañón, 8 (Palma-Palmilla)' },
-                        { id: 'merca_mlg_cruz_humilladero', chain: 'Mercadona', name: 'Mercadona - Av. Santa Rosa de Lima, 20 (Cruz de Humilladero)' },
-                        { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - C. Gaucín, 15 (La Luz)' },
-                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. de la Estación, 3 (El Palo)' },
-                        { id: 'merca_mlg_palo_elcano', chain: 'Mercadona', name: 'Mercadona - Av. Juan Sebastián Elcano, 147 (Málaga-Este / El Palo)' },
-                        { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - Av. del Mayorazgo, 20 (El Limonar)' },
-                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Av. Jacinto Benavente, 21 (Ciudad Jardín)' },
-                        { id: 'merca_mlg_casabermeja', chain: 'Mercadona', name: 'Mercadona - Cmo. de Casabermeja, 64 (Cdad. Jardín)' },
-                        { id: 'merca_mlg_thuillier', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Cdad. Jardín)' },
-                        { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suárez, 22 (Miraflores)' },
-                        { id: 'merca_mlg_plazamayor', chain: 'Mercadona', name: 'Mercadona - Calle Alfonso Ponce de León, s/n (C.C. Plaza Mayor)' },
-                        { id: 'merca_mlg_torremolinos_playamar', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)' },
-                        { id: 'merca_mlg_torremolinos_centro', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)' },
-                        { id: 'merca_mlg_martinez_maldonado', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 62 (Distrito Centro)' },
-                        { id: 'merca_mlg_barcelona', chain: 'Mercadona', name: 'Mercadona - Av. de Barcelona, 18 (Bailén)' },
-                        { id: 'merca_mlg_san_rafael', chain: 'Mercadona', name: 'Mercadona - Camino de San Rafael, 55 (Cruz de Humilladero)' },
-                        { id: 'merca_mlg_diaz_zafra', chain: 'Mercadona', name: 'Mercadona - C. Alcalde Díaz Zafra, 32 (Tiro de Pichón)' },
-                        { id: 'merca_mlg_ortega_gasset', chain: 'Mercadona', name: 'Mercadona - Av. José Ortega y Gasset, s/n (Cruz de Humilladero)' },
-                        { id: 'merca_mlg_lope_rueda', chain: 'Mercadona', name: 'Mercadona - Av. Arquitecto Luis Bono, 17 (Puerto de la Torre)' },
-                        { id: 'merca_mlg_navarro_ledesma', chain: 'Mercadona', name: 'Mercadona - C. Navarro Ledesma, 175 (El Atabal)' },
-                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104 (Churriana)' },
-                        { id: 'merca_mlg_alhaurin_de_la_torre', chain: 'Mercadona', name: 'Mercadona - Calle de los Registradores, s/n (Alhaurín de la Torre)' },
-                        { id: 'merca_mlg_alhaurin_cortijos', chain: 'Mercadona', name: 'Mercadona - Av. de los Cortijos, S/N (Alhaurín de la Torre)' },
+                        // Mercadona - Málaga Capital
+                        { id: 'merca_mlg_velazquez', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 43 (El Torcal)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_velazquez_91', chain: 'Mercadona', name: 'Mercadona - Av. de Velázquez, 95 (Puerta Blanca)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_la_luz', chain: 'Mercadona', name: 'Mercadona - Ctra. Carril del Conde, 8 (La Luz)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_imperio', chain: 'Mercadona', name: 'Mercadona - C. Imperio Argentina, 1 (Parque Litoral)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_pasteur', chain: 'Mercadona', name: 'Mercadona - Bulevar Louis Pasteur, 17 (Teatinos)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_huelin', chain: 'Mercadona', name: 'Mercadona - C. Eduardo Marquina, 10 (Huelin / Estación)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_distrito_centro', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 6 (Distrito Centro)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_albeniz', chain: 'Mercadona', name: 'Mercadona - C. Albéniz, 35 (Distrito Centro)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_vialia', chain: 'Mercadona', name: 'Mercadona - C. Explanada de la Estación s/n (Vialia)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_palma_palmilla', chain: 'Mercadona', name: 'Mercadona - Av. del Dr. Marañón, 8 (Palma-Palmilla)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_cruz_humilladero', chain: 'Mercadona', name: 'Mercadona - Av. Santa Rosa de Lima, 20 (Cruz de Humilladero)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_laluz', chain: 'Mercadona', name: 'Mercadona - C. Gaucín, 15 (La Luz)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_palo', chain: 'Mercadona', name: 'Mercadona - Av. de la Estación, 3 (El Palo)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_palo_elcano', chain: 'Mercadona', name: 'Mercadona - Av. Juan Sebastián Elcano, 147 (Málaga-Este / El Palo)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_limonar', chain: 'Mercadona', name: 'Mercadona - Av. del Mayorazgo, 20 (El Limonar)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_ciudadjardin', chain: 'Mercadona', name: 'Mercadona - Av. Jacinto Benavente, 21 (Ciudad Jardín)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_casabermeja', chain: 'Mercadona', name: 'Mercadona - Cmo. de Casabermeja, 64 (Cdad. Jardín)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_thuillier', chain: 'Mercadona', name: 'Mercadona - C. Emilio Thuillier, 2 (Cdad. Jardín)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_clarines', chain: 'Mercadona', name: 'Mercadona - Camino de Suárez, 22 (Miraflores)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_plazamayor', chain: 'Mercadona', name: 'Mercadona - Calle Alfonso Ponce de León, s/n (C.C. Plaza Mayor)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_martinez_maldonado', chain: 'Mercadona', name: 'Mercadona - C. Martínez Maldonado, 62 (Distrito Centro)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_barcelona', chain: 'Mercadona', name: 'Mercadona - Av. de Barcelona, 18 (Bailén)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_san_rafael', chain: 'Mercadona', name: 'Mercadona - Camino de San Rafael, 55 (Cruz de Humilladero)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_diaz_zafra', chain: 'Mercadona', name: 'Mercadona - C. Alcalde Díaz Zafra, 32 (Tiro de Pichón)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_ortega_gasset', chain: 'Mercadona', name: 'Mercadona - Av. José Ortega y Gasset, s/n (Cruz de Humilladero)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_lope_rueda', chain: 'Mercadona', name: 'Mercadona - Av. Arquitecto Luis Bono, 17 (Puerto de la Torre)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_navarro_ledesma', chain: 'Mercadona', name: 'Mercadona - C. Navarro Ledesma, 175 (El Atabal)', zone: 'Málaga Capital' },
+                        { id: 'merca_mlg_churriana', chain: 'Mercadona', name: 'Mercadona - Calle Dr. Ramos Acosta, 104 (Churriana)', zone: 'Málaga Capital' },
+
+                        // Mercadona - Municipios
+                        { id: 'merca_mlg_torremolinos_playamar', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'merca_mlg_torremolinos_centro', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'merca_mlg_alhaurin_de_la_torre', chain: 'Mercadona', name: 'Mercadona - Calle de los Registradores, s/n (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
+                        { id: 'merca_mlg_alhaurin_cortijos', chain: 'Mercadona', name: 'Mercadona - Av. de los Cortijos, S/N (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
 
                         // Carrefour Málaga
-                        { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241, 29004 (C.C. Los Patios)' },
-                        { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - Av. Simón Bolívar, s/n (C.C. La Rosaleda)' },
-                        { id: 'car_mlg_torremolinos', chain: 'Carrefour', name: 'Carrefour - Avenida Circunvalación, s/n, Centro Comercial Costasol (Torremolinos)' },
-                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, s/n (Cruz de Humilladero)' },
+                        { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241 (C.C. Los Patios)', zone: 'Málaga Capital' },
+                        { id: 'car_mlg_rosaleda', chain: 'Carrefour', name: 'Carrefour - Av. Simón Bolívar, s/n (C.C. La Rosaleda)', zone: 'Málaga Capital' },
+                        { id: 'car_mlg_alameda', chain: 'Carrefour', name: 'Carrefour - Av. de Andalucía, s/n (Cruz de Humilladero)', zone: 'Málaga Capital' },
+                        { id: 'car_mlg_torremolinos', chain: 'Carrefour', name: 'Carrefour - Av. Circunvalación, s/n, C.C. Costasol (Torremolinos)', zone: 'Torremolinos' },
 
                         // Lidl Málaga
-                        { id: 'lidl_mlg_carretera_cadiz', chain: 'Lidl', name: 'Lidl - C. Villanueva de Algaidas, 6 (Carretera de Cádiz)' },
-                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Avenida de Velázquez, 60' },
-                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - C/ Héroes de Sostoa, 126 (Huelin)' },
-                        { id: 'lidl_mlg_ciudad_jardin', chain: 'Lidl', name: 'Lidl - Av. de los Pascueros, 3 (Cdad. Jardín)' },
-                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Calle Navarro Ledesma, s/n (Teatinos)' },
-                        { id: 'lidl_mlg_ortega_gasset', chain: 'Lidl', name: 'Lidl - Av. José Ortega y Gasset, 224 (El Viso)' },
-                        { id: 'lidl_mlg_cruz_humilladero', chain: 'Lidl', name: 'Lidl - Camino San Rafael, 63' },
-                        { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 47 (Churriana)' },
-                        { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - C. de la Cruz, 69 (Torremolinos)' },
-                        { id: 'lidl_mlg_torremolinos_alessandri', chain: 'Lidl', name: 'Lidl - Av. Carlota Alessandri, 288 (Torremolinos)' },
-                        { id: 'lidl_mlg_alhaurin_torre', chain: 'Lidl', name: 'Lidl - Av. Finca Taralpe, s/n (Alhaurín de la Torre)' },
+                        { id: 'lidl_mlg_carretera_cadiz', chain: 'Lidl', name: 'Lidl - C. Villanueva de Algaidas, 6 (Carretera de Cádiz)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_velazquez', chain: 'Lidl', name: 'Lidl - Avenida de Velázquez, 60', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_huelin', chain: 'Lidl', name: 'Lidl - C/ Héroes de Sostoa, 126 (Huelin)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_ciudad_jardin', chain: 'Lidl', name: 'Lidl - Av. de los Pascueros, 3 (Cdad. Jardín)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_teatinos', chain: 'Lidl', name: 'Lidl - Calle Navarro Ledesma, s/n (Teatinos)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_ortega_gasset', chain: 'Lidl', name: 'Lidl - Av. José Ortega y Gasset, 224 (El Viso)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_cruz_humilladero', chain: 'Lidl', name: 'Lidl - Camino San Rafael, 63', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_churriana', chain: 'Lidl', name: 'Lidl - Ctra. de Coín, 47 (Churriana)', zone: 'Málaga Capital' },
+                        { id: 'lidl_mlg_torremolinos', chain: 'Lidl', name: 'Lidl - C. de la Cruz, 69 (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'lidl_mlg_torremolinos_alessandri', chain: 'Lidl', name: 'Lidl - Av. Carlota Alessandri, 288 (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'lidl_mlg_alhaurin_torre', chain: 'Lidl', name: 'Lidl - Av. Finca Taralpe, s/n (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
 
                         // Aldi Málaga
-                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Carretera de Cádiz / Pacífico)' },
-                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Giordano Bruno, 6 (Teatinos-Universidad)' },
-                        { id: 'aldi_mlg_ortega_gasset', chain: 'Aldi', name: 'Aldi - Av. de José Ortega y Gasset, 291 (Cruz de Humilladero)' },
-                        { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Pl. Cruz del Humilladero, 1 (Cruz de Humilladero)' },
-                        { id: 'aldi_mlg_distrito_centro', chain: 'Aldi', name: 'Aldi - C. Montes de Oca, 15 (Distrito Centro)' },
-                        { id: 'aldi_mlg_sanjulian', chain: 'Aldi', name: 'Aldi - C. Escritor Julio Balbín, s/n (Bahía Azul / San Julián)' },
-                        { id: 'aldi_mlg_churriana', chain: 'Aldi', name: 'Aldi - C. Emilio Hurtado, 19 (Churriana)' },
-                        { id: 'aldi_mlg_alhaurin_de_la_torre', chain: 'Aldi', name: 'Aldi - Av. Sta. Clara, s/n, Churriana (Alhaurín de la Torre)' },
-                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - C. de la Cruz, 73 (Torremolinos)' },
-                        { id: 'aldi_mlg_torremolinos_alessandri', chain: 'Aldi', name: 'Aldi - Av. Carlota Alessandri, 200 (Torremolinos)' },
-                        { id: 'aldi_mlg_puerto_de_la_torre', chain: 'Aldi', name: 'Aldi - Calle Lope de Rueda, esq. Cam. Soliva del Cañaveral, 161 (Puerto de la Torre)' },
-                        { id: 'aldi_mlg_cartama', chain: 'Aldi', name: 'Aldi - Av. de los Juegos Olímpicos, 1 (Cártama)' },
+                        { id: 'aldi_mlg_pacifico', chain: 'Aldi', name: 'Aldi - Av. de Molière, 36 (Pacífico)', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_teatinos', chain: 'Aldi', name: 'Aldi - C. Giordano Bruno, 6 (Teatinos)', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_ortega_gasset', chain: 'Aldi', name: 'Aldi - Av. de José Ortega y Gasset, 291', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_cruz_humilladero', chain: 'Aldi', name: 'Aldi - Pl. Cruz del Humilladero, 1', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_distrito_centro', chain: 'Aldi', name: 'Aldi - C. Montes de Oca, 15', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_sanjulian', chain: 'Aldi', name: 'Aldi - C. Escritor Julio Balbín, s/n (San Julián)', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_churriana', chain: 'Aldi', name: 'Aldi - C. Emilio Hurtado, 19 (Churriana)', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_puerto_de_la_torre', chain: 'Aldi', name: 'Aldi - Calle Lope de Rueda, 161 (Puerto de la Torre)', zone: 'Málaga Capital' },
+                        { id: 'aldi_mlg_alhaurin_de_la_torre', chain: 'Aldi', name: 'Aldi - Av. Sta. Clara, s/n (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
+                        { id: 'aldi_mlg_torremolinos', chain: 'Aldi', name: 'Aldi - C. de la Cruz, 73 (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'aldi_mlg_torremolinos_alessandri', chain: 'Aldi', name: 'Aldi - Av. Carlota Alessandri, 200 (Torremolinos)', zone: 'Torremolinos' },
+                        { id: 'aldi_mlg_cartama', chain: 'Aldi', name: 'Aldi - Av. de los Juegos Olímpicos, 1 (Cártama)', zone: 'Cártama' },
 
                         // DIA Málaga
-                        { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA - Calle Carretería, 105' },
-                        { id: 'dia_mlg_moliere', chain: 'DIA', name: 'DIA - Av. de Molière s/n' },
-                        { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA - Av. de Velázquez, 9' },
-                        { id: 'dia_mlg_ninogloria', chain: 'DIA', name: 'DIA - C. Niño de Gloria, 10 (El Torcal)' },
-                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34 (Girón / Las Delicias)' },
-                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6 (Santa Cristina / San Rafael)' },
-                        { id: 'dia_mlg_reboul', chain: 'DIA', name: 'DIA - C. Reboul s/n (La Unión)' },
-                        { id: 'dia_mlg_ayala', chain: 'DIA', name: 'DIA - C. Ayala, 82 (Parque Ayala)' },
-                        { id: 'dia_mlg_cuarteles', chain: 'DIA', name: 'DIA - C. Cuarteles, 35 (El Perchel)' },
-                        { id: 'dia_mlg_juanaustria', chain: 'DIA', name: 'DIA - C. Juan de Austria, 32 (La Trinidad)' },
-                        { id: 'dia_mlg_salamanca', chain: 'DIA', name: 'DIA - C. Salamanca, 7 (Distrito Centro)' },
-                        { id: 'dia_mlg_capuchinos', chain: 'DIA', name: 'DIA - Alameda de Capuchinos, 14 (Distrito Centro)' },
-                        { id: 'dia_mlg_cristoepidemia', chain: 'DIA', name: 'DIA - C. Cristo de la Epidemia, 47 (Distrito Centro)' },
-                        { id: 'dia_mlg_macabeos', chain: 'DIA', name: 'DIA - C. Macabeos, 5 (Distrito Centro)' },
-                        { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA - C. Victoria, 64 (Distrito Centro)' },
-                        { id: 'dia_mlg_almendrales', chain: 'DIA', name: 'DIA - Camino de los Almendrales s/n (Fuente Olletas)' },
-                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30 (Ciudad Jardín / Cortijo Bazán)' },
-                        { id: 'dia_mlg_joaquinquiles', chain: 'DIA', name: 'DIA - C. Alcalde Joaquín Quiles, 19 (Ciudad Jardín)' },
-                        { id: 'dia_mlg_miguelmoya', chain: 'DIA', name: 'DIA - C. Miguel Moya, 14 (El Palo)' },
-                        { id: 'dia_mlg_manuelalcantara', chain: 'DIA', name: 'DIA - C. Poeta Manuel Alcántara, 1 (Rincón de la Victoria)' },
-                        { id: 'dia_mlg_carriltoros', chain: 'DIA', name: 'DIA - Carril de los Toros s/n (Rincón de la Victoria)' },
-                        { id: 'dia_mlg_calledelrio', chain: 'DIA', name: 'DIA - C. del Río, 32 (Torre del Mar)' },
-                        { id: 'dia_mlg_drfleming', chain: 'DIA', name: 'DIA - C. Dr. Fleming, 77 (Torre del Mar)' },
-                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n (Vélez-Málaga)' },
-                        { id: 'dia_mlg_avandalucia', chain: 'DIA', name: 'DIA - Av. de Andalucía, 35 (Algarrobo)' },
-                        { id: 'dia_mlg_castillobajo', chain: 'DIA', name: 'DIA - C. Castillo Bajo, 50 (Torrox)' },
-                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n (Torrox)' }
+                        { id: 'dia_mlg_carreteria', chain: 'DIA', name: 'DIA - Calle Carretería, 105', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_moliere', chain: 'DIA', name: 'DIA - Av. de Molière s/n', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_velazquez', chain: 'DIA', name: 'DIA - Av. de Velázquez, 9', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_ninogloria', chain: 'DIA', name: 'DIA - C. Niño de Gloria, 10 (El Torcal)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_altolaguirre', chain: 'DIA', name: 'DIA - C. Manuel Altolaguirre, 34 (Girón)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_alozaina', chain: 'DIA', name: 'DIA - C. de Alozaina, 6 (Santa Cristina)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_reboul', chain: 'DIA', name: 'DIA - C. Reboul s/n (La Unión)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_ayala', chain: 'DIA', name: 'DIA - C. Ayala, 82 (Parque Ayala)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_cuarteles', chain: 'DIA', name: 'DIA - C. Cuarteles, 35 (El Perchel)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_juanaustria', chain: 'DIA', name: 'DIA - C. Juan de Austria, 32 (La Trinidad)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_salamanca', chain: 'DIA', name: 'DIA - C. Salamanca, 7 (Distrito Centro)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_capuchinos', chain: 'DIA', name: 'DIA - Alameda de Capuchinos, 14', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_cristoepidemia', chain: 'DIA', name: 'DIA - C. Cristo de la Epidemia, 47', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_macabeos', chain: 'DIA', name: 'DIA - C. Macabeos, 5', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_victoria', chain: 'DIA', name: 'DIA - C. Victoria, 64', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_almendrales', chain: 'DIA', name: 'DIA - Camino de los Almendrales s/n', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_oloroso', chain: 'DIA', name: 'DIA - Av. Málaga Oloroso, 30 (Ciudad Jardín)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_joaquinquiles', chain: 'DIA', name: 'DIA - C. Alcalde Joaquín Quiles, 19', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_miguelmoya', chain: 'DIA', name: 'DIA - C. Miguel Moya, 14 (El Palo)', zone: 'Málaga Capital' },
+                        { id: 'dia_mlg_manuelalcantara', chain: 'DIA', name: 'DIA - C. Poeta Manuel Alcántara, 1 (Rincón de la Victoria)', zone: 'Rincón de la Victoria' },
+                        { id: 'dia_mlg_carriltoros', chain: 'DIA', name: 'DIA - Carril de los Toros s/n (Rincón de la Victoria)', zone: 'Rincón de la Victoria' },
+                        { id: 'dia_mlg_calledelrio', chain: 'DIA', name: 'DIA - C. del Río, 32 (Torre del Mar)', zone: 'Vélez-Málaga / Torre del Mar' },
+                        { id: 'dia_mlg_drfleming', chain: 'DIA', name: 'DIA - C. Dr. Fleming, 77 (Torre del Mar)', zone: 'Vélez-Málaga / Torre del Mar' },
+                        { id: 'dia_mlg_reyjuancarlos', chain: 'DIA', name: 'DIA - Av. del Rey Juan Carlos I s/n (Vélez-Málaga)', zone: 'Vélez-Málaga / Torre del Mar' },
+                        { id: 'dia_mlg_avandalucia', chain: 'DIA', name: 'DIA - Av. de Andalucía, 35 (Algarrobo)', zone: 'Algarrobo / Torrox' },
+                        { id: 'dia_mlg_castillobajo', chain: 'DIA', name: 'DIA - C. Castillo Bajo, 50 (Torrox)', zone: 'Algarrobo / Torrox' },
+                        { id: 'dia_mlg_lacharca', chain: 'DIA', name: 'DIA - Urb. La Charca s/n (Torrox)', zone: 'Algarrobo / Torrox' }
                     );
                 } else if (city === 'Bilbao') {
                     storesList.push(
@@ -1921,18 +1933,51 @@
         }
         window.renderAdminLists = renderAdminLists;
 
-        function handleCityChange() {
-            const val = document.getElementById('citySelect').value;
-            if (val === 'REQUEST_NEW_CITY') {
-                document.getElementById('citySelect').value = currentCity;
-                openCityRequestModal();
-                return;
-            }
-            currentCity = val;
-            updateStoreSelectDropdown();
-            updateLatestCounter();
-            applyFilters();
-        }
+        let currentZone = 'ALL';
+
+function handleCityChange() {
+    const val = document.getElementById('citySelect').value;
+    if (val === 'REQUEST_NEW_CITY') {
+        document.getElementById('citySelect').value = currentCity;
+        openCityRequestModal();
+        return;
+    }
+    currentCity = val;
+    currentZone = 'ALL';
+    updateZoneSelectDropdown();
+    updateStoreSelectDropdown();
+    updateLatestCounter();
+    applyFilters();
+}
+
+function handleZoneChange() {
+    currentZone = document.getElementById('zoneSelect').value;
+    updateStoreSelectDropdown();
+    applyFilters();
+}
+
+function updateZoneSelectDropdown() {
+    const zoneSel = document.getElementById('zoneSelect');
+    if (!zoneSel) return;
+
+    const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
+    const realStores = (cityData.stores || []).filter(s => s.chain !== 'ALL');
+
+    // Extrae los municipios y zonas únicos de la provincia seleccionada
+    const zonesSet = new Set();
+    realStores.forEach(s => {
+        zonesSet.add(s.zone || 'Capital / Centro');
+    });
+
+    const zonesList = Array.from(zonesSet).sort();
+
+    let html = `<option value="ALL">📍 Todos los municipios / zonas (${cityData.name})</option>`;
+    zonesList.forEach(z => {
+        html += `<option value="${z}" ${currentZone === z ? 'selected' : ''}>${z}</option>`;
+    });
+
+    zoneSel.innerHTML = html;
+}
 
         function openCityRequestModal() { document.getElementById('cityRequestModal').classList.remove('hidden'); renderReqs(); }
         function closeCityRequestModal() { document.getElementById('cityRequestModal').classList.add('hidden'); }
@@ -2052,8 +2097,17 @@
             const sel = document.getElementById('storeSelect');
             if (!sel) return;
             const cityData = CITIES_AND_STORES[currentCity] || CITIES_AND_STORES['Málaga'];
-            const filtered = cityData.stores.filter(s => s.chain === 'ALL' || !selectedChain || s.chain === selectedChain);
-            document.getElementById('storeCountIndicator').textContent = `${filtered.length - 1} tiendas`;
+
+            const filtered = cityData.stores.filter(s => {
+                if (s.chain === 'ALL') return true;
+                if (selectedChain && s.chain !== selectedChain) return false;
+                if (currentZone !== 'ALL' && (s.zone || 'Capital / Centro') !== currentZone) return false;
+                return true;
+            });
+
+            const indicator = document.getElementById('storeCountIndicator');
+            if (indicator) indicator.textContent = `${Math.max(0, filtered.length - 1)} tiendas`;
+
             sel.innerHTML = filtered.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
         }
 
@@ -2782,6 +2836,7 @@
             loadLocalBackup();
             applySeasonalThemeUI();
             renderSupermarketChainPills();
+            updateZoneSelectDropdown();
             updateStoreSelectDropdown();
             rebuildCatalogFromCurrentState();
         });
