@@ -745,6 +745,7 @@
         const ACTIVE_CITIES = [
             "Málaga",
             "Madrid",
+            "Almería",
             "Barcelona",
             "Valencia",
             "Sevilla",
@@ -945,6 +946,20 @@
                         { id: 'car_mlg_rincon', chain: 'Carrefour', name: 'Carrefour - Ctra. de Benagalbón, s/n (C.C. Rincón de la Victoria)', zone: 'Rincón de la Victoria' },
                         { id: 'car_mlg_ingenio', chain: 'Carrefour', name: 'Carrefour - C.C. El Ingenio (Torre del Mar / Vélez-Málaga)', zone: 'Vélez-Málaga / Torre del Mar' },
 
+                        // ==========================================
+                        // NUEVAS PETICIONES: FUENGIROLA Y COTOMAR
+                        // ==========================================
+                        // --- FUENGIROLA ---
+                        { id: 'merca_mlg_fuengirola_diaz', chain: 'Mercadona', name: 'Mercadona - Av. Clemente Díaz Ruiz, s/n (Fuengirola)', zone: 'Fuengirola' },
+                        { id: 'merca_mlg_fuengirola_boliches', chain: 'Mercadona', name: 'Mercadona - C. Feria San Fermín (Los Boliches)', zone: 'Fuengirola' },
+                        { id: 'lidl_mlg_fuengirola', chain: 'Lidl', name: 'Lidl - Ctra. de Mijas, km 1.5 (Fuengirola)', zone: 'Fuengirola' },
+                        { id: 'car_mlg_fuengirola_miramar', chain: 'Carrefour', name: 'Carrefour - Av. de la Encarnación, CC Miramar (Fuengirola)', zone: 'Fuengirola' },
+                        { id: 'aldi_mlg_fuengirola', chain: 'Aldi', name: 'Aldi - C. Mallorca, 1 (Fuengirola)', zone: 'Fuengirola' },
+                        { id: 'dia_mlg_fuengirola_mijas', chain: 'DIA', name: 'DIA - Av. de Mijas, 30 (Fuengirola)', zone: 'Fuengirola' },
+
+                        // --- RINCÓN DE LA VICTORIA (COTOMAR) ---
+                        { id: 'merca_mlg_rincon_cotomar', chain: 'Mercadona', name: 'Mercadona - C. Frigiliana / Av. Cotomar (Cotomar)', zone: 'Rincón de la Victoria' },
+
                         // Mercadona - Municipios
                         { id: 'merca_mlg_torremolinos_playamar', chain: 'Mercadona', name: 'Mercadona - Av. de Playamar, 13 (Torremolinos)', zone: 'Torremolinos' },
                         { id: 'merca_mlg_torremolinos_centro', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)', zone: 'Torremolinos' },
@@ -1094,6 +1109,13 @@
                         { id: 'merca_mad_salamanca_belluga', chain: 'Mercadona', name: 'Mercadona - C. Cardenal Belluga, 10 (Barrio de Salamanca)', zone: 'Madrid - Salamanca' },
                         { id: 'merca_mad_barajas_alcaniz', chain: 'Mercadona', name: 'Mercadona - C. Alcañiz, 5 (Barajas)', zone: 'Madrid - Barajas' },
 
+                        // --- MADRID - ACACIAS ---
+                        { id: 'merca_mad_acacias_paseo', chain: 'Mercadona', name: 'Mercadona - P.º de las Acacias, 49 (Acacias)', zone: 'Madrid - Acacias' },
+                        { id: 'lidl_mad_acacias_toledo', chain: 'Lidl', name: 'Lidl - C. de Toledo, 143 (Acacias / Pirámides)', zone: 'Madrid - Acacias' },
+                        { id: 'car_mad_acacias_market', chain: 'Carrefour', name: 'Carrefour Market - P.º de las Acacias, 11 (Acacias)', zone: 'Madrid - Acacias' },
+                        { id: 'aldi_mad_acacias_esperanza', chain: 'Aldi', name: 'Aldi - P.º de la Esperanza, 15 (Acacias)', zone: 'Madrid - Acacias' },
+                        { id: 'dia_mad_acacias_paseo', chain: 'DIA', name: 'DIA - P.º de las Acacias, 34 (Acacias)', zone: 'Madrid - Acacias' },
+
                         // Lidl Capital
                         { id: 'lidl_mad_centro_tirso', chain: 'Lidl', name: 'Lidl - Pl. de Tirso de Molina, 16 (Centro)', zone: 'Madrid - Centro' },
                         { id: 'lidl_mad_chamberi_rodriguez_sp', chain: 'Lidl', name: 'Lidl - Calle de Rodríguez San Pedro, 22 (Chamberí)', zone: 'Madrid - Chamberí' },
@@ -1229,6 +1251,62 @@
                         { id: 'merca_mad_rivas', chain: 'Mercadona', name: 'Mercadona - C. Fundición, 1 (Rivas)', zone: 'Rivas-Vaciamadrid' },
                         { id: 'car_mad_rivas_tecnica', chain: 'Carrefour', name: 'Carrefour - Av. de la Técnica, s/n (Rivas-Vaciamadrid)', zone: 'Rivas-Vaciamadrid' }
                     );
+                    else if (city === 'Almería') {
+                    storesList.push(
+                        // ==========================================
+                        // 1. ALMERÍA - CENTRO / OLIVEROS / RAMBLA
+                        // ==========================================
+                        { id: 'merca_alm_plaza_barcelona', chain: 'Mercadona', name: 'Mercadona - Pl. de Barcelona, s/n (Oliveros / Centro)', zone: 'Almería - Centro' },
+                        { id: 'merca_alm_centro_bosco', chain: 'Mercadona', name: 'Mercadona - C. San Juan Bosco, 44 (Centro)', zone: 'Almería - Centro' },
+                        { id: 'lidl_alm_granada', chain: 'Lidl', name: 'Lidl - C. Granada, 190 (Centro)', zone: 'Almería - Centro' },
+                        { id: 'car_alm_market_rambla', chain: 'Carrefour', name: 'Carrefour Market - C. Poeta Villaespesa, 17 (Centro)', zone: 'Almería - Centro' },
+                        { id: 'aldi_alm_centro', chain: 'Aldi', name: 'Aldi - C. Real del Barrio Alto, 85 (Centro)', zone: 'Almería - Centro' },
+                        { id: 'dia_alm_centro_granada', chain: 'DIA', name: 'DIA - C. Granada, 42 (Centro)', zone: 'Almería - Centro' },
+                        { id: 'dia_alm_centro_aquino', chain: 'DIA', name: 'DIA - C. Poeta Paco Aquino, 51 (Centro)', zone: 'Almería - Centro' },
+
+                        // ==========================================
+                        // 2. ALMERÍA - EL ZAPILLO / VEGA DE ACÁ
+                        // ==========================================
+                        { id: 'merca_alm_zapillo_jaul', chain: 'Mercadona', name: 'Mercadona - C. Jaúl, 2 (El Zapillo)', zone: 'Almería - El Zapillo' },
+                        { id: 'lidl_alm_zapillo', chain: 'Lidl', name: 'Lidl - Av. Cabo de Gata, 115 (El Zapillo)', zone: 'Almería - El Zapillo' },
+                        { id: 'car_alm_zapillo', chain: 'Carrefour', name: 'Carrefour Express - Av. Cabo de Gata, 33 (El Zapillo)', zone: 'Almería - El Zapillo' },
+                        { id: 'aldi_alm_zapillo', chain: 'Aldi', name: 'Aldi - C. Instinción, s/n (Vega de Acá / Zapillo)', zone: 'Almería - El Zapillo' },
+                        { id: 'dia_alm_zapillo_cabogata', chain: 'DIA', name: 'DIA - Av. Cabo de Gata, 58 (El Zapillo)', zone: 'Almería - El Zapillo' },
+
+                        // ==========================================
+                        // 3. ALMERÍA - NUEVA ANDALUCÍA
+                        // ==========================================
+                        { id: 'merca_alm_nueva_andalucia', chain: 'Mercadona', name: 'Mercadona - Av. del Mediterráneo, 233 (Nueva Andalucía)', zone: 'Almería - Nueva Andalucía' },
+                        { id: 'lidl_alm_mediterraneo', chain: 'Lidl', name: 'Lidl - Av. del Mediterráneo, 320 (Nueva Andalucía)', zone: 'Almería - Nueva Andalucía' },
+                        { id: 'car_alm_mediterraneo', chain: 'Carrefour', name: 'Carrefour - Av. del Mediterráneo, s/n (C.C. Mediterráneo)', zone: 'Almería - Nueva Andalucía' },
+                        { id: 'aldi_alm_mediterraneo', chain: 'Aldi', name: 'Aldi - Av. del Mediterráneo, 255 (Nueva Andalucía)', zone: 'Almería - Nueva Andalucía' },
+                        { id: 'dia_alm_nueva_andalucia', chain: 'DIA', name: 'DIA - C. Blas Infante, 12 (Nueva Andalucía)', zone: 'Almería - Nueva Andalucía' },
+
+                        // ==========================================
+                        // 4. ALMERÍA - TORRECÁRDENAS / LOS MOLINOS
+                        // ==========================================
+                        { id: 'merca_alm_torrecardenas', chain: 'Mercadona', name: 'Mercadona - Av. Médico Francisco Pérez Company (CC Torrecárdenas)', zone: 'Almería - Torrecárdenas' },
+                        { id: 'lidl_alm_torrecardenas', chain: 'Lidl', name: 'Lidl - Av. Médico Francisco Pérez Company, 9 (Torrecárdenas)', zone: 'Almería - Torrecárdenas' },
+                        { id: 'car_alm_torrecardenas', chain: 'Carrefour', name: 'Carrefour Express - CC Torrecárdenas', zone: 'Almería - Torrecárdenas' },
+                        { id: 'aldi_alm_torrecardenas', chain: 'Aldi', name: 'Aldi - C. Ctra. de Huércal, 24 (Torrecárdenas)', zone: 'Almería - Torrecárdenas' },
+                        { id: 'dia_alm_los_molinos', chain: 'DIA', name: 'DIA - C. Real del Barrio Alto, 32 (Los Molinos / Torrecárdenas)', zone: 'Almería - Torrecárdenas' },
+
+                        // ==========================================
+                        // 5. ALMERÍA - RETAMAR / EL TOYO
+                        // ==========================================
+                        { id: 'merca_alm_retamar', chain: 'Mercadona', name: 'Mercadona - C. de los Juegos de Casablanca, 2 (El Toyo / Retamar)', zone: 'Almería - Retamar / El Toyo' },
+                        { id: 'car_alm_retamar', chain: 'Carrefour', name: 'Carrefour Express Cepsa - Ctra. N-344 (Retamar)', zone: 'Almería - Retamar / El Toyo' },
+                        { id: 'dia_alm_retamar', chain: 'DIA', name: 'DIA - C. Juegos de Barcelona, 4 (Retamar / El Toyo)', zone: 'Almería - Retamar / El Toyo' },
+
+                        // ==========================================
+                        // 6. HUÉRCAL DE ALMERÍA (ÁREA COMERCIAL METROPOLITANA)
+                        // ==========================================
+                        { id: 'merca_alm_huercal', chain: 'Mercadona', name: 'Mercadona - Ctra. N-340a, km 448 (La Cepa / Huércal)', zone: 'Huércal de Almería' },
+                        { id: 'lidl_alm_huercal', chain: 'Lidl', name: 'Lidl - Ctra. Nacional 340, Km 447 (Huércal de Almería)', zone: 'Huércal de Almería' },
+                        { id: 'car_alm_huercal', chain: 'Carrefour', name: 'Carrefour - Parque Comercial La Cepa (Huércal de Almería)', zone: 'Huércal de Almería' },
+                        { id: 'aldi_alm_huercal', chain: 'Aldi', name: 'Aldi - Parque Comercial Cemar (Huércal de Almería)', zone: 'Huércal de Almería' },
+                        { id: 'dia_alm_huercal', chain: 'DIA', name: 'DIA - C. Real, 72 (Huércal de Almería)', zone: 'Huércal de Almería' }
+                    );
                 } else if (city === 'Barcelona') {
                     storesList.push(
                         // Mercadona Barcelona
@@ -1246,6 +1324,13 @@
                         { id: 'merca_bcn_poblenou_bilbao', chain: 'Mercadona', name: 'Mercadona - C/ de Bilbao, 60 (Sant Martí)' },
                         { id: 'merca_bcn_sant_feliu_pla', chain: 'Mercadona', name: 'Mercadona - C/ del Pla, 2 (Sant Feliu de Llobregat - 08980)' },
                         { id: 'merca_bcn_sant_feliu_manso', chain: 'Mercadona', name: 'Mercadona - C/ General Manso, 39 (Sant Feliu de Llobregat - 08980)' },
+
+                        // --- TERRASSA - ROC BLANC ---
+                        { id: 'merca_bcn_terrassa_rocblanc', chain: 'Mercadona', name: 'Mercadona - C/ de Bailén, 34 (Roc Blanc / Terrassa)', zone: 'Terrassa - Roc Blanc' },
+                        { id: 'lidl_bcn_terrassa_olesa', chain: 'Lidl', name: 'Lidl - Ctra. d\'Olesa, 82 (Roc Blanc / Terrassa)', zone: 'Terrassa - Roc Blanc' },
+                        { id: 'car_bcn_terrassa_market', chain: 'Carrefour', name: 'Carrefour Market - Rambla d\'Ègara, 80 (Terrassa Centro)', zone: 'Terrassa - Roc Blanc' },
+                        { id: 'aldi_bcn_terrassa_rambla', chain: 'Aldi', name: 'Aldi - Av. de Santa Eulàlia, 200 (Terrassa)', zone: 'Terrassa - Roc Blanc' },
+                        { id: 'dia_bcn_terrassa_olesa', chain: 'DIA', name: 'DIA - Ctra. d\'Olesa, 45 (Roc Blanc / Terrassa)', zone: 'Terrassa - Roc Blanc' },
 
                         // Lidl Barcelona
                         { id: 'lidl_bcn_eixample_casanova', chain: 'Lidl', name: 'Lidl - C/ de Casanova, 86 (Eixample)' },
