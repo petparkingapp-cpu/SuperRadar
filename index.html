@@ -750,7 +750,8 @@
             "Valencia",
             "Sevilla",
             "Bilbao",
-            "Alicante"
+            "Alicante",
+            "Asturias"
         ];
 
         const CHAIN_OFFERS_CATALOG = {
@@ -1487,6 +1488,57 @@
                         { id: 'dia_alc_centro_segarra', chain: 'DIA', name: 'DIA - C/ Capitán Segarra, 15 (Centro / Mercado)' },
                         { id: 'dia_alc_carolinas_pio_xii', chain: 'DIA', name: 'DIA - C/ Pío XII, 25 (Carolinas)' },
                         { id: 'dia_alc_benalua_foglietti', chain: 'DIA', name: 'DIA - C/ Foglietti, 22 (Benalúa)' }
+                    );
+                    } else if (city === 'Asturias') {
+                    storesList.push(
+                        // ==========================================
+                        // 1. GIJÓN
+                        // ==========================================
+                        // Mercadona Gijón
+                        { id: 'merca_ast_gijon_calzada', chain: 'Mercadona', name: 'Mercadona - C. Maestro Amado Morán (La Calzada)', zone: 'Gijón' },
+                        { id: 'merca_ast_gijon_esteban', chain: 'Mercadona', name: 'Mercadona - C. Marqués de San Esteban, 57 (Centro / Poniente)', zone: 'Gijón' },
+                        { id: 'merca_ast_gijon_coto', chain: 'Mercadona', name: 'Mercadona - C. Ramón y Cajal, 41 (El Coto)', zone: 'Gijón' },
+                        { id: 'merca_ast_gijon_viesques', chain: 'Mercadona', name: 'Mercadona - C. Corín Tellado, s/n (Viesques)', zone: 'Gijón' },
+                        { id: 'merca_ast_gijon_llano', chain: 'Mercadona', name: 'Mercadona - C. Cangas de Onís, 9 (El Llano)', zone: 'Gijón' },
+
+                        // Lidl Gijón
+                        { id: 'lidl_ast_gijon_ochoa', chain: 'Lidl', name: 'Lidl - C. Severo Ochoa, 57 (Gijón)', zone: 'Gijón' },
+                        { id: 'lidl_ast_gijon_carbonera', chain: 'Lidl', name: 'Lidl - Ctra. Carbonera, 85 (Gijón)', zone: 'Gijón' },
+
+                        // Carrefour Gijón
+                        { id: 'car_ast_gijon_fresnos', chain: 'Carrefour', name: 'Carrefour - C.C. Los Fresnos, C. Río de Oro, 3 (Gijón)', zone: 'Gijón' },
+                        { id: 'car_ast_gijon_calzada', chain: 'Carrefour', name: 'Carrefour - C.C. La Calzada (Gijón)', zone: 'Gijón' },
+
+                        // Aldi Gijón
+                        { id: 'aldi_ast_gijon_roces', chain: 'Aldi', name: 'Aldi - C. Ada Byron / Roces (Gijón)', zone: 'Gijón' },
+
+                        // DIA Gijón
+                        { id: 'dia_ast_gijon_calzada', chain: 'DIA', name: 'DIA - C. Brasil, 44 (La Calzada / Gijón)', zone: 'Gijón' },
+                        { id: 'dia_ast_gijon_centro', chain: 'DIA', name: 'DIA - C. Menéndez Valdés, 24 (Centro / Gijón)', zone: 'Gijón' },
+
+                        // ==========================================
+                        // 2. OVIEDO
+                        // ==========================================
+                        // Mercadona Oviedo
+                        { id: 'merca_ast_oviedo_foncalada', chain: 'Mercadona', name: 'Mercadona - C. Foncalada, 13 (Centro / Oviedo)', zone: 'Oviedo' },
+                        { id: 'merca_ast_oviedo_florida', chain: 'Mercadona', name: 'Mercadona - C. Alonso de Proaza (La Florida / Oviedo)', zone: 'Oviedo' },
+                        { id: 'merca_ast_oviedo_buenavista', chain: 'Mercadona', name: 'Mercadona - C. Bermudo I El Diácono (Buenavista / El Cristo)', zone: 'Oviedo' },
+                        { id: 'merca_ast_oviedo_elorza', chain: 'Mercadona', name: 'Mercadona - C. General Elorza, 68 (Oviedo)', zone: 'Oviedo' },
+
+                        // Lidl Oviedo
+                        { id: 'lidl_ast_oviedo_tenderina', chain: 'Lidl', name: 'Lidl - C. Tenderina Alta, 140 (Oviedo)', zone: 'Oviedo' },
+                        { id: 'lidl_ast_oviedo_florida', chain: 'Lidl', name: 'Lidl - C. Río Dobra (La Florida / Oviedo)', zone: 'Oviedo' },
+
+                        // Carrefour Oviedo
+                        { id: 'car_ast_oviedo_prados', chain: 'Carrefour', name: 'Carrefour - C.C. Los Prados (Oviedo)', zone: 'Oviedo' },
+                        { id: 'car_ast_oviedo_principado', chain: 'Carrefour', name: 'Carrefour - C.C. Parque Principado (Oviedo / Paredes)', zone: 'Oviedo' },
+
+                        // Aldi Oviedo
+                        { id: 'aldi_ast_oviedo_cristo', chain: 'Aldi', name: 'Aldi - C. Julián Clavería, 11 (El Cristo / Oviedo)', zone: 'Oviedo' },
+
+                        // DIA Oviedo
+                        { id: 'dia_ast_oviedo_uria', chain: 'DIA', name: 'DIA - C. Uría, 66 (Centro / Oviedo)', zone: 'Oviedo' },
+                        { id: 'dia_ast_oviedo_acevedo', chain: 'DIA', name: 'DIA - C. Fuertes Acevedo, 45 (Oviedo)', zone: 'Oviedo' }
                     );
                 } else {
                     storesList.push(
