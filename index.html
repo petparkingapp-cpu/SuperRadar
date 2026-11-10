@@ -2780,9 +2780,156 @@ function updateZoneSelectDropdown() {
         }
 
         // Intercepta el clic en los botones de voto ("Sí" / "No")
-        function handleStoreVote(id, type) {
+        // ==========================================
+        // FILTRO ANTI-TROLL: GEOFENCING (35 KM) + COOLDOWN POR PRODUCTO
+        // ==========================================
+        const MAX_DISTANCE_KM = 35; // Radio metropolitano permitido
+        const PRODUCT_COOLDOWN_MS = 20 * 60 * 1000; // 20 minutos para el mismo producto en la misma tienda
+        const BURST_COOLDOWN_MS = 4 * 1000; // 4 segundos entre clics seguidos en distintos productos
+        let cachedUserCoords = null;
+        let cachedCoordsTimestamp = 0;
+
+        // Coordenadas centrales de las provincias/ciudades activas
+        const CITY_COORDS = {
+            'Málaga': { lat: 36.7213, lng: -4.4214 },
+            'Madrid': { lat: 40.4168, lng: -3.7038 },
+            'Almería': { lat: 36.8340, lng: -2.4637 },
+            'Barcelona': { lat: 41.3874, lng: 2.1686 },
+            'Valencia': { lat: 39.4699, lng: -0.3763 },
+            'Sevilla': { lat: 37.3891, lng: -5.9845 },
+            'Bilbao': { lat: 43.2630, lng: -2.9350 },
+            'Alicante': { lat: 38.3452, lng: -0.4810 },
+            'Asturias': { lat: 43.4400, lng: -5.7500 }
+        };
+
+        // Coordenadas específicas para municipios más alejados de la capital
+        const ZONE_COORDS = {
+            'Málaga Capital': { lat: 36.7213, lng: -4.4214 },
+            'Torremolinos': { lat: 36.6219, lng: -4.5000 },
+            'Fuengirola': { lat: 36.5441, lng: -4.6247 },
+            'Alhaurín de la Torre': { lat: 36.6631, lng: -4.5606 },
+            'Cártama': { lat: 36.7114, lng: -4.6305 },
+            'Rincón de la Victoria': { lat: 36.7171, lng: -4.2794 },
+            'Vélez-Málaga / Torre del Mar': { lat: 36.7700, lng: -4.1000 },
+            'Algarrobo / Torrox': { lat: 36.7330, lng: -3.9570 },
+            'Gijón': { lat: 43.5322, lng: -5.6611 },
+            'Oviedo': { lat: 43.3614, lng: -5.8493 },
+            'Alcalá de Henares': { lat: 40.4819, lng: -3.3635 },
+            'Terrassa - Roc Blanc': { lat: 41.5632, lng: 2.0089 }
+        };
+
+        function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+
+        function verificarPermisoReporte(itemId, city, zone) {
+            return new Promise((resolve) => {
+                // Si estás conectada como Admin, tienes permiso total sin límites
+                if (isAdminAuthenticated) {
+                    resolve({ ok: true });
+                    return;
+                }
+
+                const ahora = Date.now();
+
+                // 1. Freno anti-ráfaga (mínimo 4 segundos entre avisos)
+                const ultimoGlobal = parseInt(localStorage.getItem('sr_ultimo_reporte_global') || '0', 10);
+                if (ahora - ultimoGlobal < BURST_COOLDOWN_MS) {
+                    resolve({ ok: false, msg: '⏳ Espera unos segundos antes de enviar otro aviso.' });
+                    return;
+                }
+
+                // 2. Bloqueo de 20 min para ese producto específico en esa tienda
+                if (itemId) {
+                    const claveProducto = `sr_rep_${itemId}`;
+                    const ultimoProducto = parseInt(localStorage.getItem(claveProducto) || '0', 10);
+                    if (ahora - ultimoProducto < PRODUCT_COOLDOWN_MS) {
+                        const minRestantes = Math.ceil((PRODUCT_COOLDOWN_MS - (ahora - ultimoProducto)) / 60000);
+                        resolve({ 
+                            ok: false, 
+                            msg: `✅ Ya has avisado de este producto aquí. Podrás actualizarlo en ${minRestantes} min.` 
+                        });
+                        return;
+                    }
+                }
+
+                // 3. Validación de distancia (35 km respecto al municipio o a la capital de la provincia)
+                const cCity = CITY_COORDS[city];
+                const cZone = zone ? ZONE_COORDS[zone] : null;
+                if (!cCity && !cZone) {
+                    resolve({ ok: true });
+                    return;
+                }
+
+                const comprobarCoordenadas = (latUsuario, lngUsuario) => {
+                    const distCity = cCity ? calcularDistanciaKm(latUsuario, lngUsuario, cCity.lat, cCity.lng) : 9999;
+                    const distZone = cZone ? calcularDistanciaKm(latUsuario, lngUsuario, cZone.lat, cZone.lng) : 9999;
+                    const menorDistancia = Math.min(distCity, distZone);
+
+                    if (menorDistancia <= MAX_DISTANCE_KM) {
+                        resolve({ ok: true });
+                    } else {
+                        resolve({ 
+                            ok: false, 
+                            msg: `📍 Solo puedes avisar si estás en ${city} (estás a unos ${Math.round(menorDistancia)} km).` 
+                        });
+                    }
+                };
+
+                // Si ya comprobamos el GPS hace menos de 10 minutos, responde al instante sin esperar
+                if (cachedUserCoords && (ahora - cachedCoordsTimestamp < 600000)) {
+                    comprobarCoordenadas(cachedUserCoords.lat, cachedUserCoords.lng);
+                    return;
+                }
+
+                if (!navigator.geolocation) {
+                    resolve({ ok: false, msg: '📍 Tu navegador no soporta ubicación para verificar la provincia.' });
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        cachedUserCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        cachedCoordsTimestamp = Date.now();
+                        comprobarCoordenadas(cachedUserCoords.lat, cachedUserCoords.lng);
+                    },
+                    () => {
+                        resolve({ 
+                            ok: false, 
+                            msg: '📍 Activa el permiso de ubicación en tu navegador para confirmar que estás en la zona.' 
+                        });
+                    },
+                    { enableHighAccuracy: false, timeout: 6000, maximumAge: 600000 }
+                );
+            });
+        }
+
+        function guardarMarcaReporte(itemId) {
+            if (isAdminAuthenticated) return;
+            const ahora = Date.now().toString();
+            try {
+                localStorage.setItem('sr_ultimo_reporte_global', ahora);
+                if (itemId) localStorage.setItem(`sr_rep_${itemId}`, ahora);
+            } catch (e) {}
+        }
+
+        // Intercepta el clic en los botones de voto ("Sí" / "No")
+        async function handleStoreVote(id, type) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
+
+            const validacion = await verificarPermisoReporte(p.id, p.city || currentCity, p.zone);
+            if (!validacion.ok) {
+                showToast(validacion.msg);
+                return;
+            }
 
             // Si el usuario pulsa "🔴 No" (y no está desmarcando un "No" ya activo), mostramos primero el modal de aviso
             if (type === 'missing' && p.userVote !== 'missing') {
@@ -2874,6 +3021,7 @@ function updateZoneSelectDropdown() {
 
                 userInteractions.votes[id] = payload;
                 if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
+                guardarMarcaReporte(id);
 
                 const conflictNow = isVoteConflictWithinWindow(payload);
                 if (conflictNow) {
@@ -2930,13 +3078,25 @@ function updateZoneSelectDropdown() {
             const submitBtn = document.getElementById('submitProductBtn');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Guardando...';
+            submitBtn.textContent = 'Comprobando...';
 
             try {
                 const editingId = document.getElementById('editingProductId').value;
                 const city = document.getElementById('formCity').value;
                 const sup = document.getElementById('formSupermarket').value;
                 const storeSel = document.getElementById('formStore');
+                const matchedStore = (CITIES_AND_STORES[city]?.stores || []).find(s => s.id === storeSel.value);
+
+                // Si es un aviso nuevo (no edición), verificamos también la ubicación y el límite anti-spam
+                if (!editingId) {
+                    const validacion = await verificarPermisoReporte(null, city, matchedStore?.zone);
+                    if (!validacion.ok) {
+                        showToast(validacion.msg);
+                        return;
+                    }
+                }
+
+                submitBtn.textContent = 'Guardando...';
                 const storeName = storeSel.options[storeSel.selectedIndex].text;
                 const status = document.getElementById('formStockStatus').value;
                 const now = Date.now();
@@ -2956,6 +3116,7 @@ function updateZoneSelectDropdown() {
                     supermarket: sup,
                     category: document.getElementById('formCategory').value,
                     city: city,
+                    zone: matchedStore?.zone || 'Capital / Centro',
                     storeId: storeSel.value,
                     storeName: storeName,
                     imageUrl: uploadedImageDataUrl || document.getElementById('formImageUrl').value.trim() || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=80',
@@ -2975,6 +3136,7 @@ function updateZoneSelectDropdown() {
                 };
 
                 markIdAsMyOwnUpload(prodId);
+                guardarMarcaReporte(prodId);
                 userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== prodId);
                 userInteractions.customProducts.unshift(newP);
                 saveUserInteractions();
@@ -2992,7 +3154,6 @@ function updateZoneSelectDropdown() {
                 selectedChain = '';
                 renderSupermarketChainPills();
                 updateStoreSelectDropdown();
-                // Al subir un aviso de tienda concreta, llevamos al usuario directamente a la pestaña de "Avisos en Tiendas"
                 activeMainTab = 'community';
                 rebuildCatalogFromCurrentState();
                 switchMainViewTab('community');
@@ -3026,11 +3187,13 @@ function updateZoneSelectDropdown() {
             showToast('🔗 ¡Enlace copiado! Ya puedes pasarlo por WhatsApp');
         }
 
+        let toastTimer = null;
         function showToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toastMessage').textContent = msg;
             t.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 2500);
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3500);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
