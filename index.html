@@ -625,22 +625,6 @@
         </div>
     </div>
 
-                <!-- Pasos sencillos -->
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-600">
-                    <div class="font-bold text-slate-800 text-xs mb-1">💡 2 reglas de oro:</div>
-                    <div><b>1. Consulta libre:</b> Mira cualquier ciudad y súper desde tu casa sin registrarte.</div>
-                    <div><b>2. Avisa en tienda o al volver a casa:</b> Puedes votar tanto en el pasillo como desde tu sofá si estás dentro de tu comarca o provincia.</div>
-                </div>
-
-                <div class="pt-1">
-                    <button type="button" onclick="closeHowItWorksModal()" class="w-full py-2.5 bg-slate-900 hover:bg-emerald-600 text-white font-bold rounded-xl transition shadow-sm text-xs">
-                        ¡Entendido, a colaborar!
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal Añadir / Editar Novedad Usuario -->
     <div id="productModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
         <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-auto text-xs">
@@ -1879,7 +1863,7 @@
                     lastMissingAt: rawRecord === 'missing' ? now : 0
                 };
             }
-            if (now - rawRecord.updatedAt > 7 * 24 * 60 * 60 * 1000) return null;
+            if (now - rawRecord.updatedAt > 15 * 24 * 60 * 60 * 1000) return null;
             return {
                 status: rawRecord.status || null,
                 updatedAt: rawRecord.updatedAt || now,
@@ -1989,7 +1973,18 @@
             });
 
             // 3. Novedades subidas por usuarios desde el botón "Subir"
-            const customs = activeCustom.map(p => {
+            const DIAS_CADUCIDAD = 15;
+            const MAX_AGE_MS = DIAS_CADUCIDAD * 24 * 60 * 60 * 1000;
+            const ahoraMs = Date.now();
+            const customs = activeCustom.filter(p => {
+                const vRec = getValidVoteRecord(mergedVotes[p.id]);
+                const ultimaActividad = Math.max(
+                    vRec ? vRec.updatedAt : 0,
+                    p.updatedAt || 0,
+                    p.createdAt || 0
+                );
+                return (ahoraMs - ultimaActividad) <= MAX_AGE_MS;
+            }).map(p => {
                 const vRec = getValidVoteRecord(mergedVotes[p.id]);
                 const initialStatus = p.userVote || 'seen';
                 const initialTime = p.updatedAt || p.createdAt || Date.now();
@@ -2455,21 +2450,23 @@ function closeHowItWorksModal() {
         }
 
         function resetAllFilters() {
-            document.getElementById('heroSearchInput').value = '';
-            document.getElementById('desktopSearchInput').value = '';
-            document.getElementById('citySelect').value = 'Málaga';
-            currentCity = 'Málaga';
-            selectedChain = '';
-            showOnlyFavorites = false;
-            showOnlyLatest = false;
-            updateTopFilterButtonsUI();
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('stockFilter').value = '';
-            renderSupermarketChainPills();
-            updateStoreSelectDropdown();
-            updateLatestCounter();
-            applyFilters();
-        }
+        document.getElementById('heroSearchInput').value = '';
+        document.getElementById('desktopSearchInput').value = '';
+        document.getElementById('citySelect').value = 'Málaga';
+        currentCity = 'Málaga';
+        currentZone = 'ALL';
+        selectedChain = '';
+        showOnlyFavorites = false;
+        showOnlyLatest = false;
+        updateTopFilterButtonsUI();
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('stockFilter').value = '';
+        renderSupermarketChainPills();
+        updateZoneSelectDropdown();
+        updateStoreSelectDropdown();
+        updateLatestCounter();
+        applyFilters();
+    }
 
         function toggleProductStoresAccordion(groupKey) {
             if (expandedProductGroups.has(groupKey)) {
