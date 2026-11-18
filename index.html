@@ -1811,9 +1811,44 @@
         function populateCitySelectDropdowns() {
             const citySelect = document.getElementById('citySelect');
             const formCity = document.getElementById('formCity');
-            const opts = ACTIVE_CITIES.map(c => `<option value="${c}">${c === 'Málaga' ? '📍 Málaga (Piloto)' : c}</option>`).join('');
-            if (citySelect) citySelect.innerHTML = opts + `<option value="REQUEST_NEW_CITY">✨ ¿Otra ciudad? Pídela</option>`;
-            if (formCity) formCity.innerHTML = opts;
+            const prevCity = (citySelect && citySelect.value && citySelect.value !== 'REQUEST_NEW_CITY')
+                ? citySelect.value
+                : (typeof currentCity !== 'undefined' ? currentCity : 'Málaga');
+
+            const currentProducts = Array.isArray(products) ? products : [];
+            const activeList = [];
+            const openingList = [];
+
+            ACTIVE_CITIES.forEach(c => {
+                const hasReports = currentProducts.some(p =>
+                    (p.city || 'Málaga') === c && (p.isCustomUserProduct || !!p.userVote)
+                );
+                if (hasReports) {
+                    activeList.push(c);
+                } else {
+                    openingList.push(c);
+                }
+            });
+
+            const renderOpt = c => `<option value="${c}">${c === 'Málaga' ? '📍 Málaga (Piloto)' : c}</option>`;
+
+            let groupedOpts = '';
+            if (activeList.length > 0) {
+                groupedOpts += `<optgroup label="🟢 Con avisos activos">${activeList.map(renderOpt).join('')}</optgroup>`;
+            }
+            if (openingList.length > 0) {
+                groupedOpts += `<optgroup label="🆕 En apertura (estrena tu barrio)">${openingList.map(renderOpt).join('')}</optgroup>`;
+            }
+
+            if (citySelect) {
+                citySelect.innerHTML = groupedOpts + `<option value="REQUEST_NEW_CITY">✨ ¿Otra ciudad? Pídela</option>`;
+                if (prevCity && ACTIVE_CITIES.includes(prevCity)) citySelect.value = prevCity;
+            }
+            if (formCity) {
+                const prevFormCity = formCity.value;
+                formCity.innerHTML = groupedOpts;
+                if (prevFormCity && ACTIVE_CITIES.includes(prevFormCity)) formCity.value = prevFormCity;
+            }
         }
 
         // Comprueba si existen votos opuestos ("Sí" y "No") en las últimas 6 horas
@@ -2495,6 +2530,8 @@ function closeHowItWorksModal() {
     const query = (document.getElementById('heroSearchInput')?.value || document.getElementById('desktopSearchInput')?.value || '').toLowerCase().trim();
     const cat = document.getElementById('categoryFilter').value;
     const stock = document.getElementById('stockFilter').value;
+            populateCitySelectDropdowns();
+    updateOpeningCityBanner();
 
     // Filtrado base común (ciudad, municipio/zona, supermercado, tienda, sección, búsqueda)
     const baseMatching = products.filter(p => {
@@ -2546,6 +2583,42 @@ function closeHowItWorksModal() {
             }
         }
 
+        function updateOpeningCityBanner() {
+            const grid = document.getElementById('productsGrid');
+            if (!grid || !grid.parentNode) return;
+
+            let banner = document.getElementById('openingCityBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'openingCityBanner';
+                grid.parentNode.insertBefore(banner, grid);
+            }
+
+            const cityReportsCount = products.filter(p =>
+                (p.city || 'Málaga') === currentCity && (p.isCustomUserProduct || !!p.userVote)
+            ).length;
+
+            if (cityReportsCount > 0) {
+                banner.className = 'hidden';
+                banner.innerHTML = '';
+                return;
+            }
+
+            banner.className = 'mb-3.5 bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs';
+            banner.innerHTML = `
+                <div>
+                    <div class="font-extrabold text-amber-950 mb-0.5">
+                        🆕 ${currentCity} está en apertura (aún sin avisos recientes)
+                    </div>
+                    <p class="text-amber-900/90 text-[11px] leading-snug">
+                        Todavía no hay vecinos reportando en esta provincia. Abre cualquier producto y marca <b>🟢 Sí</b> o <b>🔴 No</b> en tu tienda (5 s) o sube el primer avistamiento.
+                    </p>
+                </div>
+                <button type="button" onclick="openModal()" class="shrink-0 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-[11px] px-3 py-2 rounded-xl transition shadow-xs">
+                    + Estrenar ${currentCity}
+                </button>
+            `;
+        }
         function groupProductsForDisplay(items) {
             const map = new Map();
             items.forEach(p => {
