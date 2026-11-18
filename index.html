@@ -1830,18 +1830,18 @@
                 }
             });
 
-            const renderOpt = c => `<option value="${c}">${c === 'Málaga' ? '📍 Málaga (Piloto)' : c}</option>`;
+            const renderOpt = c => `<option value="${c}">${c === 'Málaga' ? 'Málaga (Piloto)' : c}</option>`;
 
             let groupedOpts = '';
             if (activeList.length > 0) {
-                groupedOpts += `<optgroup label="🟢 Con avisos activos">${activeList.map(renderOpt).join('')}</optgroup>`;
+                groupedOpts += `<option disabled>── Con avisos activos ──</option>${activeList.map(renderOpt).join('')}`;
             }
             if (openingList.length > 0) {
-                groupedOpts += `<optgroup label="🆕 En apertura (estrena tu barrio)">${openingList.map(renderOpt).join('')}</optgroup>`;
+                groupedOpts += `<option disabled>── En apertura (estrena tu barrio) ──</option>${openingList.map(renderOpt).join('')}`;
             }
 
             if (citySelect) {
-                citySelect.innerHTML = groupedOpts + `<option value="REQUEST_NEW_CITY">✨ ¿Otra ciudad? Pídela</option>`;
+                citySelect.innerHTML = groupedOpts + `<option disabled>──────────────</option><option value="REQUEST_NEW_CITY">+ Pedir otra ciudad</option>`;
                 if (prevCity && ACTIVE_CITIES.includes(prevCity)) citySelect.value = prevCity;
             }
             if (formCity) {
