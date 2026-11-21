@@ -593,35 +593,44 @@
     </div>
 
     <!-- Modal Pedir Ciudad -->
-    <div id="cityRequestModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden text-xs">
+    <div id="cityRequestModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden text-xs my-auto">
             <div class="bg-emerald-900 text-white px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-map-location-dot text-emerald-300"></i>
-                    <h3 class="font-bold text-sm">¡Pide tu zona o supermercado!</h3>
+                    <h3 class="font-bold text-sm">Desbloquea tu ciudad en SuperRadar</h3>
                 </div>
                 <button onclick="closeCityRequestModal()" class="text-emerald-200 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
-            <form onsubmit="handleCityRequestSubmit(event)" class="p-4 space-y-3">
-                <p class="text-slate-600 leading-snug">
-                    ¿Falta tu zona? Dinos tu localidad y el <b>barrio o calle</b> de tu supermercado habitual.
-                </p>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Ciudad o Municipio *</label>
-                    <input type="text" id="reqCityName" required placeholder="Ej. Granada, Sevilla, Madrid, Zaragoza..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+            <div class="p-4 space-y-3 max-h-[82vh] overflow-y-auto">
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-emerald-950 leading-relaxed">
+                    <b>Málaga ya está en marcha 🟢🔴</b> Abrimos tu ciudad en cuanto <b>10 vecinos</b> la pidan para asegurarnos de que el semáforo tenga avisos reales cada día. ¡Pásaselo a tu gente por WhatsApp para desbloquearla antes!
                 </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Barrio, Calle o Zona exacta *</label>
-                    <input type="text" id="reqStoreName" required placeholder="Ej. Teatinos, Triana, Nervión, Gran Vía, Chamberí..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
-                </div>
-                <div id="requestedCitiesCounterBox" class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-[11px] text-slate-600 hidden"></div>
-                <div class="flex justify-end gap-2 pt-1">
-                    <button type="button" onclick="closeCityRequestModal()" class="px-3 py-1.5 text-slate-500 font-semibold">Cancelar</button>
-                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Enviar petición</button>
-                </div>
-            </form>
+
+                <form onsubmit="handleCityRequestSubmit(event)" class="space-y-2.5">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Ciudad (sin comunidad autónoma) *</label>
+                        <input type="text" id="reqCityName" required placeholder="Ej. Zaragoza, Huelva, Salamanca, San Javier..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Barrio, Calle o Zona habitual *</label>
+                        <input type="text" id="reqStoreName" required placeholder="Ej. Delicias, Centro, Santiago de la Ribera..." class="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs">
+                    </div>
+                    <div class="flex justify-end gap-2 pt-0.5">
+                        <button type="button" onclick="closeCityRequestModal()" class="px-3 py-1.5 text-slate-500 font-semibold">Cerrar</button>
+                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-sm">Sumar mi voto (+1 vecino)</button>
+                    </div>
+                </form>
+
+                <div id="requestedCitiesCounterBox" class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-700 space-y-2"></div>
+
+                <button type="button" onclick="shareCityUnlockWhatsApp()" class="w-full py-2.5 px-3 bg-[#25D366] hover:brightness-95 text-white font-extrabold rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 text-xs">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Compartir por WhatsApp para desbloquear mi ciudad</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2303,41 +2312,125 @@ function updateZoneSelectDropdown() {
     document.getElementById('howItWorksModal').classList.remove('hidden');
 }
 function closeHowItWorksModal() {
-    document.getElementById('howItWorksModal').classList.add('hidden');
-}
+            document.getElementById('howItWorksModal').classList.add('hidden');
+        }
 
-       function renderReqs() {
+        const CITY_UNLOCK_THRESHOLD = 10;
+        const VOTED_CITIES_STORAGE_KEY = 'sr_voted_cities_unlock_v1';
+
+        function normalizeCityRequestName(rawCity) {
+            const base = (rawCity || '').split(/[-–—(]/)[0].trim();
+            const key = base
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zñ\s]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const label = base
+                .toLowerCase()
+                .split(' ')
+                .filter(Boolean)
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+                .join(' ');
+            return { key, label };
+        }
+
+        function getVotedCitiesLocal() {
+            try {
+                return JSON.parse(localStorage.getItem(VOTED_CITIES_STORAGE_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveVotedCityLocal(cityKey) {
+            try {
+                const list = getVotedCitiesLocal();
+                if (!list.includes(cityKey)) {
+                    list.push(cityKey);
+                    localStorage.setItem(VOTED_CITIES_STORAGE_KEY, JSON.stringify(list));
+                }
+            } catch (e) {}
+        }
+
+        function renderReqs() {
             const box = document.getElementById('requestedCitiesCounterBox');
             if (!box) return;
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const list = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
-            
-            // Filtro inteligente
-            const pendingList = list.filter(r => {
-                const cityName = (r.city || '').trim().toLowerCase();
-                const isAlreadyActive = ACTIVE_CITIES.some(c => c.toLowerCase() === cityName);
-                const hasSpecificZone = r.store && r.store.trim().length >= 4;
+            const rawList = (cloudState.isCloudActive && Array.isArray(cloudState.cloudCityRequests) && cloudState.cloudCityRequests.length > 0)
+                ? cloudState.cloudCityRequests
+                : (userInteractions.cityRequests || []);
 
-                // Si es una ciudad nueva (ej. Zaragoza), se muestra siempre
-                if (!isAlreadyActive) return true;
+            const groupedMap = new Map();
 
-                // Si ya está en la web (ej. Sevilla), SOLO se muestra si pidieron un CP o barrio concreto
-                return hasSpecificZone;
-            });
+            if (rawList.length === 0) {
+                [
+                    { key: 'san javier', label: 'San Javier', count: 1 },
+                    { key: 'adeje', label: 'Adeje', count: 1 },
+                    { key: 'huelva', label: 'Huelva', count: 1 },
+                    { key: 'salamanca', label: 'Salamanca', count: 1 },
+                    { key: 'leon', label: 'León', count: 1 },
+                    { key: 'zaragoza', label: 'Zaragoza', count: 1 },
+                    { key: 'carballo', label: 'Carballo', count: 1 }
+                ].forEach(item => groupedMap.set(item.key, { ...item, voters: new Set(['init']) }));
+            } else {
+                rawList.forEach(r => {
+                    const { key, label } = normalizeCityRequestName(r.city);
+                    if (!key || key.length < 3) return;
+                    const isAlreadyActive = ACTIVE_CITIES.some(c => normalizeCityRequestName(c).key === key);
+                    if (isAlreadyActive) return;
 
-            if (pendingList.length === 0) { 
-                box.classList.add('hidden'); 
-                return; 
+                    if (!groupedMap.has(key)) {
+                        groupedMap.set(key, { key, label, voters: new Set() });
+                    }
+                    // Si tiene UID de Firebase o ID de dispositivo, solo cuenta 1 vez por persona en esa ciudad
+                    const uniqueVoter = (r.requestedBy && r.requestedBy !== 'anon')
+                        ? r.requestedBy
+                        : (r.deviceId || `legacy_${r.date || Math.random()}`);
+                    groupedMap.get(key).voters.add(uniqueVoter);
+                });
+            }
+
+            const ranking = Array.from(groupedMap.values())
+                .map(item => ({ key: item.key, label: item.label, count: item.voters.size }))
+                .sort((a, b) => b.count - a.count);
+
+            if (ranking.length === 0) {
+                box.classList.add('hidden');
+                return;
             }
 
             box.classList.remove('hidden');
-            box.innerHTML = '<b>Peticiones pendientes de la comunidad:</b><br>' + 
-                pendingList.slice(0, 5).map(r => {
-                    const detail = r.store ? ` <span class="text-slate-400">(${r.store})</span>` : '';
-                    return `• ${r.city}${detail}`;
-                }).join('<br>');
+            box.innerHTML = `<div class="font-extrabold text-slate-800 mb-1.5">🏆 Ciudades en cola (se abren al llegar a ${CITY_UNLOCK_THRESHOLD} vecinos):</div>` +
+                ranking.map(item => {
+                    const shown = Math.min(item.count, CITY_UNLOCK_THRESHOLD);
+                    const missing = Math.max(0, CITY_UNLOCK_THRESHOLD - item.count);
+                    const pct = Math.min(100, Math.round((item.count / CITY_UNLOCK_THRESHOLD) * 100));
+                    const statusLabel = missing === 0 ? '¡Lista para abrir! 🎉' : `faltan ${missing} para abrir`;
+
+                    return `
+                        <div class="bg-white border border-slate-200 rounded-lg p-2">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <span class="font-bold text-slate-900">${item.label}</span>
+                                <span class="text-[10px] text-slate-600"><b>${shown}/${CITY_UNLOCK_THRESHOLD}</b> vecinos (${statusLabel})</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                <div class="h-full ${missing === 0 ? 'bg-emerald-600' : 'bg-amber-500'}" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
         }
         window.renderRequestedCitiesSummary = renderReqs;
+
+        function shareCityUnlockWhatsApp() {
+            const lastCity = localStorage.getItem('sr_last_requested_city');
+            const text = lastCity
+                ? `¡Vota para que abran ${lastCity} en SuperRadar! En cuanto lleguemos a 10 vecinos activan nuestros supermercados para no dar paseos en balde 🟢🔴 Entra en "Pedir ciudad" aquí: https://superradar.es`
+                : `Mira esta web gratuita para comprobar si quedan productos virales en el súper antes de coger el coche en balde 🟢🔴 Málaga ya está activa y abren más ciudades en cuanto 10 vecinos las pidan: https://superradar.es`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
 
         function handleCityRequestSubmit(e) {
             e.preventDefault();
@@ -2346,23 +2439,24 @@ function closeHowItWorksModal() {
 
             if (!cityName || !storeDetails) return;
 
-            const cityLower = cityName.toLowerCase();
+            const { key: cityKey, label: cityLabel } = normalizeCityRequestName(cityName);
             const detailLower = storeDetails.toLowerCase();
 
-            // 1. Comprobamos si la ciudad ya está en la web
-            const matchedCityKey = Object.keys(CITIES_AND_STORES).find(c => c.toLowerCase() === cityLower);
+            if (cityKey.length < 3) {
+                showToast('⚠️ Escribe el nombre completo de tu ciudad.');
+                return;
+            }
+
+            const matchedCityKey = Object.keys(CITIES_AND_STORES).find(c => normalizeCityRequestName(c).key === cityKey);
 
             if (matchedCityKey) {
                 const cityStores = CITIES_AND_STORES[matchedCityKey]?.stores || [];
-
-                // 2. Extraemos palabras clave útiles de más de 3 letras (evita "de", "el", "la", "calle", etc.)
                 const palabrasIgnoradas = new Set(['calle', 'avenida', 'avda', 'paseo', 'plaza', 'cno', 'zona', 'centro', 'mercadona', 'carrefour', 'lidl', 'aldi', 'dia']);
                 const palabrasUsuario = detailLower
-                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
                     .split(/\s+/)
                     .filter(w => w.length >= 4 && !palabrasIgnoradas.has(w));
 
-                // 3. Revisamos si alguna de esas palabras clave ya coincide con una tienda activa
                 const yaExiste = cityStores.some(s => {
                     const storeNameLower = s.name.toLowerCase();
                     return palabrasUsuario.some(palabra => storeNameLower.includes(palabra));
@@ -2373,30 +2467,95 @@ function closeHowItWorksModal() {
                     return;
                 }
 
-                // Si la ciudad existe pero lo que escribió es muy genérico o demasiado corto
                 if (detailLower.length < 4) {
                     showToast('⚠️ Esa ciudad ya está activa. Indica el barrio o la calle concreta.');
                     return;
                 }
+            } else {
+                const votedCities = getVotedCitiesLocal();
+                if (!isAdminAuthenticated && votedCities.includes(cityKey)) {
+                    localStorage.setItem('sr_last_requested_city', cityLabel);
+                    showToast(`⚠️ Ya has sumado tu voto para ${cityLabel}. ¡Compártelo por WhatsApp para llegar a 10!`);
+                    return;
+                }
+                if (!isAdminAuthenticated && votedCities.length >= 2) {
+                    showToast('⚠️ Ya has pedido 2 ciudades desde este dispositivo.');
+                    return;
+                }
             }
 
-            // 4. Si es una ciudad nueva o un barrio que de verdad falta, guardamos la petición
-            const req = { 
-                city: cityName, 
-                store: storeDetails, 
-                date: Date.now() 
+            const req = {
+                city: cityLabel,
+                cityKey: cityKey,
+                store: storeDetails,
+                deviceId: DEVICE_AUTHOR_ID,
+                date: Date.now()
             };
 
             if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
             userInteractions.cityRequests.unshift(req);
-            
+
             if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
             saveUserInteractions();
+            saveVotedCityLocal(cityKey);
+            localStorage.setItem('sr_last_requested_city', cityLabel);
 
             document.getElementById('reqCityName').value = '';
             document.getElementById('reqStoreName').value = '';
-            closeCityRequestModal();
-            showToast('¡Petición enviada! Revisaremos esa zona');
+            renderReqs();
+            showToast(`🙌 ¡Apuntado +1 vecino para ${cityLabel}! Compártelo para llegar a 10`);
+        }
+
+            const matchedCityKey = Object.keys(CITIES_AND_STORES).find(c => normalizeCityRequestName(c).key === cityKey);
+
+            if (matchedCityKey) {
+                const cityStores = CITIES_AND_STORES[matchedCityKey]?.stores || [];
+                const palabrasIgnoradas = new Set(['calle', 'avenida', 'avda', 'paseo', 'plaza', 'cno', 'zona', 'centro', 'mercadona', 'carrefour', 'lidl', 'aldi', 'dia']);
+                const palabrasUsuario = detailLower
+                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+                    .split(/\s+/)
+                    .filter(w => w.length >= 4 && !palabrasIgnoradas.has(w));
+
+                const yaExiste = cityStores.some(s => {
+                    const storeNameLower = s.name.toLowerCase();
+                    return palabrasUsuario.some(palabra => storeNameLower.includes(palabra));
+                });
+
+                if (yaExiste) {
+                    showToast('📍 ¡Ese barrio o calle ya está en SuperRadar! Búscalo en el desplegable de tiendas.');
+                    return;
+                }
+
+                if (detailLower.length < 4) {
+                    showToast('⚠️ Esa ciudad ya está activa. Indica el barrio o la calle concreta.');
+                    return;
+                }
+            } else {
+                if (!isAdminAuthenticated && getVotedCitiesLocal().includes(cityKey)) {
+                    localStorage.setItem('sr_last_requested_city', cityLabel);
+                    showToast(`⚠️ Ya has sumado tu voto para ${cityLabel}. ¡Compártelo por WhatsApp para llegar a 10!`);
+                    return;
+                }
+            }
+
+            const req = {
+                city: cityLabel,
+                store: storeDetails,
+                date: Date.now()
+            };
+
+            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
+            userInteractions.cityRequests.unshift(req);
+
+            if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
+            saveUserInteractions();
+            saveVotedCityLocal(cityKey);
+            localStorage.setItem('sr_last_requested_city', cityLabel);
+
+            document.getElementById('reqCityName').value = '';
+            document.getElementById('reqStoreName').value = '';
+            renderReqs();
+            showToast(`🙌 ¡Apuntado +1 vecino para ${cityLabel}! Compártelo para llegar a 10`);
         }
 
         function renderSupermarketChainPills() {
@@ -3557,7 +3716,12 @@ function closeHowItWorksModal() {
         window.syncCityRequestToCloud = async function(req) {
             if (!db) return;
             try {
-                await setDoc(doc(db, 'city_requests', 'req_' + Date.now()), { ...req, requestedBy: currentUser ? currentUser.uid : 'anon' });
+                const voterId = (currentUser && currentUser.uid) ? currentUser.uid : (req.deviceId || 'anon_' + Date.now());
+                const docId = req.cityKey ? `${req.cityKey.replace(/\s+/g, '_')}_${voterId}` : ('req_' + Date.now());
+                await setDoc(doc(db, 'city_requests', docId), {
+                    ...req,
+                    requestedBy: voterId
+                }, { merge: true });
             } catch (e) { console.warn("Error syncCityRequestToCloud:", e); }
         };
 
