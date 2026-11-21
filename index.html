@@ -2506,58 +2506,6 @@ function closeHowItWorksModal() {
             showToast(`🙌 ¡Apuntado +1 vecino para ${cityLabel}! Compártelo para llegar a 10`);
         }
 
-            const matchedCityKey = Object.keys(CITIES_AND_STORES).find(c => normalizeCityRequestName(c).key === cityKey);
-
-            if (matchedCityKey) {
-                const cityStores = CITIES_AND_STORES[matchedCityKey]?.stores || [];
-                const palabrasIgnoradas = new Set(['calle', 'avenida', 'avda', 'paseo', 'plaza', 'cno', 'zona', 'centro', 'mercadona', 'carrefour', 'lidl', 'aldi', 'dia']);
-                const palabrasUsuario = detailLower
-                    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-                    .split(/\s+/)
-                    .filter(w => w.length >= 4 && !palabrasIgnoradas.has(w));
-
-                const yaExiste = cityStores.some(s => {
-                    const storeNameLower = s.name.toLowerCase();
-                    return palabrasUsuario.some(palabra => storeNameLower.includes(palabra));
-                });
-
-                if (yaExiste) {
-                    showToast('📍 ¡Ese barrio o calle ya está en SuperRadar! Búscalo en el desplegable de tiendas.');
-                    return;
-                }
-
-                if (detailLower.length < 4) {
-                    showToast('⚠️ Esa ciudad ya está activa. Indica el barrio o la calle concreta.');
-                    return;
-                }
-            } else {
-                if (!isAdminAuthenticated && getVotedCitiesLocal().includes(cityKey)) {
-                    localStorage.setItem('sr_last_requested_city', cityLabel);
-                    showToast(`⚠️ Ya has sumado tu voto para ${cityLabel}. ¡Compártelo por WhatsApp para llegar a 10!`);
-                    return;
-                }
-            }
-
-            const req = {
-                city: cityLabel,
-                store: storeDetails,
-                date: Date.now()
-            };
-
-            if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
-            userInteractions.cityRequests.unshift(req);
-
-            if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
-            saveUserInteractions();
-            saveVotedCityLocal(cityKey);
-            localStorage.setItem('sr_last_requested_city', cityLabel);
-
-            document.getElementById('reqCityName').value = '';
-            document.getElementById('reqStoreName').value = '';
-            renderReqs();
-            showToast(`🙌 ¡Apuntado +1 vecino para ${cityLabel}! Compártelo para llegar a 10`);
-        }
-
         function renderSupermarketChainPills() {
             const container = document.getElementById('supermarketChainContainer');
             if (!container) return;
