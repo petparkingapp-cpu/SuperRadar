@@ -2380,33 +2380,37 @@ function closeHowItWorksModal() {
 
             const groupedMap = new Map();
 
-            if (rawList.length === 0) {
-                [
-                    { key: 'san javier', label: 'San Javier', count: 1 },
-                    { key: 'adeje', label: 'Adeje', count: 1 },
-                    { key: 'huelva', label: 'Huelva', count: 1 },
-                    { key: 'salamanca', label: 'Salamanca', count: 1 },
-                    { key: 'leon', label: 'León', count: 1 },
-                    { key: 'zaragoza', label: 'Zaragoza', count: 1 },
-                    { key: 'carballo', label: 'Carballo', count: 1 }
-                ].forEach(item => groupedMap.set(item.key, { ...item, voters: new Set(['init']) }));
-            } else {
-                rawList.forEach(r => {
-                    const { key, label } = normalizeCityRequestName(r.city);
-                    if (!key || key.length < 3) return;
-                    const isAlreadyActive = ACTIVE_CITIES.some(c => normalizeCityRequestName(c).key === key);
-                    if (isAlreadyActive) return;
+            // Base inicial siempre visible (mientras no esté abierta) para que no desaparezca al entrar votos reales
+            [
+                { key: 'san javier', label: 'San Javier' },
+                { key: 'adeje', label: 'Adeje' },
+                { key: 'huelva', label: 'Huelva' },
+                { key: 'salamanca', label: 'Salamanca' },
+                { key: 'leon', label: 'León' },
+                { key: 'zaragoza', label: 'Zaragoza' },
+                { key: 'carballo', label: 'Carballo' }
+            ].forEach(item => {
+                const isAlreadyActive = ACTIVE_CITIES.some(c => normalizeCityRequestName(c).key === item.key);
+                if (!isAlreadyActive) {
+                    groupedMap.set(item.key, { key: item.key, label: item.label, voters: new Set(['seed_init']) });
+                }
+            });
 
-                    if (!groupedMap.has(key)) {
-                        groupedMap.set(key, { key, label, voters: new Set() });
-                    }
-                    // Si tiene UID de Firebase o ID de dispositivo, solo cuenta 1 vez por persona en esa ciudad
-                    const uniqueVoter = (r.requestedBy && r.requestedBy !== 'anon')
-                        ? r.requestedBy
-                        : (r.deviceId || `legacy_${r.date || Math.random()}`);
-                    groupedMap.get(key).voters.add(uniqueVoter);
-                });
-            }
+            rawList.forEach(r => {
+                const { key, label } = normalizeCityRequestName(r.city);
+                if (!key || key.length < 3) return;
+                const isAlreadyActive = ACTIVE_CITIES.some(c => normalizeCityRequestName(c).key === key);
+                if (isAlreadyActive) return;
+
+                if (!groupedMap.has(key)) {
+                    groupedMap.set(key, { key, label, voters: new Set() });
+                }
+                // Si tiene UID de Firebase o ID de dispositivo, solo cuenta 1 vez por persona en esa ciudad
+                const uniqueVoter = (r.requestedBy && r.requestedBy !== 'anon')
+                    ? r.requestedBy
+                    : (r.deviceId || `legacy_${r.date || Math.random()}`);
+                groupedMap.get(key).voters.add(uniqueVoter);
+            });
 
             const ranking = Array.from(groupedMap.values())
                 .map(item => ({ key: item.key, label: item.label, count: item.voters.size }))
