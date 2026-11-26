@@ -2,15 +2,15 @@
 <html lang="es" class="min-h-screen bg-slate-50">
 <head>
     <meta name="google-site-verification" content="OI2vaYVaJbbFQoqaUMPg7QTEtCrxCm_inoQrHRZsKp0" />
-    <meta name="description" content="SuperRadar: Radar de stock en tiempo real en supermercados (Mercadona, Carrefour, Lidl, Aldi y DIA). Comprueba si quedan novedades virales y evita el paseo en balde." />
-    <meta name="keywords" content="SuperRadar, radar supermercados, stock mercadona, novedades mercadona, novedades lidl, novedades carrefour, productos virales supermercado, málaga" />
-    <meta property="og:title" content="SuperRadar · Radar de Stock en Supermercados en Tiempo Real" />
+    <meta name="description" content="SuperRadar: Comprueba en tiempo real si hay stock o están agotadas las novedades virales de Mercadona, Lidl, Carrefour, DIA y Aldi en tu tienda exacta sin dar paseos en balde." />
+    <meta name="keywords" content="SuperRadar, stock mercadona, novedades mercadona, novedades lidl, novedades dia, productos virales supermercado, malaga, bilbao, sevilla, madrid" />
+    <meta property="og:title" content="SuperRadar · Radar de Stock de Novedades de Supermercado" />
     <meta property="og:description" content="Consulta y avisa en directo si quedan unidades de los productos virales en tu supermercado antes de salir de casa." />
     <meta property="og:url" content="https://www.superradar.es/" />
 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SuperRadar · Radar de Stock en Supermercados (Mercadona, Lidl, Carrefour, Aldi y DIA)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperRadar</title>
     <!-- Vercel Web Analytics para sitios HTML estáticos -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -786,6 +786,68 @@
             return false;
         }
 
+        // Control local de los votos propios de este dispositivo (permite retirar solo su propio voto)
+        const MY_OWN_VOTES_STORAGE_KEY = 'sr_my_own_votes_v1';
+
+        function getMyOwnVotesMap() {
+            try {
+                const raw = JSON.parse(localStorage.getItem(MY_OWN_VOTES_STORAGE_KEY) || '{}');
+                return (raw && typeof raw === 'object') ? raw : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveMyOwnVote(id, type) {
+            try {
+                const map = getMyOwnVotesMap();
+                map[id] = { type: type, at: Date.now() };
+                localStorage.setItem(MY_OWN_VOTES_STORAGE_KEY, JSON.stringify(map));
+            } catch (e) {}
+        }
+
+        function clearMyOwnVote(id) {
+            try {
+                const map = getMyOwnVotesMap();
+                if (map[id]) {
+                    delete map[id];
+                    localStorage.setItem(MY_OWN_VOTES_STORAGE_KEY, JSON.stringify(map));
+                }
+            } catch (e) {}
+        }
+
+        function getMyOwnVoteFor(id) {
+            const map = getMyOwnVotesMap();
+            const rec = map[id];
+            if (!rec || !rec.type) return null;
+            if (Date.now() - (rec.at || 0) > 15 * 24 * 60 * 60 * 1000) return null;
+            return rec;
+        }
+
+        function renderVoteUtilityControls(item) {
+            if (!item) return '';
+            const myVote = getMyOwnVoteFor(item.id);
+            const canUndoOwn = Boolean(
+                myVote &&
+                ((myVote.type === 'seen' && (item.seenCount || 0) > 0) ||
+                 (myVote.type === 'missing' && (item.missingCount || 0) > 0))
+            );
+            const hasAnyVote = Boolean((item.seenCount || 0) > 0 || (item.missingCount || 0) > 0 || item.userVote);
+            const canAdminReset = Boolean(isAdminAuthenticated && hasAnyVote);
+
+            if (!canUndoOwn && !canAdminReset) return '';
+
+            const undoBtnHtml = canUndoOwn
+                ? `<button type="button" onclick="undoMyOwnVote('${item.id}')" class="text-[10px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1"><span>↩️ Quitar mi voto (${myVote.type === 'seen' ? 'Sí' : 'No'})</span></button>`
+                : '<span></span>';
+
+            const resetBtnHtml = canAdminReset
+                ? `<button type="button" onclick="adminResetStoreVotes('${item.id}')" class="text-[10px] font-bold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1" title="Solo visible en Modo Admin"><span>↺ Resetear</span></button>`
+                : '';
+
+            return `<div class="flex items-center justify-between gap-1.5 pt-0.5">${undoBtnHtml}${resetBtnHtml}</div>`;
+        }
+
         // Compresor automático de fotos de cámara móvil
         function compressImageFile(file, maxDimension = 800, quality = 0.72) {
             return new Promise((resolve) => {
@@ -1049,15 +1111,6 @@
                         { id: 'car_mlg_fuengirola_miramar', chain: 'Carrefour', name: 'Carrefour - Av. de la Encarnación, CC Miramar (Fuengirola)', zone: 'Fuengirola' },
                         { id: 'aldi_mlg_fuengirola', chain: 'Aldi', name: 'Aldi - C. Mallorca, 1 (Fuengirola)', zone: 'Fuengirola' },
                         { id: 'dia_mlg_fuengirola_mijas', chain: 'DIA', name: 'DIA - Av. de Mijas, 30 (Fuengirola)', zone: 'Fuengirola' },
-
-                        // --- COÍN ---
-                        { id: 'merca_mlg_coin', chain: 'Mercadona', name: 'Mercadona - Av. Reina Sofía, s/n (Coín)', zone: 'Coín' },
-                        { id: 'lidl_mlg_coin', chain: 'Lidl', name: 'Lidl - Av. Reina Sofía, 50 (Coín)', zone: 'Coín' },
-                        { id: 'aldi_mlg_coin', chain: 'Aldi', name: 'Aldi - C. Arquímedes, 1 (Coín)', zone: 'Coín' },
-                        { id: 'car_mlg_coin_trocha', chain: 'Carrefour', name: 'Carrefour - Ctra. Coín-Cártama Km 1, CC La Trocha (Coín)', zone: 'Coín' },
-                        { id: 'dia_mlg_coin_reina_sofia', chain: 'DIA', name: 'DIA - Av. Reina Sofía, s/n (Coín)', zone: 'Coín' },
-                        { id: 'dia_mlg_coin_santa_teresa', chain: 'DIA', name: 'DIA - C. Sta. Teresa, s/n (Coín)', zone: 'Coín' },
-                        { id: 'dia_mlg_coin_vicario', chain: 'DIA', name: 'DIA - C. Vicario, 8 (Coín)', zone: 'Coín' },
 
                         // --- RINCÓN DE LA VICTORIA (COTOMAR) ---
                         { id: 'merca_mlg_rincon_cotomar', chain: 'Mercadona', name: 'Mercadona - C. Frigiliana / Av. Cotomar (Cotomar)', zone: 'Rincón de la Victoria' },
@@ -1916,15 +1969,26 @@
                     status: rawRecord,
                     updatedAt: now,
                     lastSeenAt: rawRecord === 'seen' ? now : 0,
-                    lastMissingAt: rawRecord === 'missing' ? now : 0
+                    lastMissingAt: rawRecord === 'missing' ? now : 0,
+                    seenCount: rawRecord === 'seen' ? 1 : 0,
+                    missingCount: rawRecord === 'missing' ? 1 : 0
                 };
             }
             if (now - rawRecord.updatedAt > 15 * 24 * 60 * 60 * 1000) return null;
+            const lastSeenAt = rawRecord.lastSeenAt || (rawRecord.status === 'seen' ? rawRecord.updatedAt : 0);
+            const lastMissingAt = rawRecord.lastMissingAt || (rawRecord.status === 'missing' ? rawRecord.updatedAt : 0);
+            const isConflict = isVoteConflictWithinWindow({ lastSeenAt, lastMissingAt });
             return {
                 status: rawRecord.status || null,
                 updatedAt: rawRecord.updatedAt || now,
-                lastSeenAt: rawRecord.lastSeenAt || (rawRecord.status === 'seen' ? rawRecord.updatedAt : 0),
-                lastMissingAt: rawRecord.lastMissingAt || (rawRecord.status === 'missing' ? rawRecord.updatedAt : 0)
+                lastSeenAt: lastSeenAt,
+                lastMissingAt: lastMissingAt,
+                seenCount: typeof rawRecord.seenCount === 'number'
+                    ? rawRecord.seenCount
+                    : ((isConflict || rawRecord.status === 'seen') ? 1 : 0),
+                missingCount: typeof rawRecord.missingCount === 'number'
+                    ? rawRecord.missingCount
+                    : ((isConflict || rawRecord.status === 'missing') ? 1 : 0)
             };
         }
 
@@ -1965,7 +2029,15 @@
         function rebuildCatalogFromCurrentState() {
             if (!CITIES_AND_STORES['Málaga']) initializeActiveCitiesAndStores();
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const mergedVotes = { ...(userInteractions.votes || {}) };
+            if (cloudState.isCloudActive && cloudState.cloudVotes) {
+                Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
+                    const localV = mergedVotes[k];
+                    if (!localV || (v && (v.updatedAt || 0) >= (localV.updatedAt || 0))) {
+                        mergedVotes[k] = v;
+                    }
+                });
+            }
 
             const activeOfficial = getMergedOfficialOffers();
             const activeCustom = getMergedCustomProducts();
@@ -1995,8 +2067,8 @@
                             isConflict: isConflict,
                             createdAt: offer.createdAt || Date.now(),
                             isRecentUpload: true,
-                            seenCount: (isConflict || vote === 'seen') ? 1 : 0,
-                            missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                            seenCount: vRec ? vRec.seenCount : 0,
+                            missingCount: vRec ? vRec.missingCount : 0,
                             stockStatus: computeStockStatusFromVote(vote, isConflict)
                         });
                     });
@@ -2020,8 +2092,8 @@
                             isConflict: isConflict,
                             createdAt: 0,
                             isRecentUpload: false,
-                            seenCount: (isConflict || vote === 'seen') ? 1 : 0,
-                            missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                            seenCount: vRec ? vRec.seenCount : 0,
+                            missingCount: vRec ? vRec.missingCount : 0,
                             stockStatus: computeStockStatusFromVote(vote, isConflict)
                         });
                     });
@@ -2076,8 +2148,8 @@
                     lastSeenAt: lastSeenAt,
                     lastMissingAt: lastMissingAt,
                     isConflict: isConflict,
-                    seenCount: (isConflict || vote === 'seen') ? 1 : 0,
-                    missingCount: (isConflict || vote === 'missing') ? 1 : 0,
+                    seenCount: vRec ? vRec.seenCount : (typeof p.seenCount === 'number' ? p.seenCount : (initialStatus === 'seen' ? 1 : 0)),
+                    missingCount: vRec ? vRec.missingCount : (typeof p.missingCount === 'number' ? p.missingCount : (initialStatus === 'missing' ? 1 : 0)),
                     stockStatus: computeStockStatusFromVote(vote, isConflict)
                 };
             });
@@ -2104,7 +2176,10 @@
         function updateFavoritesCounter() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
             const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
-            const count = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const count = Object.keys(mergedVotes).filter(id => {
+                const rec = getValidVoteRecord(mergedVotes[id]);
+                return rec && (rec.seenCount > 0 || rec.missingCount > 0 || !!rec.status);
+            }).length;
             const badge = document.getElementById('favoritesBadge');
             if (badge) badge.textContent = count;
         }
@@ -2240,7 +2315,10 @@
 
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
             const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
-            const validVotesCount = Object.keys(mergedVotes).filter(id => !!getValidVoteRecord(mergedVotes[id])).length;
+            const validVotesCount = Object.keys(mergedVotes).filter(id => {
+                const rec = getValidVoteRecord(mergedVotes[id]);
+                return rec && (rec.seenCount > 0 || rec.missingCount > 0 || !!rec.status);
+            }).length;
             const reqList = (cloudState.isCloudActive && cloudState.cloudCityRequests) ? cloudState.cloudCityRequests : (userInteractions.cityRequests || []);
 
             const visitsEl = document.getElementById('adminTotalVisitsCount');
@@ -2886,6 +2964,7 @@ function closeHowItWorksModal() {
                                     <span>🔴 No (${single.missingCount})</span>
                                 </button>
                             </div>
+                            ${renderVoteUtilityControls(single)}
                         </div>
                     `;
                 } else {
@@ -2931,6 +3010,7 @@ function closeHowItWorksModal() {
                                         <span>🔴 No (${st.missingCount})</span>
                                     </button>
                                 </div>
+                                ${renderVoteUtilityControls(st)}
                             </div>
                         `;
                     }).join('');
@@ -3019,6 +3099,11 @@ function closeHowItWorksModal() {
                     stockClass = 'bg-rose-100 text-rose-800 border-rose-300';
                     bannerText = `⚠️ Reportado agotado (${timeStr})`;
                     bannerColor = 'text-rose-600 font-semibold';
+                } else if (!p.userVote) {
+                    stockText = '⚪ Sin confirmar';
+                    stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
+                    bannerText = `📍 Aviso en tienda (${timeStr})`;
+                    bannerColor = 'text-slate-500';
                 }
 
                 const originBadgeHtml = p.isCustomUserProduct
@@ -3056,10 +3141,10 @@ function closeHowItWorksModal() {
                         </div>
                         <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
                             <div>
-                                <div class="flex items-start justify-between gap-1.5 mb-1">
-                                <span class="text-[10px] leading-tight ${bannerColor}">${bannerText}</span>
-                                <span class="font-extrabold text-slate-900 shrink-0 leading-tight">${Number(p.price).toFixed(2)} €</span>
-                            </div>
+                                <div class="flex items-center justify-between gap-1 mb-1">
+                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="font-extrabold text-slate-900 shrink-0">${Number(p.price).toFixed(2)} €</span>
+                                </div>
                                 <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
                                 <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
                             </div>
@@ -3086,6 +3171,7 @@ function closeHowItWorksModal() {
                                         <span>🔴 No (${p.missingCount})</span>
                                     </button>
                                 </div>
+                                ${renderVoteUtilityControls(p)}
                             </div>
                         </div>
                     </div>
@@ -3123,7 +3209,6 @@ function closeHowItWorksModal() {
             'Fuengirola': { lat: 36.5441, lng: -4.6247 },
             'Alhaurín de la Torre': { lat: 36.6631, lng: -4.5606 },
             'Cártama': { lat: 36.7114, lng: -4.6305 },
-            'Coín': { lat: 36.6592, lng: -4.7586 },
             'Rincón de la Victoria': { lat: 36.7171, lng: -4.2794 },
             'Vélez-Málaga / Torre del Mar': { lat: 36.7700, lng: -4.1000 },
             'Algarrobo / Torrox': { lat: 36.7330, lng: -3.9570 },
@@ -3298,55 +3383,174 @@ function closeHowItWorksModal() {
 
             const now = Date.now();
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const mergedVotes = { ...(userInteractions.votes || {}) };
+            if (cloudState.isCloudActive && cloudState.cloudVotes) {
+                Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
+                    const localV = mergedVotes[k];
+                    if (!localV || (v && (v.updatedAt || 0) >= (localV.updatedAt || 0))) {
+                        mergedVotes[k] = v;
+                    }
+                });
+            }
             const prevRec = getValidVoteRecord(mergedVotes[id]);
 
-            // Si el usuario vuelve a pulsar sobre el estado que ya estaba marcado
-            if (p.userVote === type) {
-                if (p.isConflict && prevRec) {
-                    const remainingStatus = type === 'seen' ? 'missing' : 'seen';
-                    const remainingTime = type === 'seen' ? prevRec.lastMissingAt : prevRec.lastSeenAt;
-                    const payload = {
-                        status: remainingStatus,
-                        updatedAt: remainingTime || now,
-                        lastSeenAt: type === 'seen' ? 0 : prevRec.lastSeenAt,
-                        lastMissingAt: type === 'missing' ? 0 : prevRec.lastMissingAt
+            const prevSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
+            const prevMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
+            const prevSeenCount = prevRec ? prevRec.seenCount : (p.seenCount || 0);
+            const prevMissingCount = prevRec ? prevRec.missingCount : (p.missingCount || 0);
+
+            const newSeenAt = type === 'seen' ? now : prevSeenAt;
+            const newMissingAt = type === 'missing' ? now : prevMissingAt;
+            const newSeenCount = type === 'seen' ? prevSeenCount + 1 : prevSeenCount;
+            const newMissingCount = type === 'missing' ? prevMissingCount + 1 : prevMissingCount;
+
+            const payload = {
+                status: type,
+                updatedAt: now,
+                lastSeenAt: newSeenAt,
+                lastMissingAt: newMissingAt,
+                seenCount: newSeenCount,
+                missingCount: newMissingCount
+            };
+
+            userInteractions.votes[id] = payload;
+            if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
+            guardarMarcaReporte(id);
+            saveMyOwnVote(id, type);
+
+            const conflictNow = isVoteConflictWithinWindow(payload);
+            if (conflictNow) {
+                showToast('🟡 Reportes contradictorios: marcado En duda / Stock bajo');
+            } else {
+                showToast(
+                    type === 'seen'
+                        ? `🟢 ¡Confirmado! Ahora suma ${newSeenCount} ${newSeenCount === 1 ? 'voto' : 'votos'}`
+                        : `🔴 ¡Marcado agotado! Ahora suma ${newMissingCount} ${newMissingCount === 1 ? 'voto' : 'votos'}`
+                );
+            }
+
+            saveUserInteractions();
+            rebuildCatalogFromCurrentState();
+        }
+
+        function undoMyOwnVote(id) {
+            const myVote = getMyOwnVoteFor(id);
+            if (!myVote) return;
+
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            const now = Date.now();
+            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
+            const mergedVotes = { ...(userInteractions.votes || {}) };
+            if (cloudState.isCloudActive && cloudState.cloudVotes) {
+                Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
+                    const localV = mergedVotes[k];
+                    if (!localV || (v && (v.updatedAt || 0) >= (localV.updatedAt || 0))) {
+                        mergedVotes[k] = v;
+                    }
+                });
+            }
+            const prevRec = getValidVoteRecord(mergedVotes[id]);
+
+            let newSeenCount = prevRec ? prevRec.seenCount : (p.seenCount || 0);
+            let newMissingCount = prevRec ? prevRec.missingCount : (p.missingCount || 0);
+            let newSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
+            let newMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
+
+            if (myVote.type === 'seen') {
+                newSeenCount = Math.max(0, newSeenCount - 1);
+                if (newSeenCount === 0) newSeenAt = 0;
+            } else {
+                newMissingCount = Math.max(0, newMissingCount - 1);
+                if (newMissingCount === 0) newMissingAt = 0;
+            }
+
+            clearMyOwnVote(id);
+            // Libera el bloqueo de 20 min en ese producto para que pueda corregir su voto al instante
+            try {
+                localStorage.removeItem(`sr_rep_${id}`);
+                localStorage.removeItem('sr_ultimo_reporte_global');
+            } catch (e) {}
+
+            if (newSeenCount === 0 && newMissingCount === 0) {
+                if (p.isCustomUserProduct) {
+                    const zeroPayload = {
+                        status: null,
+                        updatedAt: now,
+                        lastSeenAt: 0,
+                        lastMissingAt: 0,
+                        seenCount: 0,
+                        missingCount: 0
                     };
-                    userInteractions.votes[id] = payload;
-                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
-                    showToast('Voto retirado · Se mantiene el aviso previo');
+                    userInteractions.votes[id] = zeroPayload;
+                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, zeroPayload);
                 } else {
                     delete userInteractions.votes[id];
                     if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
-                    showToast('Aviso retirado');
                 }
+                showToast('↩️ Tu voto se ha retirado');
             } else {
-                const prevSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
-                const prevMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
-
-                const newSeenAt = type === 'seen' ? now : prevSeenAt;
-                const newMissingAt = type === 'missing' ? now : prevMissingAt;
+                let newStatus = myVote.type;
+                let newUpdatedAt = now;
+                if (newSeenCount === 0) {
+                    newStatus = 'missing';
+                    newUpdatedAt = newMissingAt || now;
+                } else if (newMissingCount === 0) {
+                    newStatus = 'seen';
+                    newUpdatedAt = newSeenAt || now;
+                } else {
+                    newStatus = newSeenAt >= newMissingAt ? 'seen' : 'missing';
+                    newUpdatedAt = Math.max(newSeenAt, newMissingAt) || now;
+                }
 
                 const payload = {
-                    status: type,
-                    updatedAt: now,
+                    status: newStatus,
+                    updatedAt: newUpdatedAt,
                     lastSeenAt: newSeenAt,
-                    lastMissingAt: newMissingAt
+                    lastMissingAt: newMissingAt,
+                    seenCount: newSeenCount,
+                    missingCount: newMissingCount
                 };
 
                 userInteractions.votes[id] = payload;
                 if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
-                guardarMarcaReporte(id);
-
-                const conflictNow = isVoteConflictWithinWindow(payload);
-                if (conflictNow) {
-                    showToast('🟡 Reportes contradictorios: marcado En duda / Stock bajo');
-                } else {
-                    showToast(type === 'seen' ? '¡Actualizado: SÍ hay!' : '¡Actualizado: AGOTADO!');
-                }
+                showToast('↩️ Tu voto se ha retirado · Se mantienen los demás avisos');
             }
+
             saveUserInteractions();
             rebuildCatalogFromCurrentState();
+        }
+
+        function adminResetStoreVotes(id) {
+            if (!isAdminAuthenticated) return;
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            if (!confirm('¿Poner a cero los votos de esta tienda?')) return;
+
+            clearMyOwnVote(id);
+            try { localStorage.removeItem(`sr_rep_${id}`); } catch (e) {}
+
+            if (p.isCustomUserProduct) {
+                const zeroPayload = {
+                    status: null,
+                    updatedAt: Date.now(),
+                    lastSeenAt: 0,
+                    lastMissingAt: 0,
+                    seenCount: 0,
+                    missingCount: 0
+                };
+                userInteractions.votes[id] = zeroPayload;
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, zeroPayload);
+            } else {
+                delete userInteractions.votes[id];
+                if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
+            }
+
+            saveUserInteractions();
+            rebuildCatalogFromCurrentState();
+            showToast('↺ Votos puestos a cero (Modo Admin)');
         }
 
         async function handleFileSelect(e) {
@@ -3420,7 +3624,9 @@ function closeHowItWorksModal() {
                     status: status,
                     updatedAt: now,
                     lastSeenAt: status === 'seen' ? now : 0,
-                    lastMissingAt: status === 'missing' ? now : 0
+                    lastMissingAt: status === 'missing' ? now : 0,
+                    seenCount: status === 'seen' ? 1 : 0,
+                    missingCount: status === 'missing' ? 1 : 0
                 };
 
                 userInteractions.votes[prodId] = payload;
@@ -3656,6 +3862,12 @@ function closeHowItWorksModal() {
         }
 
         window.syncVoteToCloud = async function(id, data) {
+            if (data === null) {
+                delete cloudVotes[id];
+            } else {
+                cloudVotes[id] = { ...data, updatedBy: currentUser ? currentUser.uid : 'anon' };
+            }
+            saveCloudFastCache();
             if (!db) return;
             try {
                 const ref = doc(db, 'stock_votes', id);
