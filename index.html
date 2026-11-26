@@ -798,10 +798,14 @@
             }
         }
 
-        function saveMyOwnVote(id, type) {
+        function saveMyOwnVote(id, type, prevSnapshot = null) {
             try {
                 const map = getMyOwnVotesMap();
-                map[id] = { type: type, at: Date.now() };
+                const existing = map[id];
+                const keptSnapshot = (existing && existing.prevSnapshot && prevSnapshot && existing.at === prevSnapshot.updatedAt)
+                    ? existing.prevSnapshot
+                    : prevSnapshot;
+                map[id] = { type: type, at: Date.now(), prevSnapshot: keptSnapshot };
                 localStorage.setItem(MY_OWN_VOTES_STORAGE_KEY, JSON.stringify(map));
             } catch (e) {}
         }
@@ -3399,6 +3403,18 @@ function closeHowItWorksModal() {
             const prevSeenCount = prevRec ? prevRec.seenCount : (p.seenCount || 0);
             const prevMissingCount = prevRec ? prevRec.missingCount : (p.missingCount || 0);
 
+            const prevSnapshot = prevRec ? {
+                status: prevRec.status || null,
+                updatedAt: prevRec.updatedAt || 0,
+                lastSeenAt: prevRec.lastSeenAt || 0,
+                lastMissingAt: prevRec.lastMissingAt || 0
+            } : ((p.updatedAt || p.createdAt) ? {
+                status: p.userVote || null,
+                updatedAt: p.updatedAt || p.createdAt || 0,
+                lastSeenAt: p.lastSeenAt || 0,
+                lastMissingAt: p.lastMissingAt || 0
+            } : null);
+
             const newSeenAt = type === 'seen' ? now : prevSeenAt;
             const newMissingAt = type === 'missing' ? now : prevMissingAt;
             const newSeenCount = type === 'seen' ? prevSeenCount + 1 : prevSeenCount;
@@ -3416,7 +3432,7 @@ function closeHowItWorksModal() {
             userInteractions.votes[id] = payload;
             if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
             guardarMarcaReporte(id);
-            saveMyOwnVote(id, type);
+            saveMyOwnVote(id, type, prevSnapshot);
 
             const conflictNow = isVoteConflictWithinWindow(payload);
             if (conflictNow) {
@@ -3458,12 +3474,22 @@ function closeHowItWorksModal() {
             let newSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
             let newMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
 
+            const snap = myVote.prevSnapshot || null;
+
             if (myVote.type === 'seen') {
                 newSeenCount = Math.max(0, newSeenCount - 1);
-                if (newSeenCount === 0) newSeenAt = 0;
+                if (newSeenCount === 0) {
+                    newSeenAt = 0;
+                } else if (snap && snap.lastSeenAt) {
+                    newSeenAt = snap.lastSeenAt;
+                }
             } else {
                 newMissingCount = Math.max(0, newMissingCount - 1);
-                if (newMissingCount === 0) newMissingAt = 0;
+                if (newMissingCount === 0) {
+                    newMissingAt = 0;
+                } else if (snap && snap.lastMissingAt) {
+                    newMissingAt = snap.lastMissingAt;
+                }
             }
 
             clearMyOwnVote(id);
@@ -3477,7 +3503,7 @@ function closeHowItWorksModal() {
                 if (p.isCustomUserProduct) {
                     const zeroPayload = {
                         status: null,
-                        updatedAt: now,
+                        updatedAt: (snap && snap.updatedAt) ? snap.updatedAt : (p.createdAt || now),
                         lastSeenAt: 0,
                         lastMissingAt: 0,
                         seenCount: 0,
@@ -3492,16 +3518,16 @@ function closeHowItWorksModal() {
                 showToast('↩️ Tu voto se ha retirado');
             } else {
                 let newStatus = myVote.type;
-                let newUpdatedAt = now;
+                let newUpdatedAt = (snap && snap.updatedAt) ? snap.updatedAt : now;
                 if (newSeenCount === 0) {
                     newStatus = 'missing';
-                    newUpdatedAt = newMissingAt || now;
+                    newUpdatedAt = newMissingAt || (snap && snap.updatedAt) || now;
                 } else if (newMissingCount === 0) {
                     newStatus = 'seen';
-                    newUpdatedAt = newSeenAt || now;
+                    newUpdatedAt = newSeenAt || (snap && snap.updatedAt) || now;
                 } else {
                     newStatus = newSeenAt >= newMissingAt ? 'seen' : 'missing';
-                    newUpdatedAt = Math.max(newSeenAt, newMissingAt) || now;
+                    newUpdatedAt = Math.max(newSeenAt, newMissingAt) || (snap && snap.updatedAt) || now;
                 }
 
                 const payload = {
