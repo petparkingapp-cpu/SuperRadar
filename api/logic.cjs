@@ -1,0 +1,7 @@
+const AGE=15*86400000;
+function valid(g,now){return g&&['seen','missing'].includes(g.type)&&Number.isSafeInteger(g.at)&&g.at>0&&g.at<=now&&now-g.at<AGE&&Number.isSafeInteger(g.count)&&g.count>0;}
+function groups(r,now){if(!r)return [];if(Array.isArray(r.expiryGroups))return r.expiryGroups.filter(g=>valid(g,now)).map(({type,at,count})=>({type,at,count}));const conflict=r.lastSeenAt>0&&r.lastMissingAt>0&&Math.abs(r.lastSeenAt-r.lastMissingAt)<21600000;return ['seen','missing'].map(type=>({type,at:r[type==='seen'?'lastSeenAt':'lastMissingAt']||(r.status===type?r.updatedAt:0),count:r[type==='seen'?'seenCount':'missingCount']??Number(!!conflict||r.status===type)})).filter(g=>valid(g,now));}
+function summarize(gs){let seenCount=0,missingCount=0,lastSeenAt=0,lastMissingAt=0;for(const g of gs){if(g.type==='seen'){seenCount+=g.count;lastSeenAt=Math.max(lastSeenAt,g.at);}else{missingCount+=g.count;lastMissingAt=Math.max(lastMissingAt,g.at);}}return {expiryGroups:gs,seenCount,missingCount,lastSeenAt,lastMissingAt,status:seenCount||missingCount?(lastSeenAt>=lastMissingAt?'seen':'missing'):null,updatedAt:Math.max(lastSeenAt,lastMissingAt)};}
+function baseline(r,now){const gs=groups(r,now);return gs.length?summarize(gs):null;}
+function aggregate(base,votes,now){return summarize([...groups(base,now),...Object.values(votes||{}).map(v=>({type:v.type,at:v.at,count:1})).filter(g=>valid(g,now))]);}
+module.exports={baseline,aggregate};
