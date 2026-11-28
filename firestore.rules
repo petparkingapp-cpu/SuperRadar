@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signed() { return request.auth != null; }
+    function admin() { return signed() && request.auth.uid == 'iac5yGCVf0X1tm9kX5gYBAWVVh22'; }
+    match /official_catalog_offers/{id} {
+      allow read: if admin();
+      allow write: if admin();
+    }
+    match /custom_products/{id} {
+      allow read: if admin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if admin();
+    }
+    match /stock_votes/{id} { allow read: if admin(); allow write: if false; }
+    match /vote_private/{id} { allow read, write: if false; }
+    match /vote_history/{id} { allow read, write: if false; }
+    match /write_limits/{id} { allow read, write: if false; }
+    match /vote_limits/{id} { allow read, write: if false; }
+    match /city_requests/{id} {
+      allow read: if admin();
+      allow create: if false;
+      allow update: if false;
+      allow delete: if admin();
+    }
+    match /site_stats/general {
+      allow read: if true;
+      allow create: if admin();
+      allow update: if admin();
+      allow delete: if admin();
+    }
+    match /metadata/{id} { allow read, write: if admin(); }
+  }
+}
