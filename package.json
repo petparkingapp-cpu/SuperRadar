@@ -1,0 +1,11 @@
+{
+  "name": "superradar-pruebas-v2",
+  "version": "2.5.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

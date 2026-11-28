@@ -11,6 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperRadar</title>
+
     <!-- Vercel Web Analytics para sitios HTML estáticos -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -359,11 +360,12 @@
                     <i class="fa-solid fa-key"></i>
                 </div>
                 <div>
-                    <h4 class="font-bold text-slate-800 text-sm">Clave de Administradora</h4>
+                    <h4 class="font-bold text-slate-800 text-sm">Acceso de administradora</h4>
                     <p class="text-[11px] text-slate-500 mt-0.5">Acceso privado restringido</p>
                 </div>
                 <form onsubmit="handleAdminLogin(event)" class="max-w-xs mx-auto space-y-2.5">
-                    <input type="password" id="adminPinInput" placeholder="Introduce tu clave..." required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-center font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <input type="email" id="adminEmailInput" autocomplete="username" placeholder="Correo electrónico" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs">
+                    <input type="password" id="adminPinInput" autocomplete="current-password" placeholder="Contraseña" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-center font-bold text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     <button type="submit" class="w-full bg-slate-900 hover:bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl transition shadow-sm">
                         Entrar al Panel
                     </button>
@@ -548,7 +550,7 @@
                         <span class="text-base shrink-0 leading-none mt-0.5">🟢</span>
                         <div>
                             <span class="font-bold text-emerald-950 block">Sí está (Confirmado)</span>
-                            <span class="text-emerald-800 text-[11px] leading-snug block">Alguien de la zona lo ha visto en tienda hoy. ¡Vía libre para ir!</span>
+                            <span class="text-emerald-800 text-[11px] leading-snug block">Hay un aviso positivo vigente. Consulta su fecha: el stock puede haber cambiado.</span>
                         </div>
                     </div>
 
@@ -571,8 +573,8 @@
                     <div class="bg-slate-100 border border-slate-200 p-2.5 rounded-xl flex items-start gap-2.5">
                         <span class="text-base shrink-0 leading-none mt-0.5">⚪</span>
                         <div>
-                            <span class="font-bold text-slate-700 block">Sin confirmar hoy</span>
-                            <span class="text-slate-500 text-[11px] leading-snug block">Nadie ha pasado todavía por ese súper. ¡Sé el primero en avisar!</span>
+                            <span class="font-bold text-slate-700 block">Sin confirmar</span>
+                            <span class="text-slate-500 text-[11px] leading-snug block">No hay avisos vigentes de los últimos 15 días. ¡Anímate a avisar!</span>
                         </div>
                     </div>
                 </div>
@@ -737,7 +739,9 @@
     </div>
 
     <script>
-        const ADMIN_SECRET_PIN = 'malaga2025';
+        function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+        function jsArg(v) { return esc(JSON.stringify(String(v ?? '')).replace(/</g,'\\u003c')); }
+        function safeImage(v) { const x=String(v ?? ''); return /^(https?:\/\/[^\s]+|data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+)$/i.test(x) ? x : 'logo.jpg.webp'; }
         const CONFLICT_WINDOW_MS = 6 * 60 * 60 * 1000; // Ventana de 6 horas para detectar votos contradictorios
         let isAdminAuthenticated = false;
         let adminUploadedImageDataUrl = '';
@@ -779,6 +783,7 @@
         function isMyOwnUpload(prod) {
             if (!prod) return false;
             const myIds = getMyOwnUploadedIds();
+            if (typeof prod.owned === "boolean") return prod.owned;
             if (myIds.includes(prod.id)) return true;
             if (prod.authorDeviceId && prod.authorDeviceId === DEVICE_AUTHOR_ID) return true;
             const cloudState = window.getCloudState ? window.getCloudState() : {};
@@ -787,7 +792,7 @@
         }
 
         // Control local de los votos propios de este dispositivo (permite retirar solo su propio voto)
-        const MY_OWN_VOTES_STORAGE_KEY = 'sr_my_own_votes_v1';
+        const MY_OWN_VOTES_STORAGE_KEY = 'sr_my_own_votes_v2';
 
         function getMyOwnVotesMap() {
             try {
@@ -842,11 +847,11 @@
             if (!canUndoOwn && !canAdminReset) return '';
 
             const undoBtnHtml = canUndoOwn
-                ? `<button type="button" onclick="undoMyOwnVote('${item.id}')" class="text-[10px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1"><span>↩️ Quitar mi voto (${myVote.type === 'seen' ? 'Sí' : 'No'})</span></button>`
+                ? `<button type="button" onclick="undoMyOwnVote(${jsArg(item.id)})" class="text-[10px] font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1"><span>↩️ Quitar mi voto (${myVote.type === 'seen' ? 'Sí' : 'No'})</span></button>`
                 : '<span></span>';
 
             const resetBtnHtml = canAdminReset
-                ? `<button type="button" onclick="adminResetStoreVotes('${item.id}')" class="text-[10px] font-bold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1" title="Solo visible en Modo Admin"><span>↺ Resetear</span></button>`
+                ? `<button type="button" onclick="adminResetStoreVotes(${jsArg(item.id)})" class="text-[10px] font-bold text-amber-900 hover:text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg transition inline-flex items-center gap-1" title="Solo visible en Modo Admin"><span>↺ Resetear</span></button>`
                 : '';
 
             return `<div class="flex items-center justify-between gap-1.5 pt-0.5">${undoBtnHtml}${resetBtnHtml}</div>`;
@@ -1124,7 +1129,6 @@
                         { id: 'merca_mlg_torremolinos_centro', chain: 'Mercadona', name: 'Mercadona - Pl. Costa del Sol, s/n, Centro Entreplazas (Torremolinos)', zone: 'Torremolinos' },
                         { id: 'merca_mlg_alhaurin_de_la_torre', chain: 'Mercadona', name: 'Mercadona - Calle de los Registradores, s/n (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
                         { id: 'merca_mlg_alhaurin_cortijos', chain: 'Mercadona', name: 'Mercadona - Av. de los Cortijos, S/N (Alhaurín de la Torre)', zone: 'Alhaurín de la Torre' },
-                        { id: 'merca_mlg_coin', chain: 'Mercadona', name: 'Mercadona - Av. Reina Sofía, s/n (Coín)', zone: 'Coín' },
 
                         // Carrefour Málaga
                         { id: 'car_mlg_patios', chain: 'Carrefour', name: 'Carrefour - Autovía del Mediterráneo, Km. 241 (C.C. Los Patios)', zone: 'Málaga Capital' },
@@ -1843,11 +1847,12 @@
             }
         }
 
-        function setSeasonalTheme(mode) {
+        async function setSeasonalTheme(mode) {
+            if (!isAdminAuthenticated) return;
             currentThemeSelection = mode;
             try { localStorage.setItem('super_radar_theme', mode); } catch (e) {}
             applySeasonalThemeUI();
-            if (window.syncThemeToCloud) window.syncThemeToCloud(mode);
+            try { await window.syncThemeToCloud(mode); } catch(e) { showToast(e.message); return; }
             const names = { auto: 'Automático por fecha', halloween: '🎃 Modo Halloween activado', christmas: '🎄 Modo Navidad activado', normal: '🌿 Modo Normal activado' };
             showToast(names[mode] || 'Tema actualizado');
         }
@@ -1870,10 +1875,8 @@
                     userInteractions.officialCatalogOffers = parsed.officialCatalogOffers || [];
                     userInteractions.cityRequests = parsed.cityRequests || [];
                 }
-                if (sessionStorage.getItem('super_radar_admin_auth') === 'true' || localStorage.getItem('super_radar_admin_auth_persist') === 'true') {
-                    isAdminAuthenticated = true;
-                    document.getElementById('adminActiveBadge').classList.remove('hidden');
-                }
+                sessionStorage.removeItem('super_radar_admin_auth');
+                localStorage.removeItem('super_radar_admin_auth_persist');
             } catch (e) {
                 console.warn(e);
             }
@@ -1967,35 +1970,15 @@
         }
 
         function getValidVoteRecord(rawRecord) {
-            if (!rawRecord) return null;
-            const now = Date.now();
-            if (typeof rawRecord === 'string') {
-                return {
-                    status: rawRecord,
-                    updatedAt: now,
-                    lastSeenAt: rawRecord === 'seen' ? now : 0,
-                    lastMissingAt: rawRecord === 'missing' ? now : 0,
-                    seenCount: rawRecord === 'seen' ? 1 : 0,
-                    missingCount: rawRecord === 'missing' ? 1 : 0
-                };
-            }
-            if (now - rawRecord.updatedAt > 15 * 24 * 60 * 60 * 1000) return null;
-            const lastSeenAt = rawRecord.lastSeenAt || (rawRecord.status === 'seen' ? rawRecord.updatedAt : 0);
-            const lastMissingAt = rawRecord.lastMissingAt || (rawRecord.status === 'missing' ? rawRecord.updatedAt : 0);
-            const isConflict = isVoteConflictWithinWindow({ lastSeenAt, lastMissingAt });
-            return {
-                status: rawRecord.status || null,
-                updatedAt: rawRecord.updatedAt || now,
-                lastSeenAt: lastSeenAt,
-                lastMissingAt: lastMissingAt,
-                seenCount: typeof rawRecord.seenCount === 'number'
-                    ? rawRecord.seenCount
-                    : ((isConflict || rawRecord.status === 'seen') ? 1 : 0),
-                missingCount: typeof rawRecord.missingCount === 'number'
-                    ? rawRecord.missingCount
-                    : ((isConflict || rawRecord.status === 'missing') ? 1 : 0)
-            };
-        }
+const AGE=15*86400000;
+function valid(g,now){return g&&['seen','missing'].includes(g.type)&&Number.isSafeInteger(g.at)&&g.at>0&&g.at<=now&&now-g.at<AGE&&Number.isSafeInteger(g.count)&&g.count>0;}
+function groups(r,now){if(!r)return [];if(Array.isArray(r.expiryGroups))return r.expiryGroups.filter(g=>valid(g,now));const conflict=r.lastSeenAt>0&&r.lastMissingAt>0&&Math.abs(r.lastSeenAt-r.lastMissingAt)<21600000;return ['seen','missing'].map(type=>({type,at:r[type==='seen'?'lastSeenAt':'lastMissingAt']||(r.status===type?r.updatedAt:0),count:r[type==='seen'?'seenCount':'missingCount']??Number(!!conflict||r.status===type)})).filter(g=>valid(g,now));}
+function summarize(gs){let seenCount=0,missingCount=0,lastSeenAt=0,lastMissingAt=0;for(const g of gs){if(g.type==='seen'){seenCount+=g.count;lastSeenAt=Math.max(lastSeenAt,g.at);}else{missingCount+=g.count;lastMissingAt=Math.max(lastMissingAt,g.at);}}return {expiryGroups:gs,seenCount,missingCount,lastSeenAt,lastMissingAt,status:seenCount||missingCount?(lastSeenAt>=lastMissingAt?'seen':'missing'):null,updatedAt:Math.max(lastSeenAt,lastMissingAt)};}
+function baseline(r,now){const gs=groups(r,now);return gs.length?summarize(gs):null;}
+function aggregate(base,votes,now){return summarize([...groups(base,now),...Object.values(votes||{}).map(v=>({...v,count:1})).filter(g=>valid(g,now))]);}
+
+return baseline(rawRecord,Date.now());
+}
 
         function getMergedOfficialOffers() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
@@ -2034,7 +2017,7 @@
         function rebuildCatalogFromCurrentState() {
             if (!CITIES_AND_STORES['Málaga']) initializeActiveCitiesAndStores();
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}) };
+            const mergedVotes = {};
             if (cloudState.isCloudActive && cloudState.cloudVotes) {
                 Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
                     const localV = mergedVotes[k];
@@ -2106,26 +2089,12 @@
             });
 
             // 3. Novedades subidas por usuarios desde el botón "Subir"
-            const DIAS_CADUCIDAD = 15;
-            const MAX_AGE_MS = DIAS_CADUCIDAD * 24 * 60 * 60 * 1000;
-            const ahoraMs = Date.now();
-            const customs = activeCustom.filter(p => {
+            const customs = activeCustom.map(p => {
                 const vRec = getValidVoteRecord(mergedVotes[p.id]);
-                const ultimaActividad = Math.max(
-                    vRec ? vRec.updatedAt : 0,
-                    p.updatedAt || 0,
-                    p.createdAt || 0
-                );
-                return (ahoraMs - ultimaActividad) <= MAX_AGE_MS;
-            }).map(p => {
-                const vRec = getValidVoteRecord(mergedVotes[p.id]);
-                const initialStatus = p.userVote || 'seen';
-                const initialTime = p.updatedAt || p.createdAt || Date.now();
-                const vote = vRec ? vRec.status : initialStatus;
-                const updatedTime = vRec ? vRec.updatedAt : initialTime;
-
-                const lastSeenAt = (vRec && vRec.lastSeenAt) ? vRec.lastSeenAt : (initialStatus === 'seen' ? initialTime : 0);
-                const lastMissingAt = (vRec && vRec.lastMissingAt) ? vRec.lastMissingAt : (initialStatus === 'missing' ? initialTime : 0);
+                const vote = vRec ? vRec.status : null;
+                const updatedTime = vRec ? vRec.updatedAt : null;
+                const lastSeenAt = vRec ? vRec.lastSeenAt : 0;
+                const lastMissingAt = vRec ? vRec.lastMissingAt : 0;
                 const isConflict = isVoteConflictWithinWindow({ lastSeenAt, lastMissingAt });
 
                 const cityVal = p.city || 'Málaga';
@@ -2153,8 +2122,8 @@
                     lastSeenAt: lastSeenAt,
                     lastMissingAt: lastMissingAt,
                     isConflict: isConflict,
-                    seenCount: vRec ? vRec.seenCount : (typeof p.seenCount === 'number' ? p.seenCount : (initialStatus === 'seen' ? 1 : 0)),
-                    missingCount: vRec ? vRec.missingCount : (typeof p.missingCount === 'number' ? p.missingCount : (initialStatus === 'missing' ? 1 : 0)),
+                    seenCount: vRec ? vRec.seenCount : 0,
+                    missingCount: vRec ? vRec.missingCount : 0,
                     stockStatus: computeStockStatusFromVote(vote, isConflict)
                 };
             });
@@ -2180,7 +2149,7 @@
 
         function updateFavoritesCounter() {
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const mergedVotes = { ...(cloudState.cloudVotes || {}) };
             const count = Object.keys(mergedVotes).filter(id => {
                 const rec = getValidVoteRecord(mergedVotes[id]);
                 return rec && (rec.seenCount > 0 || rec.missingCount > 0 || !!rec.status);
@@ -2202,33 +2171,29 @@
         }
         function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
 
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const pin = document.getElementById('adminPinInput').value.trim();
-            if (pin === ADMIN_SECRET_PIN) {
-                isAdminAuthenticated = true;
-                sessionStorage.setItem('super_radar_admin_auth', 'true');
-                try { localStorage.setItem('super_radar_admin_auth_persist', 'true'); } catch (err) {}
-                document.getElementById('adminPinInput').value = '';
-                document.getElementById('adminLoginSection').classList.add('hidden');
-                document.getElementById('adminDashboardSection').classList.remove('hidden');
-                document.getElementById('adminActiveBadge').classList.remove('hidden');
-                renderAdminLists();
-                rebuildCatalogFromCurrentState();
-                showToast('⚡ Modo Admin activado');
-            } else {
-                showToast('❌ Clave incorrecta');
-            }
-        }
-
-        function handleAdminLogout() {
-            isAdminAuthenticated = false;
-            sessionStorage.removeItem('super_radar_admin_auth');
-            try { localStorage.removeItem('super_radar_admin_auth_persist'); } catch (err) {}
-            document.getElementById('adminActiveBadge').classList.add('hidden');
-            closeAdminModal();
+        window.receiveAdminAuth = function(active) {
+            isAdminAuthenticated = active === true;
+            document.getElementById('adminActiveBadge').classList.toggle('hidden', !active);
+            document.getElementById('adminLoginSection').classList.toggle('hidden', active);
+            document.getElementById('adminDashboardSection').classList.toggle('hidden', !active);
+            if (active) renderAdminLists();
             rebuildCatalogFromCurrentState();
-            showToast('Sesión cerrada');
+        };
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPinInput');
+            const button = e.target.querySelector('button[type="submit"]');
+            button.disabled = true;
+            try {
+                if (!window.loginAdminCloud) throw new Error('Firebase no disponible');
+                await window.loginAdminCloud(document.getElementById('adminEmailInput').value.trim(), password.value);
+                showToast('⚡ Modo Admin activado');
+            } catch (err) { showToast('❌ No se pudo iniciar sesión. Comprueba tus datos y conexión.'); }
+            finally { password.value = ''; button.disabled = false; }
+        }
+        async function handleAdminLogout() {
+            try { await window.logoutAdminCloud(); closeAdminModal(); showToast('Sesión cerrada'); }
+            catch (err) { showToast('No se pudo cerrar la sesión. Inténtalo de nuevo.'); }
         }
 
         async function handleAdminFileSelect(e) {
@@ -2240,6 +2205,7 @@
         }
 
         async function handleAdminPublishCatalogOffer(e) {
+            if (!isAdminAuthenticated) return;
             e.preventDefault();
             const newOffer = {
                 id: 'off_' + Date.now(),
@@ -2256,7 +2222,7 @@
             if (!userInteractions.officialCatalogOffers) userInteractions.officialCatalogOffers = [];
             userInteractions.officialCatalogOffers.unshift(newOffer);
             saveUserInteractions();
-            if (window.syncOfficialOfferToCloud) await window.syncOfficialOfferToCloud(newOffer);
+            try { await window.syncOfficialOfferToCloud(newOffer); } catch(e) { showToast(e.message); return; }
 
             adminUploadedImageDataUrl = '';
             document.getElementById('adminFileLabel').textContent = 'Foto';
@@ -2267,9 +2233,10 @@
         }
 
         async function deleteOfficialOffer(id) {
+            if (!isAdminAuthenticated) return;
             userInteractions.officialCatalogOffers = (userInteractions.officialCatalogOffers || []).filter(o => o.id !== id);
             saveUserInteractions();
-            if (window.deleteOfficialOfferFromCloud) await window.deleteOfficialOfferFromCloud(id);
+            try { await window.deleteOfficialOfferFromCloud(id); } catch(e) { showToast(e.message); return; }
             rebuildCatalogFromCurrentState();
             showToast('🗑️ Novedad oficial eliminada');
         }
@@ -2278,8 +2245,8 @@
             userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== id);
             delete userInteractions.votes[id];
             saveUserInteractions();
-            if (window.deleteCustomProductFromCloud) await window.deleteCustomProductFromCloud(id);
-            if (window.syncVoteToCloud) await window.syncVoteToCloud(id, null);
+            if (window.deleteCustomProductFromCloud) {try{await window.deleteCustomProductFromCloud(id);}catch(e){showToast(e.message);return;}}
+            // Se conserva el histórico protegido del producto eliminado.
             rebuildCatalogFromCurrentState();
             showToast('🗑️ Producto eliminado de todos los dispositivos');
         }
@@ -2302,6 +2269,8 @@
             if (target.storeId) {
                 document.getElementById('formStore').value = target.storeId;
             }
+            document.getElementById('formStockStatus').disabled = true;
+            document.getElementById('formStockStatus').title = 'Para cambiar el stock, utiliza los botones de aviso del producto';
             document.getElementById('formStockStatus').value = target.userVote === 'missing' ? 'missing' : 'seen';
             document.getElementById('formDesc').value = target.description || '';
             document.getElementById('formImageUrl').value = (target.imageUrl && !target.imageUrl.startsWith('data:')) ? target.imageUrl : '';
@@ -2319,7 +2288,7 @@
             if (!offList || !custList) return;
 
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}), ...(cloudState.isCloudActive ? (cloudState.cloudVotes || {}) : {}) };
+            const mergedVotes = { ...(cloudState.cloudVotes || {}) };
             const validVotesCount = Object.keys(mergedVotes).filter(id => {
                 const rec = getValidVoteRecord(mergedVotes[id]);
                 return rec && (rec.seenCount > 0 || rec.missingCount > 0 || !!rec.status);
@@ -2331,24 +2300,24 @@
             const reqsEl = document.getElementById('adminTotalReqsCount');
             if (visitsEl) visitsEl.textContent = cloudState.totalVisits || 1;
             if (votesEl) votesEl.textContent = validVotesCount;
-            if (reqsEl) reqsEl.textContent = reqList.length;
+            if (reqsEl) reqsEl.textContent = cloudState.isCloudActive ? (cloudState.cityRequestTotal || 0) : reqList.length;
 
             const officials = getMergedOfficialOffers();
             offCount.textContent = officials.length;
             offList.innerHTML = officials.length === 0 ? '<p class="text-slate-400 italic">Sin novedades oficiales añadidas.</p>' :
                 officials.map(o => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border">
-                    <span class="truncate pr-2"><b>[${o.chain}]</b> ${o.title}</span>
-                    <button onclick="deleteOfficialOffer('${o.id}')" class="text-rose-600 font-bold shrink-0 hover:underline">Borrar</button>
+                    <span class="truncate pr-2"><b>[${esc(o.chain)}]</b> ${esc(o.title)}</span>
+                    <button onclick="deleteOfficialOffer(${jsArg(o.id)})" class="text-rose-600 font-bold shrink-0 hover:underline">Borrar</button>
                 </div>`).join('');
 
             const customs = getMergedCustomProducts();
             custCount.textContent = customs.length;
             custList.innerHTML = customs.length === 0 ? '<p class="text-slate-400 italic">Sin avisos de usuarios.</p>' :
                 customs.map(c => `<div class="flex items-center justify-between bg-slate-50 px-2.5 py-1.5 rounded-lg border gap-2">
-                    <span class="truncate"><b>[${c.city || 'Málaga'} · ${c.supermarket || ''}]</b> ${c.title} (${Number(c.price || 0).toFixed(2)}€)</span>
+                    <span class="truncate"><b>[${esc(c.city || 'Málaga')} · ${esc(c.supermarket || '')}]</b> ${esc(c.title)} (${Number(c.price || 0).toFixed(2)}€)</span>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="closeAdminModal(); openEditCustomProductModal('${c.id}')" class="text-emerald-700 font-bold hover:underline">Editar</button>
-                        <button onclick="deleteCustomUserProduct('${c.id}')" class="text-rose-600 font-bold hover:underline">Borrar</button>
+                        <button onclick="closeAdminModal(); openEditCustomProductModal(${jsArg(c.id)})" class="text-emerald-700 font-bold hover:underline">Editar</button>
+                        <button onclick="deleteCustomUserProduct(${jsArg(c.id)})" class="text-rose-600 font-bold hover:underline">Borrar</button>
                     </div>
                 </div>`).join('');
         }
@@ -2466,7 +2435,7 @@ function closeHowItWorksModal() {
             const box = document.getElementById('requestedCitiesCounterBox');
             if (!box) return;
             const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const rawList = (cloudState.isCloudActive && Array.isArray(cloudState.cloudCityRequests) && cloudState.cloudCityRequests.length > 0)
+            const rawList = (cloudState.isCloudActive && Array.isArray(cloudState.cloudCityRequests))
                 ? cloudState.cloudCityRequests
                 : (userInteractions.cityRequests || []);
 
@@ -2501,7 +2470,7 @@ function closeHowItWorksModal() {
                 const uniqueVoter = (r.requestedBy && r.requestedBy !== 'anon')
                     ? r.requestedBy
                     : (r.deviceId || `legacy_${r.date || Math.random()}`);
-                groupedMap.get(key).voters.add(uniqueVoter);
+                if (Number.isSafeInteger(r.count)) { for(let i=0;i<r.count;i++) groupedMap.get(key).voters.add(`aggregate_${i}`); } else groupedMap.get(key).voters.add(uniqueVoter);
             });
 
             const ranking = Array.from(groupedMap.values())
@@ -2509,7 +2478,7 @@ function closeHowItWorksModal() {
                 .sort((a, b) => b.count - a.count);
             const dataList = document.getElementById('queuedCitiesList');
             if (dataList) {
-                dataList.innerHTML = ranking.map(item => `<option value="${item.label}">`).join('');
+                dataList.innerHTML = ranking.map(item => `<option value="${esc(item.label)}">`).join('');
             }
 
             if (ranking.length === 0) {
@@ -2528,7 +2497,7 @@ function closeHowItWorksModal() {
                     return `
                         <div class="bg-white border border-slate-200 rounded-lg p-2">
                             <div class="flex items-center justify-between gap-2 mb-1">
-                                <span class="font-bold text-slate-900">${item.label}</span>
+                                <span class="font-bold text-slate-900">${esc(item.label)}</span>
                                 <span class="text-[10px] text-slate-600"><b>${shown}/${CITY_UNLOCK_THRESHOLD}</b> vecinos (${statusLabel})</span>
                             </div>
                             <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -2548,7 +2517,7 @@ function closeHowItWorksModal() {
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        function handleCityRequestSubmit(e) {
+        async function handleCityRequestSubmit(e) {
             e.preventDefault();
             const cityName = document.getElementById('reqCityName').value.trim();
             const storeDetails = document.getElementById('reqStoreName').value.trim();
@@ -2611,7 +2580,7 @@ function closeHowItWorksModal() {
             if (!userInteractions.cityRequests) userInteractions.cityRequests = [];
             userInteractions.cityRequests.unshift(req);
 
-            if (window.syncCityRequestToCloud) window.syncCityRequestToCloud(req);
+            if (window.syncCityRequestToCloud) { try { await window.syncCityRequestToCloud(req); } catch(e) { userInteractions.cityRequests.shift(); showToast(e.message); return; } }
             saveUserInteractions();
             saveVotedCityLocal(cityKey);
             localStorage.setItem('sr_last_requested_city', cityLabel);
@@ -2887,7 +2856,7 @@ function closeHowItWorksModal() {
                 const conflictStores = storeItems.filter(item => item.isConflict);
                 const missingStores = storeItems.filter(item => item.userVote === 'missing' && !item.isConflict);
 
-                let stockText = '⚪ Sin confirmar hoy';
+                let stockText = '⚪ Sin confirmar';
                 let stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
                 let bannerText = p.viralContext || 'Novedad viral';
                 let bannerColor = 'text-slate-400';
@@ -2940,7 +2909,7 @@ function closeHowItWorksModal() {
                 if (isAdminAuthenticated && p.adminOfferId) {
                     actionControlsHtml = `
                         <div class="absolute bottom-2 right-2 flex items-center gap-1">
-                            <button onclick="deleteOfficialOffer('${p.adminOfferId}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                            <button onclick="deleteOfficialOffer(${jsArg(p.adminOfferId)})" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
                                 <i class="fa-solid fa-trash-can"></i> Borrar del catálogo
                             </button>
                         </div>`;
@@ -2959,13 +2928,13 @@ function closeHowItWorksModal() {
                             ` : ''}
                             <div class="flex items-center gap-1 text-[11px] text-slate-600 bg-slate-50 px-2 py-1.5 rounded-lg">
                                 <i class="fa-solid fa-location-dot text-emerald-600 shrink-0"></i>
-                                <span class="truncate" title="${single.storeName}">${single.storeName}</span>
+                                <span class="truncate" title="${esc(single.storeName)}">${esc(single.storeName)}</span>
                             </div>
                             <div class="grid grid-cols-2 gap-1.5">
-                                <button onclick="handleStoreVote('${single.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                <button onclick="handleStoreVote(${jsArg(single.id)}, 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                     <span>🟢 Sí (${single.seenCount})</span>
                                 </button>
-                                <button onclick="handleStoreVote('${single.id}', 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                <button onclick="handleStoreVote(${jsArg(single.id)}, 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${single.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
                                     <span>🔴 No (${single.missingCount})</span>
                                 </button>
                             </div>
@@ -2984,7 +2953,7 @@ function closeHowItWorksModal() {
                     const searchInputHtml = sortedStores.length > 5 ? `
                         <div class="relative mb-2">
                             <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-[10px]"></i>
-                            <input type="text" value="${savedSearch}" oninput="filterGroupStoresInput('${group.groupKey}', this.value)" placeholder="Buscar calle o barrio (${sortedStores.length} tiendas)..." class="w-full pl-7 pr-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:border-emerald-500">
+                            <input type="text" value="${esc(savedSearch)}" oninput="filterGroupStoresInput(${jsArg(group.groupKey)}, this.value)" placeholder="Buscar calle o barrio (${sortedStores.length} tiendas)..." class="w-full pl-7 pr-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px] focus:outline-none focus:border-emerald-500">
                         </div>
                     ` : '';
 
@@ -2997,9 +2966,9 @@ function closeHowItWorksModal() {
                             : (st.userVote === 'seen' ? 'border-emerald-300 bg-emerald-50/30' : (st.userVote === 'missing' ? 'border-rose-200 bg-rose-50/20' : 'border-slate-200'));
 
                         return `
-                            <div data-store-row data-store-name="${st.storeName}" style="${hideRow ? 'display:none' : ''}" class="bg-white border ${rowBorderClass} rounded-xl p-2 flex flex-col gap-1.5">
+                            <div data-store-row data-store-name="${esc(st.storeName)}" style="${hideRow ? 'display:none' : ''}" class="bg-white border ${rowBorderClass} rounded-xl p-2 flex flex-col gap-1.5">
                                 <div class="flex items-start justify-between gap-1">
-                                    <span class="text-[11px] font-semibold text-slate-800 leading-tight">📍 ${shortName}</span>
+                                    <span class="text-[11px] font-semibold text-slate-800 leading-tight">📍 ${esc(shortName)}</span>
                                     ${st.updatedAt ? `<span class="text-[9px] text-slate-400 shrink-0">${formatVoteTime(st.updatedAt)}</span>` : ''}
                                 </div>
                                 ${st.isConflict ? `
@@ -3008,10 +2977,10 @@ function closeHowItWorksModal() {
                                     </div>
                                 ` : ''}
                                 <div class="grid grid-cols-2 gap-1">
-                                    <button onclick="handleStoreVote('${st.id}', 'seen')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                    <button onclick="handleStoreVote(${jsArg(st.id)}, 'seen')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                         <span>🟢 Sí (${st.seenCount})</span>
                                     </button>
-                                    <button onclick="handleStoreVote('${st.id}', 'missing')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-slate-50 text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                    <button onclick="handleStoreVote(${jsArg(st.id)}, 'missing')" class="py-1 px-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 ${st.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-slate-50 text-slate-700 hover:bg-rose-50 border-slate-200'}">
                                         <span>🔴 No (${st.missingCount})</span>
                                     </button>
                                 </div>
@@ -3022,7 +2991,7 @@ function closeHowItWorksModal() {
 
                     bottomSectionHtml = `
                         <div class="pt-2 border-t border-slate-100">
-                            <button onclick="toggleProductStoresAccordion('${group.groupKey}')" class="w-full py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-between gap-2 ${isExpanded ? 'bg-slate-900 text-white shadow-sm' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200'}">
+                            <button onclick="toggleProductStoresAccordion(${jsArg(group.groupKey)})" class="w-full py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-between gap-2 ${isExpanded ? 'bg-slate-900 text-white shadow-sm' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200'}">
                                 <span class="flex items-center gap-1.5 truncate">
                                     <i class="fa-solid fa-store ${isExpanded ? 'text-emerald-400' : 'text-emerald-600'}"></i>
                                     <span>Ver stock por tienda (${storeItems.length})</span>
@@ -3032,7 +3001,7 @@ function closeHowItWorksModal() {
 
                             <div class="${isExpanded ? 'block' : 'hidden'} mt-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
                                 ${searchInputHtml}
-                                <div id="stores_list_${group.groupKey}" class="space-y-1.5 max-h-56 overflow-y-auto pr-0.5">
+                                <div id="stores_list_${esc(group.groupKey)}" class="space-y-1.5 max-h-56 overflow-y-auto pr-0.5">
                                     ${storesRowsHtml}
                                 </div>
                             </div>
@@ -3043,9 +3012,9 @@ function closeHowItWorksModal() {
                 return `
                     <div class="bg-white rounded-2xl border ${p.isRecentUpload ? 'border-amber-300 ring-1 ring-amber-200/60' : 'border-slate-200'} overflow-hidden shadow-sm flex flex-col">
                         <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
-                            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <img src="${esc(safeImage(p.imageUrl))}" alt="${esc(p.title)}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src=${jsArg(safeImage(p.fallbackImg))};">
                             <div class="absolute top-2 left-2 flex items-center gap-1">
-                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${esc(p.supermarket)}</span>
                                 ${newBadgeHtml}
                             </div>
                             <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
@@ -3054,11 +3023,11 @@ function closeHowItWorksModal() {
                         <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
                             <div>
                                 <div class="flex items-center justify-between gap-1 mb-1">
-                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="text-[10px] ${bannerColor} truncate">${esc(bannerText)}</span>
                                     <span class="font-extrabold text-slate-900 shrink-0">${Number(p.price).toFixed(2)} €</span>
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
-                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${esc(p.title)}</h3>
+                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${esc(p.description)}</p>
                             </div>
                             ${bottomSectionHtml}
                         </div>
@@ -3107,7 +3076,7 @@ function closeHowItWorksModal() {
                 } else if (!p.userVote) {
                     stockText = '⚪ Sin confirmar';
                     stockClass = 'bg-slate-100 text-slate-600 border-slate-200';
-                    bannerText = `📍 Aviso en tienda (${timeStr})`;
+                    bannerText = `📍 Publicado (${timeStr})`;
                     bannerColor = 'text-slate-500';
                 }
 
@@ -3120,10 +3089,10 @@ function closeHowItWorksModal() {
                 if (canManageCustom) {
                     actionControlsHtml = `
                         <div class="absolute bottom-2 right-2 flex items-center gap-1">
-                            <button onclick="openEditCustomProductModal('${p.id}')" class="bg-slate-900/90 hover:bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                            <button onclick="openEditCustomProductModal(${jsArg(p.id)})" class="bg-slate-900/90 hover:bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
                                 <i class="fa-solid fa-pen"></i> Editar
                             </button>
-                            <button onclick="deleteCustomUserProduct('${p.id}')" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
+                            <button onclick="deleteCustomUserProduct(${jsArg(p.id)})" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow flex items-center gap-1">
                                 <i class="fa-solid fa-trash-can"></i> Borrar
                             </button>
                         </div>`;
@@ -3136,9 +3105,9 @@ function closeHowItWorksModal() {
                 return `
                     <div class="bg-white rounded-2xl border ${cardBorderClass} overflow-hidden shadow-sm flex flex-col">
                         <div class="relative h-40 bg-white flex items-center justify-center p-3 border-b border-slate-100">
-                            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src='${p.fallbackImg}';">
+                            <img src="${esc(safeImage(p.imageUrl))}" alt="${esc(p.title)}" loading="lazy" class="max-h-full max-w-full object-contain rounded-lg" onerror="this.onerror=null;this.src=${jsArg(safeImage(p.fallbackImg))};">
                             <div class="absolute top-2 left-2 flex items-center gap-1">
-                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${p.supermarket}</span>
+                                <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${badge.badge}">${esc(p.supermarket)}</span>
                                 ${originBadgeHtml}
                             </div>
                             <span class="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${stockClass}">${stockText}</span>
@@ -3147,11 +3116,11 @@ function closeHowItWorksModal() {
                         <div class="p-3.5 flex-1 flex flex-col justify-between text-xs">
                             <div>
                                 <div class="flex items-center justify-between gap-1 mb-1">
-                                    <span class="text-[10px] ${bannerColor} truncate">${bannerText}</span>
+                                    <span class="text-[10px] ${bannerColor} truncate">${esc(bannerText)}</span>
                                     <span class="font-extrabold text-slate-900 shrink-0">${Number(p.price).toFixed(2)} €</span>
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${p.title}</h3>
-                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${p.description}</p>
+                                <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 mb-1">${esc(p.title)}</h3>
+                                <p class="text-slate-500 text-[11px] line-clamp-2 mb-2.5">${esc(p.description)}</p>
                             </div>
                             <div class="space-y-2 pt-2 border-t border-slate-100">
                                 ${p.isConflict ? `
@@ -3163,16 +3132,16 @@ function closeHowItWorksModal() {
                                     <i class="fa-solid fa-location-dot text-emerald-600 shrink-0 mt-0.5"></i>
                                     <div class="leading-tight">
                                         <span class="inline-block bg-emerald-200/80 text-emerald-900 font-extrabold text-[9px] uppercase px-1 py-0.5 rounded mr-1">
-                                            ${p.city || currentCity}
+                                            ${esc(p.city || currentCity)}
                                         </span>
-                                        <span class="text-slate-800">${p.storeName}</span>
+                                        <span class="text-slate-800">${esc(p.storeName)}</span>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-1.5">
-                                    <button onclick="handleStoreVote('${p.id}', 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
+                                    <button onclick="handleStoreVote(${jsArg(p.id)}, 'seen')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'seen' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 hover:bg-emerald-50 border-slate-200'}">
                                         <span>🟢 Sí (${p.seenCount})</span>
                                     </button>
-                                    <button onclick="handleStoreVote('${p.id}', 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
+                                    <button onclick="handleStoreVote(${jsArg(p.id)}, 'missing')" class="py-2 px-1 rounded-xl font-bold border transition flex items-center justify-center gap-1 ${p.userVote === 'missing' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 hover:bg-rose-50 border-slate-200'}">
                                         <span>🔴 No (${p.missingCount})</span>
                                     </button>
                                 </div>
@@ -3220,8 +3189,7 @@ function closeHowItWorksModal() {
             'Gijón': { lat: 43.5322, lng: -5.6611 },
             'Oviedo': { lat: 43.3614, lng: -5.8493 },
             'Alcalá de Henares': { lat: 40.4819, lng: -3.3635 },
-            'Terrassa - Roc Blanc': { lat: 41.5632, lng: 2.0089 },
-            'Coín': { lat: 36.6592, lng: -4.7586 },
+            'Terrassa - Roc Blanc': { lat: 41.5632, lng: 2.0089 }
         };
 
         function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
@@ -3383,203 +3351,23 @@ function closeHowItWorksModal() {
             executeStoreVote(targetId, 'missing');
         }
 
-        function executeStoreVote(id, type) {
-            const p = products.find(prod => prod.id === id);
-            if (!p) return;
-
-            const now = Date.now();
-            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}) };
-            if (cloudState.isCloudActive && cloudState.cloudVotes) {
-                Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
-                    const localV = mergedVotes[k];
-                    if (!localV || (v && (v.updatedAt || 0) >= (localV.updatedAt || 0))) {
-                        mergedVotes[k] = v;
-                    }
-                });
-            }
-            const prevRec = getValidVoteRecord(mergedVotes[id]);
-
-            const prevSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
-            const prevMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
-            const prevSeenCount = prevRec ? prevRec.seenCount : (p.seenCount || 0);
-            const prevMissingCount = prevRec ? prevRec.missingCount : (p.missingCount || 0);
-
-            const prevSnapshot = prevRec ? {
-                status: prevRec.status || null,
-                updatedAt: prevRec.updatedAt || 0,
-                lastSeenAt: prevRec.lastSeenAt || 0,
-                lastMissingAt: prevRec.lastMissingAt || 0
-            } : ((p.updatedAt || p.createdAt) ? {
-                status: p.userVote || null,
-                updatedAt: p.updatedAt || p.createdAt || 0,
-                lastSeenAt: p.lastSeenAt || 0,
-                lastMissingAt: p.lastMissingAt || 0
-            } : null);
-
-            const newSeenAt = type === 'seen' ? now : prevSeenAt;
-            const newMissingAt = type === 'missing' ? now : prevMissingAt;
-            const newSeenCount = type === 'seen' ? prevSeenCount + 1 : prevSeenCount;
-            const newMissingCount = type === 'missing' ? prevMissingCount + 1 : prevMissingCount;
-
-            const payload = {
-                status: type,
-                updatedAt: now,
-                lastSeenAt: newSeenAt,
-                lastMissingAt: newMissingAt,
-                seenCount: newSeenCount,
-                missingCount: newMissingCount
-            };
-
-            userInteractions.votes[id] = payload;
-            if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
-            guardarMarcaReporte(id);
-            saveMyOwnVote(id, type, prevSnapshot);
-
-            const conflictNow = isVoteConflictWithinWindow(payload);
-            if (conflictNow) {
-                showToast('🟡 Reportes contradictorios: marcado En duda / Stock bajo');
-            } else {
-                showToast(
-                    type === 'seen'
-                        ? `🟢 ¡Confirmado! Ahora suma ${newSeenCount} ${newSeenCount === 1 ? 'voto' : 'votos'}`
-                        : `🔴 ¡Marcado agotado! Ahora suma ${newMissingCount} ${newMissingCount === 1 ? 'voto' : 'votos'}`
-                );
-            }
-
-            saveUserInteractions();
-            rebuildCatalogFromCurrentState();
-        }
-
-        function undoMyOwnVote(id) {
-            const myVote = getMyOwnVoteFor(id);
-            if (!myVote) return;
-
-            const p = products.find(prod => prod.id === id);
-            if (!p) return;
-
-            const now = Date.now();
-            const cloudState = window.getCloudState ? window.getCloudState() : { isCloudActive: false };
-            const mergedVotes = { ...(userInteractions.votes || {}) };
-            if (cloudState.isCloudActive && cloudState.cloudVotes) {
-                Object.entries(cloudState.cloudVotes).forEach(([k, v]) => {
-                    const localV = mergedVotes[k];
-                    if (!localV || (v && (v.updatedAt || 0) >= (localV.updatedAt || 0))) {
-                        mergedVotes[k] = v;
-                    }
-                });
-            }
-            const prevRec = getValidVoteRecord(mergedVotes[id]);
-
-            let newSeenCount = prevRec ? prevRec.seenCount : (p.seenCount || 0);
-            let newMissingCount = prevRec ? prevRec.missingCount : (p.missingCount || 0);
-            let newSeenAt = prevRec ? prevRec.lastSeenAt : (p.lastSeenAt || 0);
-            let newMissingAt = prevRec ? prevRec.lastMissingAt : (p.lastMissingAt || 0);
-
-            const snap = myVote.prevSnapshot || null;
-
-            if (myVote.type === 'seen') {
-                newSeenCount = Math.max(0, newSeenCount - 1);
-                if (newSeenCount === 0) {
-                    newSeenAt = 0;
-                } else if (snap && snap.lastSeenAt) {
-                    newSeenAt = snap.lastSeenAt;
-                }
-            } else {
-                newMissingCount = Math.max(0, newMissingCount - 1);
-                if (newMissingCount === 0) {
-                    newMissingAt = 0;
-                } else if (snap && snap.lastMissingAt) {
-                    newMissingAt = snap.lastMissingAt;
-                }
-            }
-
-            clearMyOwnVote(id);
-            // Libera el bloqueo de 20 min en ese producto para que pueda corregir su voto al instante
+        const pendingVotes = new Set();
+        async function changeVote(id, action, type) {
+            if (pendingVotes.has(id)) return;
+            pendingVotes.add(id);
             try {
-                localStorage.removeItem(`sr_rep_${id}`);
-                localStorage.removeItem('sr_ultimo_reporte_global');
-            } catch (e) {}
-
-            if (newSeenCount === 0 && newMissingCount === 0) {
-                if (p.isCustomUserProduct) {
-                    const zeroPayload = {
-                        status: null,
-                        updatedAt: (snap && snap.updatedAt) ? snap.updatedAt : (p.createdAt || now),
-                        lastSeenAt: 0,
-                        lastMissingAt: 0,
-                        seenCount: 0,
-                        missingCount: 0
-                    };
-                    userInteractions.votes[id] = zeroPayload;
-                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, zeroPayload);
-                } else {
-                    delete userInteractions.votes[id];
-                    if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
-                }
-                showToast('↩️ Tu voto se ha retirado');
-            } else {
-                let newStatus = myVote.type;
-                let newUpdatedAt = (snap && snap.updatedAt) ? snap.updatedAt : now;
-                if (newSeenCount === 0) {
-                    newStatus = 'missing';
-                    newUpdatedAt = newMissingAt || (snap && snap.updatedAt) || now;
-                } else if (newMissingCount === 0) {
-                    newStatus = 'seen';
-                    newUpdatedAt = newSeenAt || (snap && snap.updatedAt) || now;
-                } else {
-                    newStatus = newSeenAt >= newMissingAt ? 'seen' : 'missing';
-                    newUpdatedAt = Math.max(newSeenAt, newMissingAt) || (snap && snap.updatedAt) || now;
-                }
-
-                const payload = {
-                    status: newStatus,
-                    updatedAt: newUpdatedAt,
-                    lastSeenAt: newSeenAt,
-                    lastMissingAt: newMissingAt,
-                    seenCount: newSeenCount,
-                    missingCount: newMissingCount
-                };
-
-                userInteractions.votes[id] = payload;
-                if (window.syncVoteToCloud) window.syncVoteToCloud(id, payload);
-                showToast('↩️ Tu voto se ha retirado · Se mantienen los demás avisos');
-            }
-
-            saveUserInteractions();
-            rebuildCatalogFromCurrentState();
-        }
-
-        function adminResetStoreVotes(id) {
-            if (!isAdminAuthenticated) return;
-            const p = products.find(prod => prod.id === id);
-            if (!p) return;
-
-            if (!confirm('¿Poner a cero los votos de esta tienda?')) return;
-
-            clearMyOwnVote(id);
-            try { localStorage.removeItem(`sr_rep_${id}`); } catch (e) {}
-
-            if (p.isCustomUserProduct) {
-                const zeroPayload = {
-                    status: null,
-                    updatedAt: Date.now(),
-                    lastSeenAt: 0,
-                    lastMissingAt: 0,
-                    seenCount: 0,
-                    missingCount: 0
-                };
-                userInteractions.votes[id] = zeroPayload;
-                if (window.syncVoteToCloud) window.syncVoteToCloud(id, zeroPayload);
-            } else {
+                const result = await window.secureVote(id, action, type, cachedUserCoords);
+                if (action === 'vote') { saveMyOwnVote(id, type); guardarMarcaReporte(id); }
+                else { clearMyOwnVote(id); localStorage.removeItem(`sr_rep_${id}`); }
                 delete userInteractions.votes[id];
-                if (window.syncVoteToCloud) window.syncVoteToCloud(id, null);
-            }
-
-            saveUserInteractions();
-            rebuildCatalogFromCurrentState();
-            showToast('↺ Votos puestos a cero (Modo Admin)');
+                saveUserInteractions(); rebuildCatalogFromCurrentState();
+                showToast(action === 'vote' ? 'Aviso confirmado' : action === 'undo' ? 'Tu voto se ha retirado' : 'Votos puestos a cero');
+            } catch(e) { showToast(e.message || 'No se pudo guardar el voto'); }
+            finally { pendingVotes.delete(id); }
         }
+        function executeStoreVote(id,type) { return changeVote(id,'vote',type); }
+        function undoMyOwnVote(id) { return changeVote(id,'undo'); }
+        function adminResetStoreVotes(id) { if(isAdminAuthenticated && confirm('¿Poner a cero los votos de esta tienda?')) return changeVote(id,'reset'); }
 
         async function handleFileSelect(e) {
             const f = e.target.files[0];
@@ -3597,6 +3385,8 @@ function closeHowItWorksModal() {
         function clearHeroSearch() { syncSearch(''); }
 
         function openModal() {
+            document.getElementById('formStockStatus').disabled = false;
+            document.getElementById('formStockStatus').title = ''; 
             document.getElementById('editingProductId').value = '';
             document.getElementById('productModalTitle').textContent = 'Avisar de una novedad en mi tienda';
             document.getElementById('submitProductBtn').textContent = 'Publicar aviso';
@@ -3635,7 +3425,7 @@ function closeHowItWorksModal() {
                 const matchedStore = (CITIES_AND_STORES[city]?.stores || []).find(s => s.id === storeSel.value);
 
                 // Si es un aviso nuevo (no edición), verificamos también la ubicación y el límite anti-spam
-                if (!editingId) {
+                {
                     const validacion = await verificarPermisoReporte(null, city, matchedStore?.zone);
                     if (!validacion.ok) {
                         showToast(validacion.msg);
@@ -3657,7 +3447,7 @@ function closeHowItWorksModal() {
                     missingCount: status === 'missing' ? 1 : 0
                 };
 
-                userInteractions.votes[prodId] = payload;
+                // El stock se actualiza exclusivamente con la respuesta del servidor.
                 const newP = {
                     id: prodId,
                     title: document.getElementById('formTitle').value.trim(),
@@ -3684,14 +3474,13 @@ function closeHowItWorksModal() {
                     stockStatus: computeStockStatusFromVote(status, false)
                 };
 
+                if (window.syncCustomProductToCloud) await window.syncCustomProductToCloud(newP);
+                if(!editingId) saveMyOwnVote(prodId,status);
                 markIdAsMyOwnUpload(prodId);
                 guardarMarcaReporte(prodId);
-                userInteractions.customProducts = (userInteractions.customProducts || []).filter(p => p.id !== prodId);
-                userInteractions.customProducts.unshift(newP);
-                saveUserInteractions();
+                // El catálogo ya se ha actualizado desde el servidor.
 
-                if (window.syncCustomProductToCloud) await window.syncCustomProductToCloud(newP);
-                if (window.syncVoteToCloud) await window.syncVoteToCloud(prodId, payload);
+
 
                 uploadedImageDataUrl = '';
                 document.getElementById('editingProductId').value = '';
@@ -3707,7 +3496,7 @@ function closeHowItWorksModal() {
                 rebuildCatalogFromCurrentState();
                 switchMainViewTab('community');
                 showToast(editingId ? '✅ ¡Aviso corregido con éxito!' : '🚀 ¡Aviso publicado en directo!');
-            } finally {
+            } catch(e) { showToast(e.message || 'No se pudo completar el aviso'); } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             }
@@ -3754,13 +3543,15 @@ function closeHowItWorksModal() {
             updateZoneSelectDropdown();
             updateStoreSelectDropdown();
             rebuildCatalogFromCurrentState();
+            setInterval(() => { if (!document.hidden) rebuildCatalogFromCurrentState(); }, 60000);
+            document.addEventListener("visibilitychange", () => { if (!document.hidden) rebuildCatalogFromCurrentState(); });
         });
     </script>
 
     <!-- Sincronización en la nube directa con Firebase de SuperRadar + Caché Instantánea -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const EXTERNAL_FIREBASE_CONFIG = {
@@ -3769,17 +3560,38 @@ function closeHowItWorksModal() {
             projectId: "superradar-99064",
             storageBucket: "superradar-99064.firebasestorage.app",
             messagingSenderId: "123150876347",
-            appId: "1:123150876347:web:60c79635b1e2fddd98f39e",
-            measurementId: "G-C9ZV48DCB3"
+            appId: "1:123150876347:web:60c79635b1e2fddd98f39e"
         };
 
+        const ADMIN_UID = 'iac5yGCVf0X1tm9kX5gYBAWVVh22';
+        let authReady;
+        async function requireUser() {
+            await authReady;
+            if (!auth?.currentUser) throw new Error('Sin sesión Firebase');
+            return auth.currentUser;
+        }
+        window.loginAdminCloud = async (email, password) => {
+            await requireUser();
+            const result = await signInWithEmailAndPassword(auth, email, password);
+            if (result.user.uid !== ADMIN_UID) {
+                await signOut(auth);
+                await signInAnonymously(auth);
+                throw new Error('Sin permiso de administración');
+            }
+        };
+        window.logoutAdminCloud = async () => {
+            await requireUser();
+            await signOut(auth);
+            await signInAnonymously(auth);
+        };
         let db = null, auth = null, currentUser = null, isCloudActive = false, listenersStarted = false;
+        let cityRequestTotal=0;
         let hasLoadedCustomSnap = false, hasLoadedOfficialSnap = false;
         let cloudVotes = {}, cloudCustomProducts = [], cloudOfficialOffers = [], cloudCityRequests = [], totalVisits = 0;
 
         // Cargar caché instantánea de la nube para evitar el retraso de 2 segundos al abrir la web
         try {
-            const cachedCloud = JSON.parse(localStorage.getItem('sr_cloud_fast_cache_v1') || 'null');
+            const cachedCloud = JSON.parse(localStorage.getItem('sr_produccion_cloud_fast_cache_v25') || 'null');
             if (cachedCloud) {
                 cloudVotes = cachedCloud.cloudVotes || {};
                 cloudCustomProducts = cachedCloud.cloudCustomProducts || [];
@@ -3792,10 +3604,10 @@ function closeHowItWorksModal() {
 
         function saveCloudFastCache() {
             try {
-                localStorage.setItem('sr_cloud_fast_cache_v1', JSON.stringify({
+                localStorage.setItem('sr_produccion_cloud_fast_cache_v25', JSON.stringify({
                     cloudVotes,
-                    cloudCustomProducts,
-                    cloudOfficialOffers
+                    cloudCustomProducts: cloudCustomProducts.map(({owned,...p})=>({...p,owned:false})),
+                    cloudOfficialOffers: cloudOfficialOffers.map(({owned,...p})=>({...p,owned:false}))
                 }));
             } catch (e) {}
         }
@@ -3810,7 +3622,7 @@ function closeHowItWorksModal() {
                 cloudCustomProducts,
                 cloudOfficialOffers,
                 cloudCityRequests,
-                totalVisits
+                totalVisits, cityRequestTotal
             };
         };
 
@@ -3829,12 +3641,10 @@ function closeHowItWorksModal() {
         async function registerVisitInFirebase() {
             if (!db) return;
             try {
-                if (!sessionStorage.getItem('sr_visit_counted')) {
-                    sessionStorage.setItem('sr_visit_counted', 'true');
-                    await setDoc(doc(db, 'site_stats', 'general'), {
-                        totalVisits: increment(1),
-                        lastVisitAt: Date.now()
-                    }, { merge: true });
+                await requireUser();
+                if (!sessionStorage.getItem('sr_produccion_visit_counted')) {
+                    sessionStorage.setItem('sr_produccion_visit_counted', 'true');
+                    await secureWrite('visit', {});
                 }
             } catch (e) {
                 console.warn(e);
@@ -3856,108 +3666,92 @@ function closeHowItWorksModal() {
                 }
             }, err => console.warn("stats listener:", err));
 
-            onSnapshot(collection(db, 'stock_votes'), snap => {
-                cloudVotes = {};
-                snap.forEach(d => cloudVotes[d.id] = d.data());
-                saveCloudFastCache();
-                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            }, err => console.warn("votes listener:", err));
-
-            onSnapshot(collection(db, 'official_catalog_offers'), snap => {
-                const l = [];
-                snap.forEach(d => l.push(d.data()));
-                cloudOfficialOffers = l;
-                hasLoadedOfficialSnap = true;
-                saveCloudFastCache();
-                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            }, err => console.warn("official listener:", err));
-
-            onSnapshot(collection(db, 'custom_products'), snap => {
-                const l = [];
-                snap.forEach(d => l.push(d.data()));
-                cloudCustomProducts = l;
-                hasLoadedCustomSnap = true;
-                saveCloudFastCache();
-                if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
-            }, err => console.warn("custom_products listener:", err));
-
-            onSnapshot(collection(db, 'city_requests'), snap => {
-                const l = [];
-                snap.forEach(d => l.push(d.data()));
-                cloudCityRequests = l;
-                if (window.renderRequestedCitiesSummary) window.renderRequestedCitiesSummary();
-            }, err => console.warn("city_requests listener:", err));
+            refreshPrivateCatalog().catch(console.warn);
+            setInterval(()=>{if(!document.hidden) refreshPrivateCatalog().catch(console.warn);},300000);
+            document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPrivateCatalog().catch(console.warn);});
+        }
+        let refreshQueue=Promise.resolve();
+        function refreshPrivateCatalog(){
+            const job=refreshQueue.catch(()=>{}).then(async()=>{
+                const user=await requireUser(), token=await user.getIdToken();
+                async function load(name){let after=null,items=[],total=0;do{const response=await fetch('/api/read',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({name,after})});const page=await response.json();if(!response.ok)throw Error(page.error||'Error de lectura');items.push(...page.items);total=page.total||0;after=page.next;}while(after);return {items,total};}
+                const [v,o,c,r]=await Promise.all(['stock_votes','official_catalog_offers','custom_products','city_requests'].map(load));
+                if(auth.currentUser?.uid!==user.uid)return;
+                cloudVotes=Object.fromEntries(v.items.filter(x=>x.record).map(x=>[x.id,x.record]));cloudOfficialOffers=o.items;cloudCustomProducts=c.items;cloudCityRequests=r.items;cityRequestTotal=r.total;hasLoadedOfficialSnap=hasLoadedCustomSnap=true;saveCloudFastCache();window.rebuildCatalogFromCurrentState?.();window.renderRequestedCitiesSummary?.();window.renderAdminLists?.();
+            });refreshQueue=job;return job;
         }
 
-        window.syncVoteToCloud = async function(id, data) {
-            if (data === null) {
-                delete cloudVotes[id];
-            } else {
-                cloudVotes[id] = { ...data, updatedBy: currentUser ? currentUser.uid : 'anon' };
-            }
-            saveCloudFastCache();
-            if (!db) return;
-            try {
-                const ref = doc(db, 'stock_votes', id);
-                if (data === null) {
-                    await deleteDoc(ref);
-                } else {
-                    await setDoc(ref, { ...data, updatedBy: currentUser ? currentUser.uid : 'anon' });
-                }
-            } catch (e) { console.warn("Error syncVoteToCloud:", e); }
+        async function secureWrite(action, payload) {
+            const user = await requireUser();
+            const response = await fetch('/api/write',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:JSON.stringify({action,...payload})});
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'No se pudo guardar');
+            return result;
+        }
+        window.secureVote = async function(id, action, type, coords) {
+            const user = await requireUser();
+            const response = await fetch('/api/vote', {method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.getIdToken()},body:JSON.stringify({id,action,type,coords})});
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || 'Error al guardar');
+            cloudVotes[id] = result.record; saveCloudFastCache();
+            return result;
         };
 
         window.syncOfficialOfferToCloud = async function(o) {
             if (!db) return;
             try {
-                await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser ? currentUser.uid : 'admin' });
-            } catch (e) { console.warn("Error syncOfficialOfferToCloud:", e); }
+                await requireUser();
+                await setDoc(doc(db, 'official_catalog_offers', o.id), { ...o, createdBy: currentUser ? currentUser.uid : 'admin' }); await refreshPrivateCatalog();
+            } catch (e) { throw new Error("No se pudo confirmar la publicación oficial"); }
         };
 
         window.deleteOfficialOfferFromCloud = async function(id) {
             if (!db) return;
             try {
-                await deleteDoc(doc(db, 'official_catalog_offers', id));
-            } catch (e) { console.warn("Error deleteOfficialOfferFromCloud:", e); }
+                await requireUser();
+                await deleteDoc(doc(db, 'official_catalog_offers', id)); await refreshPrivateCatalog();
+            } catch (e) { throw new Error("No se pudo confirmar la eliminación oficial"); }
         };
 
         window.syncCustomProductToCloud = async function(p) {
             if (!db) return;
             try {
-                await setDoc(doc(db, 'custom_products', p.id), { ...p, createdBy: currentUser ? currentUser.uid : 'anon' });
-            } catch (e) { console.warn("Error syncCustomProductToCloud:", e); }
+                await requireUser();
+                await secureWrite('product', {product:p,coords:cachedUserCoords}); await refreshPrivateCatalog();
+            } catch (e) { throw new Error("No se pudo guardar el producto"); }
         };
 
         window.deleteCustomProductFromCloud = async function(id) {
             if (!db) return;
             try {
-                await deleteDoc(doc(db, 'custom_products', id));
-            } catch (e) { console.warn("Error deleteCustomProductFromCloud:", e); }
+                await requireUser();
+                await secureWrite('deleteProduct',{id}); await refreshPrivateCatalog();
+            } catch (e) { throw e; }
         };
 
         window.syncCityRequestToCloud = async function(req) {
             if (!db) return;
             try {
+                await requireUser();
                 const voterId = (currentUser && currentUser.uid) ? currentUser.uid : (req.deviceId || 'anon_' + Date.now());
                 const docId = req.cityKey ? `${req.cityKey.replace(/\s+/g, '_')}_${voterId}` : ('req_' + Date.now());
-                await setDoc(doc(db, 'city_requests', docId), {
-                    ...req,
-                    requestedBy: voterId
-                }, { merge: true });
-            } catch (e) { console.warn("Error syncCityRequestToCloud:", e); }
+                await secureWrite('city', {request:req}); await refreshPrivateCatalog();
+            } catch (e) { throw e; }
         };
 
         window.syncThemeToCloud = async function(themeMode) {
             if (!db) return;
             try {
+                await requireUser();
                 await setDoc(doc(db, 'site_stats', 'general'), { seasonalTheme: themeMode }, { merge: true });
-            } catch (e) { console.warn("Error syncThemeToCloud:", e); }
+            } catch (e) { throw new Error("No se pudo guardar el tema"); }
         };
 
         async function initCloudSync() {
             try {
                 let cfg = EXTERNAL_FIREBASE_CONFIG;
                 if (!cfg || !cfg.apiKey) { updateCloudIndicator(false); return; }
+                if (cfg.projectId !== "superradar-99064") throw new Error("Proyecto de producción incorrecto");
                 const app = initializeApp(cfg);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -3965,13 +3759,18 @@ function closeHowItWorksModal() {
                 isCloudActive = true;
                 updateCloudIndicator(true);
                 if (window.rebuildCatalogFromCurrentState) window.rebuildCatalogFromCurrentState();
+                authReady = (async () => {
+                    await auth.authStateReady();
+                    if (!auth.currentUser) await signInAnonymously(auth);
+                    currentUser = auth.currentUser;
+                })();
+                onAuthStateChanged(auth, u => {
+                    currentUser = u;
+                    window.receiveAdminAuth?.(u?.uid === ADMIN_UID); if(listenersStarted) {cloudCustomProducts=cloudCustomProducts.map(p=>({...p,owned:false}));refreshPrivateCatalog().catch(console.warn);}
+                });
+                await authReady;
                 setupRealtimeListeners();
                 registerVisitInFirebase();
-
-                onAuthStateChanged(auth, u => {
-                    if (u) currentUser = u;
-                });
-                await signInAnonymously(auth).catch(err => console.warn("Anon auth info:", err));
             } catch (e) {
                 console.warn("Firebase Sync:", e);
                 updateCloudIndicator(false);
